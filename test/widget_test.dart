@@ -7,9 +7,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leemeenal/core/data/database.dart';
+import 'package:trademate/core/data/database.dart';
 
-import 'package:leemeenal/main.dart';
+import 'package:trademate/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

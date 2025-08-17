@@ -1,11 +1,11 @@
 {
-    "name": "leemeenal",
-    "short_name": "leemeenal",
+      "name": "TradeMate",
+  "short_name": "TradeMate",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "leemeenal app",
+    "description": "TradeMate app",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
