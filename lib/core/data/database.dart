@@ -66,7 +66,13 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   int get schemaVersion => 1;
 
   // Trade operations
-  Future<List<Trade>> getAllTrades() => select(trades).get();
+  Future<List<Trade>> getAllTrades() async {
+    try {
+      return await select(trades).get();
+    } catch (e) {
+      return [];
+    }
+  }
   
   Future<Trade?> getTradeById(int id) => 
       (select(trades)..where((t) => t.id.equals(id))).getSingleOrNull();
@@ -93,15 +99,24 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       (delete(accountTransactions)..where((t) => t.id.equals(id))).go();
 
   // Statistics operations
-  Future<TradeStatisticsTableData?> getLatestStatistics() => 
-      (select(tradeStatisticsTable)..orderBy([(t) => OrderingTerm.desc(t.lastUpdated)]))
-      .getSingleOrNull();
+  Future<TradeStatisticsTableData?> getLatestStatistics() async {
+    final results = await (select(tradeStatisticsTable)
+      ..orderBy([(t) => OrderingTerm.desc(t.lastUpdated)]))
+      .get();
+    
+    // Return the first (most recent) result, or null if empty
+    return results.isNotEmpty ? results.first : null;
+  }
   
   Future<int> insertStatistics(TradeStatisticsTableCompanion statistics) => 
       into(tradeStatisticsTable).insert(statistics);
   
   Future<bool> updateStatistics(TradeStatisticsTableCompanion statistics) => 
       update(tradeStatisticsTable).replace(statistics);
+  
+  // Clear old statistics entries to prevent accumulation
+  Future<void> clearOldStatistics() => 
+      delete(tradeStatisticsTable).go();
 
   // Complex queries
   Future<List<Trade>> getTradesInDateRange(DateTime start, DateTime end) =>
@@ -110,43 +125,59 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       .get();
 
   Future<double> getTotalDeposits() async {
-    final result = await (select(accountTransactions)
-      ..where((t) => t.type.equals('DEPOSIT')))
-      .get();
-    double total = 0.0;
-    for (final transaction in result) {
-      total += transaction.amount;
+    try {
+      final result = await (select(accountTransactions)
+        ..where((t) => t.type.equals('DEPOSIT')))
+        .get();
+      double total = 0.0;
+      for (final transaction in result) {
+        total += transaction.amount;
+      }
+      return total;
+    } catch (e) {
+      return 0.0;
     }
-    return total;
   }
 
   Future<double> getTotalWithdrawals() async {
-    final result = await (select(accountTransactions)
-      ..where((t) => t.type.equals('WITHDRAWAL')))
-      .get();
-    double total = 0.0;
-    for (final transaction in result) {
-      total += transaction.amount;
+    try {
+      final result = await (select(accountTransactions)
+        ..where((t) => t.type.equals('WITHDRAWAL')))
+        .get();
+      double total = 0.0;
+      for (final transaction in result) {
+        total += transaction.amount;
+      }
+      return total;
+    } catch (e) {
+      return 0.0;
     }
-    return total;
   }
 
   Future<double> getCurrentAccountBalance() async {
-    final totalDeposits = await getTotalDeposits();
-    final totalWithdrawals = await getTotalWithdrawals();
-    final closedTradesPnl = await getClosedTradesPnl();
-    return totalDeposits - totalWithdrawals + closedTradesPnl;
+    try {
+      final totalDeposits = await getTotalDeposits();
+      final totalWithdrawals = await getTotalWithdrawals();
+      final closedTradesPnl = await getClosedTradesPnl();
+      return totalDeposits - totalWithdrawals + closedTradesPnl;
+    } catch (e) {
+      return 0.0;
+    }
   }
 
   Future<double> getClosedTradesPnl() async {
-    final result = await (select(trades)
-      ..where((t) => t.status.equals('CLOSED')))
-      .get();
-    double total = 0.0;
-    for (final trade in result) {
-      total += trade.pnl ?? 0.0;
+    try {
+      final result = await (select(trades)
+        ..where((t) => t.status.equals('CLOSED')))
+        .get();
+      double total = 0.0;
+      for (final trade in result) {
+        total += trade.pnl ?? 0.0;
+      }
+      return total;
+    } catch (e) {
+      return 0.0;
     }
-    return total;
   }
 }
 

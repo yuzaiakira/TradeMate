@@ -7,21 +7,15 @@ import '../widgets/account_growth_chart.dart';
 import '../../../../core/utils/app_theme.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    // Load statistics when page is created
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeProvider>().loadStatistics();
-    });
-  }
+  // Statistics are already loaded in MainNavigationPage
+  // No need to load them again here
 
   @override
   Widget build(BuildContext context) {

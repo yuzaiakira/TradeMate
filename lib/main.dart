@@ -27,7 +27,7 @@ void main() async {
 class TradeMateApp extends StatelessWidget {
   final TradeMateDatabase database;
 
-  const TradeMateApp({Key? key, required this.database}) : super(key: key);
+  const TradeMateApp({super.key, required this.database});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class TradeMateApp extends StatelessWidget {
 }
 
 class MainNavigationPage extends StatefulWidget {
-  const MainNavigationPage({Key? key}) : super(key: key);
+  const MainNavigationPage({super.key});
 
   @override
   State<MainNavigationPage> createState() => _MainNavigationPageState();

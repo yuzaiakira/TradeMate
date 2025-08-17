@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/app_theme.dart';
 
 class ToolsPage extends StatelessWidget {
-  const ToolsPage({Key? key}) : super(key: key);
+  const ToolsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

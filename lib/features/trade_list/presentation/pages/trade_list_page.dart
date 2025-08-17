@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/app_theme.dart';
 
 class TradeListPage extends StatelessWidget {
-  const TradeListPage({Key? key}) : super(key: key);
+  const TradeListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

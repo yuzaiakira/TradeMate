@@ -7,9 +7,9 @@ class AccountGrowthChart extends StatelessWidget {
   final TradeStatistics statistics;
 
   const AccountGrowthChart({
-    Key? key,
+    super.key,
     required this.statistics,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +120,8 @@ class AccountGrowthChart extends StatelessWidget {
             isCurved: true,
             gradient: LinearGradient(
               colors: [
-                AppTheme.primaryColor.withOpacity(0.8),
-                AppTheme.primaryColor.withOpacity(0.3),
+                AppTheme.primaryColor.withValues(alpha: 0.8),
+                AppTheme.primaryColor.withValues(alpha: 0.3),
               ],
             ),
             barWidth: 3,
@@ -141,8 +141,8 @@ class AccountGrowthChart extends StatelessWidget {
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.primaryColor.withOpacity(0.3),
-                  AppTheme.primaryColor.withOpacity(0.1),
+                  AppTheme.primaryColor.withValues(alpha: 0.3),
+                  AppTheme.primaryColor.withValues(alpha: 0.1),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,

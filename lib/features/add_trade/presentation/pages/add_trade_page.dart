@@ -5,7 +5,7 @@ import '../provider/add_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
 
 class AddTradePage extends StatelessWidget {
-  const AddTradePage({Key? key}) : super(key: key);
+  const AddTradePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +231,7 @@ class AddTradePage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: provider.isFormValid ? provider.addTrade : null,
                     style: AppTheme.primaryButtonStyle.copyWith(
-                      minimumSize: const MaterialStatePropertyAll(Size(0, 50)),
+                      minimumSize: const WidgetStatePropertyAll(Size(0, 50)),
                     ),
                     child: _buildSubmitButtonContent(provider),
                   ),
@@ -245,7 +245,7 @@ class AddTradePage extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.errorColor.withOpacity(0.1),
+                      color: AppTheme.errorColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppTheme.errorColor),
                     ),
@@ -262,7 +262,7 @@ class AddTradePage extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.successColor.withOpacity(0.1),
+                      color: AppTheme.successColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppTheme.successColor),
                     ),
@@ -295,7 +295,7 @@ class AddTradePage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.1) : Colors.transparent,
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? color : AppTheme.borderColor,
