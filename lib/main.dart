@@ -7,7 +7,10 @@ import 'core/providers/user_defined_values_provider.dart';
 import 'features/add_trade/data/repositories/trade_repository_impl.dart';
 import 'features/add_trade/domain/repositories/trade_repository.dart';
 import 'features/add_trade/domain/usecases/add_trade_usecase.dart';
+import 'features/add_trade/domain/usecases/get_trades_usecase.dart';
+import 'features/add_trade/domain/usecases/delete_trade_usecase.dart';
 import 'features/add_trade/presentation/provider/add_trade_provider.dart';
+import 'features/trade_list/presentation/provider/trade_list_provider.dart';
 import 'features/home/data/repositories/statistics_repository_impl.dart';
 import 'features/home/domain/repositories/statistics_repository.dart';
 import 'features/home/domain/usecases/get_statistics_usecase.dart';
@@ -55,6 +58,16 @@ class TradeMateApp extends StatelessWidget {
             context.read<TradeRepository>(),
           ),
         ),
+        Provider<GetTradesUseCase>(
+          create: (context) => GetTradesUseCase(
+            context.read<TradeRepository>(),
+          ),
+        ),
+        Provider<DeleteTradeUseCase>(
+          create: (context) => DeleteTradeUseCase(
+            context.read<TradeRepository>(),
+          ),
+        ),
         Provider<GetStatisticsUseCase>(
           create: (context) => GetStatisticsUseCase(
             context.read<StatisticsRepository>(),
@@ -75,6 +88,12 @@ class TradeMateApp extends StatelessWidget {
         ChangeNotifierProvider<UserDefinedValuesProvider>(
           create: (context) => UserDefinedValuesProvider(
             context.read<UserDefinedValuesRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<TradeListProvider>(
+          create: (context) => TradeListProvider(
+            getTradesUseCase: context.read<GetTradesUseCase>(),
+            deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
           ),
         ),
       ],
