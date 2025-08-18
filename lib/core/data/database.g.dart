@@ -21,6 +21,48 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _tagMeta = const VerificationMeta('tag');
+  @override
+  late final GeneratedColumn<String> tag = GeneratedColumn<String>(
+    'tag',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _datetimeMeta = const VerificationMeta(
+    'datetime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> datetime = GeneratedColumn<DateTime>(
+    'datetime',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exchangesMeta = const VerificationMeta(
+    'exchanges',
+  );
+  @override
+  late final GeneratedColumn<String> exchanges = GeneratedColumn<String>(
+    'exchanges',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryTypeMeta = const VerificationMeta(
+    'entryType',
+  );
+  @override
+  late final GeneratedColumn<String> entryType = GeneratedColumn<String>(
+    'entry_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _symbolMeta = const VerificationMeta('symbol');
   @override
   late final GeneratedColumn<String> symbol = GeneratedColumn<String>(
@@ -30,6 +72,287 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _strategiesMeta = const VerificationMeta(
+    'strategies',
+  );
+  @override
+  late final GeneratedColumn<String> strategies = GeneratedColumn<String>(
+    'strategies',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sideMeta = const VerificationMeta('side');
+  @override
+  late final GeneratedColumn<String> side = GeneratedColumn<String>(
+    'side',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryPriceMeta = const VerificationMeta(
+    'entryPrice',
+  );
+  @override
+  late final GeneratedColumn<double> entryPrice = GeneratedColumn<double>(
+    'entry_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _positionMarginMeta = const VerificationMeta(
+    'positionMargin',
+  );
+  @override
+  late final GeneratedColumn<double> positionMargin = GeneratedColumn<double>(
+    'position_margin',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leverageMeta = const VerificationMeta(
+    'leverage',
+  );
+  @override
+  late final GeneratedColumn<double> leverage = GeneratedColumn<double>(
+    'leverage',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _orderTypeMeta = const VerificationMeta(
+    'orderType',
+  );
+  @override
+  late final GeneratedColumn<String> orderType = GeneratedColumn<String>(
+    'order_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _timeFrameMeta = const VerificationMeta(
+    'timeFrame',
+  );
+  @override
+  late final GeneratedColumn<String> timeFrame = GeneratedColumn<String>(
+    'time_frame',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryFeeRateMeta = const VerificationMeta(
+    'entryFeeRate',
+  );
+  @override
+  late final GeneratedColumn<double> entryFeeRate = GeneratedColumn<double>(
+    'entry_fee_rate',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryMentalStatesMeta = const VerificationMeta(
+    'entryMentalStates',
+  );
+  @override
+  late final GeneratedColumn<String> entryMentalStates =
+      GeneratedColumn<String>(
+        'entry_mental_states',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _entryScreenshotMeta = const VerificationMeta(
+    'entryScreenshot',
+  );
+  @override
+  late final GeneratedColumn<String> entryScreenshot = GeneratedColumn<String>(
+    'entry_screenshot',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _checklistMeta = const VerificationMeta(
+    'checklist',
+  );
+  @override
+  late final GeneratedColumn<String> checklist = GeneratedColumn<String>(
+    'checklist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stopLossPriceMeta = const VerificationMeta(
+    'stopLossPrice',
+  );
+  @override
+  late final GeneratedColumn<double> stopLossPrice = GeneratedColumn<double>(
+    'stop_loss_price',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _takeProfitPriceMeta = const VerificationMeta(
+    'takeProfitPrice',
+  );
+  @override
+  late final GeneratedColumn<double> takeProfitPrice = GeneratedColumn<double>(
+    'take_profit_price',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualExitPriceMeta = const VerificationMeta(
+    'actualExitPrice',
+  );
+  @override
+  late final GeneratedColumn<double> actualExitPrice = GeneratedColumn<double>(
+    'actual_exit_price',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _marginClosedPercentMeta =
+      const VerificationMeta('marginClosedPercent');
+  @override
+  late final GeneratedColumn<double> marginClosedPercent =
+      GeneratedColumn<double>(
+        'margin_closed_percent',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _exitTypeMeta = const VerificationMeta(
+    'exitType',
+  );
+  @override
+  late final GeneratedColumn<String> exitType = GeneratedColumn<String>(
+    'exit_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exitFeeRateMeta = const VerificationMeta(
+    'exitFeeRate',
+  );
+  @override
+  late final GeneratedColumn<double> exitFeeRate = GeneratedColumn<double>(
+    'exit_fee_rate',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exitDatetimeMeta = const VerificationMeta(
+    'exitDatetime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> exitDatetime = GeneratedColumn<DateTime>(
+    'exit_datetime',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exitMentalStatesMeta = const VerificationMeta(
+    'exitMentalStates',
+  );
+  @override
+  late final GeneratedColumn<String> exitMentalStates = GeneratedColumn<String>(
+    'exit_mental_states',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exitScreenshotMeta = const VerificationMeta(
+    'exitScreenshot',
+  );
+  @override
+  late final GeneratedColumn<String> exitScreenshot = GeneratedColumn<String>(
+    'exit_screenshot',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  @override
+  late final GeneratedColumn<int> rating = GeneratedColumn<int>(
+    'rating',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _memoMeta = const VerificationMeta('memo');
+  @override
+  late final GeneratedColumn<String> memo = GeneratedColumn<String>(
+    'memo',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _trackingsMeta = const VerificationMeta(
+    'trackings',
+  );
+  @override
+  late final GeneratedColumn<String> trackings = GeneratedColumn<String>(
+    'trackings',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _mistakesMeta = const VerificationMeta(
+    'mistakes',
+  );
+  @override
+  late final GeneratedColumn<String> mistakes = GeneratedColumn<String>(
+    'mistakes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _transferAmountMeta = const VerificationMeta(
+    'transferAmount',
+  );
+  @override
+  late final GeneratedColumn<double> transferAmount = GeneratedColumn<double>(
+    'transfer_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _transferScreenshotMeta =
+      const VerificationMeta('transferScreenshot');
+  @override
+  late final GeneratedColumn<String> transferScreenshot =
+      GeneratedColumn<String>(
+        'transfer_screenshot',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
@@ -46,17 +369,6 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     aliasedName,
     false,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _entryPriceMeta = const VerificationMeta(
-    'entryPrice',
-  );
-  @override
-  late final GeneratedColumn<double> entryPrice = GeneratedColumn<double>(
-    'entry_price',
-    aliasedName,
-    false,
-    type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _exitPriceMeta = const VerificationMeta(
@@ -223,10 +535,39 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    tag,
+    datetime,
+    exchanges,
+    entryType,
     symbol,
+    strategies,
+    side,
+    entryPrice,
+    positionMargin,
+    leverage,
+    orderType,
+    timeFrame,
+    entryFeeRate,
+    entryMentalStates,
+    entryScreenshot,
+    checklist,
+    stopLossPrice,
+    takeProfitPrice,
+    actualExitPrice,
+    marginClosedPercent,
+    exitType,
+    exitFeeRate,
+    exitDatetime,
+    exitMentalStates,
+    exitScreenshot,
+    rating,
+    memo,
+    trackings,
+    mistakes,
+    transferAmount,
+    transferScreenshot,
     type,
     status,
-    entryPrice,
     exitPrice,
     quantity,
     stopLoss,
@@ -258,6 +599,32 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('tag')) {
+      context.handle(
+        _tagMeta,
+        tag.isAcceptableOrUnknown(data['tag']!, _tagMeta),
+      );
+    }
+    if (data.containsKey('datetime')) {
+      context.handle(
+        _datetimeMeta,
+        datetime.isAcceptableOrUnknown(data['datetime']!, _datetimeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_datetimeMeta);
+    }
+    if (data.containsKey('exchanges')) {
+      context.handle(
+        _exchangesMeta,
+        exchanges.isAcceptableOrUnknown(data['exchanges']!, _exchangesMeta),
+      );
+    }
+    if (data.containsKey('entry_type')) {
+      context.handle(
+        _entryTypeMeta,
+        entryType.isAcceptableOrUnknown(data['entry_type']!, _entryTypeMeta),
+      );
+    }
     if (data.containsKey('symbol')) {
       context.handle(
         _symbolMeta,
@@ -265,6 +632,206 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
       );
     } else if (isInserting) {
       context.missing(_symbolMeta);
+    }
+    if (data.containsKey('strategies')) {
+      context.handle(
+        _strategiesMeta,
+        strategies.isAcceptableOrUnknown(data['strategies']!, _strategiesMeta),
+      );
+    }
+    if (data.containsKey('side')) {
+      context.handle(
+        _sideMeta,
+        side.isAcceptableOrUnknown(data['side']!, _sideMeta),
+      );
+    }
+    if (data.containsKey('entry_price')) {
+      context.handle(
+        _entryPriceMeta,
+        entryPrice.isAcceptableOrUnknown(data['entry_price']!, _entryPriceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryPriceMeta);
+    }
+    if (data.containsKey('position_margin')) {
+      context.handle(
+        _positionMarginMeta,
+        positionMargin.isAcceptableOrUnknown(
+          data['position_margin']!,
+          _positionMarginMeta,
+        ),
+      );
+    }
+    if (data.containsKey('leverage')) {
+      context.handle(
+        _leverageMeta,
+        leverage.isAcceptableOrUnknown(data['leverage']!, _leverageMeta),
+      );
+    }
+    if (data.containsKey('order_type')) {
+      context.handle(
+        _orderTypeMeta,
+        orderType.isAcceptableOrUnknown(data['order_type']!, _orderTypeMeta),
+      );
+    }
+    if (data.containsKey('time_frame')) {
+      context.handle(
+        _timeFrameMeta,
+        timeFrame.isAcceptableOrUnknown(data['time_frame']!, _timeFrameMeta),
+      );
+    }
+    if (data.containsKey('entry_fee_rate')) {
+      context.handle(
+        _entryFeeRateMeta,
+        entryFeeRate.isAcceptableOrUnknown(
+          data['entry_fee_rate']!,
+          _entryFeeRateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('entry_mental_states')) {
+      context.handle(
+        _entryMentalStatesMeta,
+        entryMentalStates.isAcceptableOrUnknown(
+          data['entry_mental_states']!,
+          _entryMentalStatesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('entry_screenshot')) {
+      context.handle(
+        _entryScreenshotMeta,
+        entryScreenshot.isAcceptableOrUnknown(
+          data['entry_screenshot']!,
+          _entryScreenshotMeta,
+        ),
+      );
+    }
+    if (data.containsKey('checklist')) {
+      context.handle(
+        _checklistMeta,
+        checklist.isAcceptableOrUnknown(data['checklist']!, _checklistMeta),
+      );
+    }
+    if (data.containsKey('stop_loss_price')) {
+      context.handle(
+        _stopLossPriceMeta,
+        stopLossPrice.isAcceptableOrUnknown(
+          data['stop_loss_price']!,
+          _stopLossPriceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('take_profit_price')) {
+      context.handle(
+        _takeProfitPriceMeta,
+        takeProfitPrice.isAcceptableOrUnknown(
+          data['take_profit_price']!,
+          _takeProfitPriceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actual_exit_price')) {
+      context.handle(
+        _actualExitPriceMeta,
+        actualExitPrice.isAcceptableOrUnknown(
+          data['actual_exit_price']!,
+          _actualExitPriceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('margin_closed_percent')) {
+      context.handle(
+        _marginClosedPercentMeta,
+        marginClosedPercent.isAcceptableOrUnknown(
+          data['margin_closed_percent']!,
+          _marginClosedPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exit_type')) {
+      context.handle(
+        _exitTypeMeta,
+        exitType.isAcceptableOrUnknown(data['exit_type']!, _exitTypeMeta),
+      );
+    }
+    if (data.containsKey('exit_fee_rate')) {
+      context.handle(
+        _exitFeeRateMeta,
+        exitFeeRate.isAcceptableOrUnknown(
+          data['exit_fee_rate']!,
+          _exitFeeRateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exit_datetime')) {
+      context.handle(
+        _exitDatetimeMeta,
+        exitDatetime.isAcceptableOrUnknown(
+          data['exit_datetime']!,
+          _exitDatetimeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exit_mental_states')) {
+      context.handle(
+        _exitMentalStatesMeta,
+        exitMentalStates.isAcceptableOrUnknown(
+          data['exit_mental_states']!,
+          _exitMentalStatesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exit_screenshot')) {
+      context.handle(
+        _exitScreenshotMeta,
+        exitScreenshot.isAcceptableOrUnknown(
+          data['exit_screenshot']!,
+          _exitScreenshotMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rating')) {
+      context.handle(
+        _ratingMeta,
+        rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta),
+      );
+    }
+    if (data.containsKey('memo')) {
+      context.handle(
+        _memoMeta,
+        memo.isAcceptableOrUnknown(data['memo']!, _memoMeta),
+      );
+    }
+    if (data.containsKey('trackings')) {
+      context.handle(
+        _trackingsMeta,
+        trackings.isAcceptableOrUnknown(data['trackings']!, _trackingsMeta),
+      );
+    }
+    if (data.containsKey('mistakes')) {
+      context.handle(
+        _mistakesMeta,
+        mistakes.isAcceptableOrUnknown(data['mistakes']!, _mistakesMeta),
+      );
+    }
+    if (data.containsKey('transfer_amount')) {
+      context.handle(
+        _transferAmountMeta,
+        transferAmount.isAcceptableOrUnknown(
+          data['transfer_amount']!,
+          _transferAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('transfer_screenshot')) {
+      context.handle(
+        _transferScreenshotMeta,
+        transferScreenshot.isAcceptableOrUnknown(
+          data['transfer_screenshot']!,
+          _transferScreenshotMeta,
+        ),
+      );
     }
     if (data.containsKey('type')) {
       context.handle(
@@ -281,14 +848,6 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
       );
     } else if (isInserting) {
       context.missing(_statusMeta);
-    }
-    if (data.containsKey('entry_price')) {
-      context.handle(
-        _entryPriceMeta,
-        entryPrice.isAcceptableOrUnknown(data['entry_price']!, _entryPriceMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_entryPriceMeta);
     }
     if (data.containsKey('exit_price')) {
       context.handle(
@@ -411,10 +970,130 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      tag: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag'],
+      ),
+      datetime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}datetime'],
+      )!,
+      exchanges: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exchanges'],
+      ),
+      entryType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_type'],
+      ),
       symbol: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}symbol'],
       )!,
+      strategies: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}strategies'],
+      ),
+      side: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}side'],
+      ),
+      entryPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}entry_price'],
+      )!,
+      positionMargin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}position_margin'],
+      ),
+      leverage: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}leverage'],
+      ),
+      orderType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_type'],
+      ),
+      timeFrame: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_frame'],
+      ),
+      entryFeeRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}entry_fee_rate'],
+      ),
+      entryMentalStates: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_mental_states'],
+      ),
+      entryScreenshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_screenshot'],
+      ),
+      checklist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}checklist'],
+      ),
+      stopLossPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}stop_loss_price'],
+      ),
+      takeProfitPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}take_profit_price'],
+      ),
+      actualExitPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}actual_exit_price'],
+      ),
+      marginClosedPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}margin_closed_percent'],
+      ),
+      exitType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exit_type'],
+      ),
+      exitFeeRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}exit_fee_rate'],
+      ),
+      exitDatetime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}exit_datetime'],
+      ),
+      exitMentalStates: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exit_mental_states'],
+      ),
+      exitScreenshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exit_screenshot'],
+      ),
+      rating: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rating'],
+      ),
+      memo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}memo'],
+      ),
+      trackings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trackings'],
+      ),
+      mistakes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mistakes'],
+      ),
+      transferAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}transfer_amount'],
+      ),
+      transferScreenshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transfer_screenshot'],
+      ),
       type: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}type'],
@@ -422,10 +1101,6 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
-      )!,
-      entryPrice: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
-        data['${effectivePrefix}entry_price'],
       )!,
       exitPrice: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
@@ -498,10 +1173,39 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
 
 class Trade extends DataClass implements Insertable<Trade> {
   final int id;
+  final String? tag;
+  final DateTime datetime;
+  final String? exchanges;
+  final String? entryType;
   final String symbol;
+  final String? strategies;
+  final String? side;
+  final double entryPrice;
+  final double? positionMargin;
+  final double? leverage;
+  final String? orderType;
+  final String? timeFrame;
+  final double? entryFeeRate;
+  final String? entryMentalStates;
+  final String? entryScreenshot;
+  final String? checklist;
+  final double? stopLossPrice;
+  final double? takeProfitPrice;
+  final double? actualExitPrice;
+  final double? marginClosedPercent;
+  final String? exitType;
+  final double? exitFeeRate;
+  final DateTime? exitDatetime;
+  final String? exitMentalStates;
+  final String? exitScreenshot;
+  final int? rating;
+  final String? memo;
+  final String? trackings;
+  final String? mistakes;
+  final double? transferAmount;
+  final String? transferScreenshot;
   final String type;
   final String status;
-  final double entryPrice;
   final double? exitPrice;
   final double quantity;
   final double? stopLoss;
@@ -519,10 +1223,39 @@ class Trade extends DataClass implements Insertable<Trade> {
   final int? tradeDuration;
   const Trade({
     required this.id,
+    this.tag,
+    required this.datetime,
+    this.exchanges,
+    this.entryType,
     required this.symbol,
+    this.strategies,
+    this.side,
+    required this.entryPrice,
+    this.positionMargin,
+    this.leverage,
+    this.orderType,
+    this.timeFrame,
+    this.entryFeeRate,
+    this.entryMentalStates,
+    this.entryScreenshot,
+    this.checklist,
+    this.stopLossPrice,
+    this.takeProfitPrice,
+    this.actualExitPrice,
+    this.marginClosedPercent,
+    this.exitType,
+    this.exitFeeRate,
+    this.exitDatetime,
+    this.exitMentalStates,
+    this.exitScreenshot,
+    this.rating,
+    this.memo,
+    this.trackings,
+    this.mistakes,
+    this.transferAmount,
+    this.transferScreenshot,
     required this.type,
     required this.status,
-    required this.entryPrice,
     this.exitPrice,
     required this.quantity,
     this.stopLoss,
@@ -543,10 +1276,95 @@ class Trade extends DataClass implements Insertable<Trade> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    if (!nullToAbsent || tag != null) {
+      map['tag'] = Variable<String>(tag);
+    }
+    map['datetime'] = Variable<DateTime>(datetime);
+    if (!nullToAbsent || exchanges != null) {
+      map['exchanges'] = Variable<String>(exchanges);
+    }
+    if (!nullToAbsent || entryType != null) {
+      map['entry_type'] = Variable<String>(entryType);
+    }
     map['symbol'] = Variable<String>(symbol);
+    if (!nullToAbsent || strategies != null) {
+      map['strategies'] = Variable<String>(strategies);
+    }
+    if (!nullToAbsent || side != null) {
+      map['side'] = Variable<String>(side);
+    }
+    map['entry_price'] = Variable<double>(entryPrice);
+    if (!nullToAbsent || positionMargin != null) {
+      map['position_margin'] = Variable<double>(positionMargin);
+    }
+    if (!nullToAbsent || leverage != null) {
+      map['leverage'] = Variable<double>(leverage);
+    }
+    if (!nullToAbsent || orderType != null) {
+      map['order_type'] = Variable<String>(orderType);
+    }
+    if (!nullToAbsent || timeFrame != null) {
+      map['time_frame'] = Variable<String>(timeFrame);
+    }
+    if (!nullToAbsent || entryFeeRate != null) {
+      map['entry_fee_rate'] = Variable<double>(entryFeeRate);
+    }
+    if (!nullToAbsent || entryMentalStates != null) {
+      map['entry_mental_states'] = Variable<String>(entryMentalStates);
+    }
+    if (!nullToAbsent || entryScreenshot != null) {
+      map['entry_screenshot'] = Variable<String>(entryScreenshot);
+    }
+    if (!nullToAbsent || checklist != null) {
+      map['checklist'] = Variable<String>(checklist);
+    }
+    if (!nullToAbsent || stopLossPrice != null) {
+      map['stop_loss_price'] = Variable<double>(stopLossPrice);
+    }
+    if (!nullToAbsent || takeProfitPrice != null) {
+      map['take_profit_price'] = Variable<double>(takeProfitPrice);
+    }
+    if (!nullToAbsent || actualExitPrice != null) {
+      map['actual_exit_price'] = Variable<double>(actualExitPrice);
+    }
+    if (!nullToAbsent || marginClosedPercent != null) {
+      map['margin_closed_percent'] = Variable<double>(marginClosedPercent);
+    }
+    if (!nullToAbsent || exitType != null) {
+      map['exit_type'] = Variable<String>(exitType);
+    }
+    if (!nullToAbsent || exitFeeRate != null) {
+      map['exit_fee_rate'] = Variable<double>(exitFeeRate);
+    }
+    if (!nullToAbsent || exitDatetime != null) {
+      map['exit_datetime'] = Variable<DateTime>(exitDatetime);
+    }
+    if (!nullToAbsent || exitMentalStates != null) {
+      map['exit_mental_states'] = Variable<String>(exitMentalStates);
+    }
+    if (!nullToAbsent || exitScreenshot != null) {
+      map['exit_screenshot'] = Variable<String>(exitScreenshot);
+    }
+    if (!nullToAbsent || rating != null) {
+      map['rating'] = Variable<int>(rating);
+    }
+    if (!nullToAbsent || memo != null) {
+      map['memo'] = Variable<String>(memo);
+    }
+    if (!nullToAbsent || trackings != null) {
+      map['trackings'] = Variable<String>(trackings);
+    }
+    if (!nullToAbsent || mistakes != null) {
+      map['mistakes'] = Variable<String>(mistakes);
+    }
+    if (!nullToAbsent || transferAmount != null) {
+      map['transfer_amount'] = Variable<double>(transferAmount);
+    }
+    if (!nullToAbsent || transferScreenshot != null) {
+      map['transfer_screenshot'] = Variable<String>(transferScreenshot);
+    }
     map['type'] = Variable<String>(type);
     map['status'] = Variable<String>(status);
-    map['entry_price'] = Variable<double>(entryPrice);
     if (!nullToAbsent || exitPrice != null) {
       map['exit_price'] = Variable<double>(exitPrice);
     }
@@ -592,10 +1410,89 @@ class Trade extends DataClass implements Insertable<Trade> {
   TradesCompanion toCompanion(bool nullToAbsent) {
     return TradesCompanion(
       id: Value(id),
+      tag: tag == null && nullToAbsent ? const Value.absent() : Value(tag),
+      datetime: Value(datetime),
+      exchanges: exchanges == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exchanges),
+      entryType: entryType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryType),
       symbol: Value(symbol),
+      strategies: strategies == null && nullToAbsent
+          ? const Value.absent()
+          : Value(strategies),
+      side: side == null && nullToAbsent ? const Value.absent() : Value(side),
+      entryPrice: Value(entryPrice),
+      positionMargin: positionMargin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(positionMargin),
+      leverage: leverage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leverage),
+      orderType: orderType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(orderType),
+      timeFrame: timeFrame == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timeFrame),
+      entryFeeRate: entryFeeRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryFeeRate),
+      entryMentalStates: entryMentalStates == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryMentalStates),
+      entryScreenshot: entryScreenshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryScreenshot),
+      checklist: checklist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(checklist),
+      stopLossPrice: stopLossPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stopLossPrice),
+      takeProfitPrice: takeProfitPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(takeProfitPrice),
+      actualExitPrice: actualExitPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualExitPrice),
+      marginClosedPercent: marginClosedPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(marginClosedPercent),
+      exitType: exitType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitType),
+      exitFeeRate: exitFeeRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitFeeRate),
+      exitDatetime: exitDatetime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitDatetime),
+      exitMentalStates: exitMentalStates == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitMentalStates),
+      exitScreenshot: exitScreenshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitScreenshot),
+      rating: rating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rating),
+      memo: memo == null && nullToAbsent ? const Value.absent() : Value(memo),
+      trackings: trackings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackings),
+      mistakes: mistakes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mistakes),
+      transferAmount: transferAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transferAmount),
+      transferScreenshot: transferScreenshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transferScreenshot),
       type: Value(type),
       status: Value(status),
-      entryPrice: Value(entryPrice),
       exitPrice: exitPrice == null && nullToAbsent
           ? const Value.absent()
           : Value(exitPrice),
@@ -643,10 +1540,45 @@ class Trade extends DataClass implements Insertable<Trade> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Trade(
       id: serializer.fromJson<int>(json['id']),
+      tag: serializer.fromJson<String?>(json['tag']),
+      datetime: serializer.fromJson<DateTime>(json['datetime']),
+      exchanges: serializer.fromJson<String?>(json['exchanges']),
+      entryType: serializer.fromJson<String?>(json['entryType']),
       symbol: serializer.fromJson<String>(json['symbol']),
+      strategies: serializer.fromJson<String?>(json['strategies']),
+      side: serializer.fromJson<String?>(json['side']),
+      entryPrice: serializer.fromJson<double>(json['entryPrice']),
+      positionMargin: serializer.fromJson<double?>(json['positionMargin']),
+      leverage: serializer.fromJson<double?>(json['leverage']),
+      orderType: serializer.fromJson<String?>(json['orderType']),
+      timeFrame: serializer.fromJson<String?>(json['timeFrame']),
+      entryFeeRate: serializer.fromJson<double?>(json['entryFeeRate']),
+      entryMentalStates: serializer.fromJson<String?>(
+        json['entryMentalStates'],
+      ),
+      entryScreenshot: serializer.fromJson<String?>(json['entryScreenshot']),
+      checklist: serializer.fromJson<String?>(json['checklist']),
+      stopLossPrice: serializer.fromJson<double?>(json['stopLossPrice']),
+      takeProfitPrice: serializer.fromJson<double?>(json['takeProfitPrice']),
+      actualExitPrice: serializer.fromJson<double?>(json['actualExitPrice']),
+      marginClosedPercent: serializer.fromJson<double?>(
+        json['marginClosedPercent'],
+      ),
+      exitType: serializer.fromJson<String?>(json['exitType']),
+      exitFeeRate: serializer.fromJson<double?>(json['exitFeeRate']),
+      exitDatetime: serializer.fromJson<DateTime?>(json['exitDatetime']),
+      exitMentalStates: serializer.fromJson<String?>(json['exitMentalStates']),
+      exitScreenshot: serializer.fromJson<String?>(json['exitScreenshot']),
+      rating: serializer.fromJson<int?>(json['rating']),
+      memo: serializer.fromJson<String?>(json['memo']),
+      trackings: serializer.fromJson<String?>(json['trackings']),
+      mistakes: serializer.fromJson<String?>(json['mistakes']),
+      transferAmount: serializer.fromJson<double?>(json['transferAmount']),
+      transferScreenshot: serializer.fromJson<String?>(
+        json['transferScreenshot'],
+      ),
       type: serializer.fromJson<String>(json['type']),
       status: serializer.fromJson<String>(json['status']),
-      entryPrice: serializer.fromJson<double>(json['entryPrice']),
       exitPrice: serializer.fromJson<double?>(json['exitPrice']),
       quantity: serializer.fromJson<double>(json['quantity']),
       stopLoss: serializer.fromJson<double?>(json['stopLoss']),
@@ -669,10 +1601,39 @@ class Trade extends DataClass implements Insertable<Trade> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'tag': serializer.toJson<String?>(tag),
+      'datetime': serializer.toJson<DateTime>(datetime),
+      'exchanges': serializer.toJson<String?>(exchanges),
+      'entryType': serializer.toJson<String?>(entryType),
       'symbol': serializer.toJson<String>(symbol),
+      'strategies': serializer.toJson<String?>(strategies),
+      'side': serializer.toJson<String?>(side),
+      'entryPrice': serializer.toJson<double>(entryPrice),
+      'positionMargin': serializer.toJson<double?>(positionMargin),
+      'leverage': serializer.toJson<double?>(leverage),
+      'orderType': serializer.toJson<String?>(orderType),
+      'timeFrame': serializer.toJson<String?>(timeFrame),
+      'entryFeeRate': serializer.toJson<double?>(entryFeeRate),
+      'entryMentalStates': serializer.toJson<String?>(entryMentalStates),
+      'entryScreenshot': serializer.toJson<String?>(entryScreenshot),
+      'checklist': serializer.toJson<String?>(checklist),
+      'stopLossPrice': serializer.toJson<double?>(stopLossPrice),
+      'takeProfitPrice': serializer.toJson<double?>(takeProfitPrice),
+      'actualExitPrice': serializer.toJson<double?>(actualExitPrice),
+      'marginClosedPercent': serializer.toJson<double?>(marginClosedPercent),
+      'exitType': serializer.toJson<String?>(exitType),
+      'exitFeeRate': serializer.toJson<double?>(exitFeeRate),
+      'exitDatetime': serializer.toJson<DateTime?>(exitDatetime),
+      'exitMentalStates': serializer.toJson<String?>(exitMentalStates),
+      'exitScreenshot': serializer.toJson<String?>(exitScreenshot),
+      'rating': serializer.toJson<int?>(rating),
+      'memo': serializer.toJson<String?>(memo),
+      'trackings': serializer.toJson<String?>(trackings),
+      'mistakes': serializer.toJson<String?>(mistakes),
+      'transferAmount': serializer.toJson<double?>(transferAmount),
+      'transferScreenshot': serializer.toJson<String?>(transferScreenshot),
       'type': serializer.toJson<String>(type),
       'status': serializer.toJson<String>(status),
-      'entryPrice': serializer.toJson<double>(entryPrice),
       'exitPrice': serializer.toJson<double?>(exitPrice),
       'quantity': serializer.toJson<double>(quantity),
       'stopLoss': serializer.toJson<double?>(stopLoss),
@@ -693,10 +1654,39 @@ class Trade extends DataClass implements Insertable<Trade> {
 
   Trade copyWith({
     int? id,
+    Value<String?> tag = const Value.absent(),
+    DateTime? datetime,
+    Value<String?> exchanges = const Value.absent(),
+    Value<String?> entryType = const Value.absent(),
     String? symbol,
+    Value<String?> strategies = const Value.absent(),
+    Value<String?> side = const Value.absent(),
+    double? entryPrice,
+    Value<double?> positionMargin = const Value.absent(),
+    Value<double?> leverage = const Value.absent(),
+    Value<String?> orderType = const Value.absent(),
+    Value<String?> timeFrame = const Value.absent(),
+    Value<double?> entryFeeRate = const Value.absent(),
+    Value<String?> entryMentalStates = const Value.absent(),
+    Value<String?> entryScreenshot = const Value.absent(),
+    Value<String?> checklist = const Value.absent(),
+    Value<double?> stopLossPrice = const Value.absent(),
+    Value<double?> takeProfitPrice = const Value.absent(),
+    Value<double?> actualExitPrice = const Value.absent(),
+    Value<double?> marginClosedPercent = const Value.absent(),
+    Value<String?> exitType = const Value.absent(),
+    Value<double?> exitFeeRate = const Value.absent(),
+    Value<DateTime?> exitDatetime = const Value.absent(),
+    Value<String?> exitMentalStates = const Value.absent(),
+    Value<String?> exitScreenshot = const Value.absent(),
+    Value<int?> rating = const Value.absent(),
+    Value<String?> memo = const Value.absent(),
+    Value<String?> trackings = const Value.absent(),
+    Value<String?> mistakes = const Value.absent(),
+    Value<double?> transferAmount = const Value.absent(),
+    Value<String?> transferScreenshot = const Value.absent(),
     String? type,
     String? status,
-    double? entryPrice,
     Value<double?> exitPrice = const Value.absent(),
     double? quantity,
     Value<double?> stopLoss = const Value.absent(),
@@ -714,10 +1704,61 @@ class Trade extends DataClass implements Insertable<Trade> {
     Value<int?> tradeDuration = const Value.absent(),
   }) => Trade(
     id: id ?? this.id,
+    tag: tag.present ? tag.value : this.tag,
+    datetime: datetime ?? this.datetime,
+    exchanges: exchanges.present ? exchanges.value : this.exchanges,
+    entryType: entryType.present ? entryType.value : this.entryType,
     symbol: symbol ?? this.symbol,
+    strategies: strategies.present ? strategies.value : this.strategies,
+    side: side.present ? side.value : this.side,
+    entryPrice: entryPrice ?? this.entryPrice,
+    positionMargin: positionMargin.present
+        ? positionMargin.value
+        : this.positionMargin,
+    leverage: leverage.present ? leverage.value : this.leverage,
+    orderType: orderType.present ? orderType.value : this.orderType,
+    timeFrame: timeFrame.present ? timeFrame.value : this.timeFrame,
+    entryFeeRate: entryFeeRate.present ? entryFeeRate.value : this.entryFeeRate,
+    entryMentalStates: entryMentalStates.present
+        ? entryMentalStates.value
+        : this.entryMentalStates,
+    entryScreenshot: entryScreenshot.present
+        ? entryScreenshot.value
+        : this.entryScreenshot,
+    checklist: checklist.present ? checklist.value : this.checklist,
+    stopLossPrice: stopLossPrice.present
+        ? stopLossPrice.value
+        : this.stopLossPrice,
+    takeProfitPrice: takeProfitPrice.present
+        ? takeProfitPrice.value
+        : this.takeProfitPrice,
+    actualExitPrice: actualExitPrice.present
+        ? actualExitPrice.value
+        : this.actualExitPrice,
+    marginClosedPercent: marginClosedPercent.present
+        ? marginClosedPercent.value
+        : this.marginClosedPercent,
+    exitType: exitType.present ? exitType.value : this.exitType,
+    exitFeeRate: exitFeeRate.present ? exitFeeRate.value : this.exitFeeRate,
+    exitDatetime: exitDatetime.present ? exitDatetime.value : this.exitDatetime,
+    exitMentalStates: exitMentalStates.present
+        ? exitMentalStates.value
+        : this.exitMentalStates,
+    exitScreenshot: exitScreenshot.present
+        ? exitScreenshot.value
+        : this.exitScreenshot,
+    rating: rating.present ? rating.value : this.rating,
+    memo: memo.present ? memo.value : this.memo,
+    trackings: trackings.present ? trackings.value : this.trackings,
+    mistakes: mistakes.present ? mistakes.value : this.mistakes,
+    transferAmount: transferAmount.present
+        ? transferAmount.value
+        : this.transferAmount,
+    transferScreenshot: transferScreenshot.present
+        ? transferScreenshot.value
+        : this.transferScreenshot,
     type: type ?? this.type,
     status: status ?? this.status,
-    entryPrice: entryPrice ?? this.entryPrice,
     exitPrice: exitPrice.present ? exitPrice.value : this.exitPrice,
     quantity: quantity ?? this.quantity,
     stopLoss: stopLoss.present ? stopLoss.value : this.stopLoss,
@@ -743,12 +1784,71 @@ class Trade extends DataClass implements Insertable<Trade> {
   Trade copyWithCompanion(TradesCompanion data) {
     return Trade(
       id: data.id.present ? data.id.value : this.id,
+      tag: data.tag.present ? data.tag.value : this.tag,
+      datetime: data.datetime.present ? data.datetime.value : this.datetime,
+      exchanges: data.exchanges.present ? data.exchanges.value : this.exchanges,
+      entryType: data.entryType.present ? data.entryType.value : this.entryType,
       symbol: data.symbol.present ? data.symbol.value : this.symbol,
-      type: data.type.present ? data.type.value : this.type,
-      status: data.status.present ? data.status.value : this.status,
+      strategies: data.strategies.present
+          ? data.strategies.value
+          : this.strategies,
+      side: data.side.present ? data.side.value : this.side,
       entryPrice: data.entryPrice.present
           ? data.entryPrice.value
           : this.entryPrice,
+      positionMargin: data.positionMargin.present
+          ? data.positionMargin.value
+          : this.positionMargin,
+      leverage: data.leverage.present ? data.leverage.value : this.leverage,
+      orderType: data.orderType.present ? data.orderType.value : this.orderType,
+      timeFrame: data.timeFrame.present ? data.timeFrame.value : this.timeFrame,
+      entryFeeRate: data.entryFeeRate.present
+          ? data.entryFeeRate.value
+          : this.entryFeeRate,
+      entryMentalStates: data.entryMentalStates.present
+          ? data.entryMentalStates.value
+          : this.entryMentalStates,
+      entryScreenshot: data.entryScreenshot.present
+          ? data.entryScreenshot.value
+          : this.entryScreenshot,
+      checklist: data.checklist.present ? data.checklist.value : this.checklist,
+      stopLossPrice: data.stopLossPrice.present
+          ? data.stopLossPrice.value
+          : this.stopLossPrice,
+      takeProfitPrice: data.takeProfitPrice.present
+          ? data.takeProfitPrice.value
+          : this.takeProfitPrice,
+      actualExitPrice: data.actualExitPrice.present
+          ? data.actualExitPrice.value
+          : this.actualExitPrice,
+      marginClosedPercent: data.marginClosedPercent.present
+          ? data.marginClosedPercent.value
+          : this.marginClosedPercent,
+      exitType: data.exitType.present ? data.exitType.value : this.exitType,
+      exitFeeRate: data.exitFeeRate.present
+          ? data.exitFeeRate.value
+          : this.exitFeeRate,
+      exitDatetime: data.exitDatetime.present
+          ? data.exitDatetime.value
+          : this.exitDatetime,
+      exitMentalStates: data.exitMentalStates.present
+          ? data.exitMentalStates.value
+          : this.exitMentalStates,
+      exitScreenshot: data.exitScreenshot.present
+          ? data.exitScreenshot.value
+          : this.exitScreenshot,
+      rating: data.rating.present ? data.rating.value : this.rating,
+      memo: data.memo.present ? data.memo.value : this.memo,
+      trackings: data.trackings.present ? data.trackings.value : this.trackings,
+      mistakes: data.mistakes.present ? data.mistakes.value : this.mistakes,
+      transferAmount: data.transferAmount.present
+          ? data.transferAmount.value
+          : this.transferAmount,
+      transferScreenshot: data.transferScreenshot.present
+          ? data.transferScreenshot.value
+          : this.transferScreenshot,
+      type: data.type.present ? data.type.value : this.type,
+      status: data.status.present ? data.status.value : this.status,
       exitPrice: data.exitPrice.present ? data.exitPrice.value : this.exitPrice,
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       stopLoss: data.stopLoss.present ? data.stopLoss.value : this.stopLoss,
@@ -785,10 +1885,39 @@ class Trade extends DataClass implements Insertable<Trade> {
   String toString() {
     return (StringBuffer('Trade(')
           ..write('id: $id, ')
+          ..write('tag: $tag, ')
+          ..write('datetime: $datetime, ')
+          ..write('exchanges: $exchanges, ')
+          ..write('entryType: $entryType, ')
           ..write('symbol: $symbol, ')
+          ..write('strategies: $strategies, ')
+          ..write('side: $side, ')
+          ..write('entryPrice: $entryPrice, ')
+          ..write('positionMargin: $positionMargin, ')
+          ..write('leverage: $leverage, ')
+          ..write('orderType: $orderType, ')
+          ..write('timeFrame: $timeFrame, ')
+          ..write('entryFeeRate: $entryFeeRate, ')
+          ..write('entryMentalStates: $entryMentalStates, ')
+          ..write('entryScreenshot: $entryScreenshot, ')
+          ..write('checklist: $checklist, ')
+          ..write('stopLossPrice: $stopLossPrice, ')
+          ..write('takeProfitPrice: $takeProfitPrice, ')
+          ..write('actualExitPrice: $actualExitPrice, ')
+          ..write('marginClosedPercent: $marginClosedPercent, ')
+          ..write('exitType: $exitType, ')
+          ..write('exitFeeRate: $exitFeeRate, ')
+          ..write('exitDatetime: $exitDatetime, ')
+          ..write('exitMentalStates: $exitMentalStates, ')
+          ..write('exitScreenshot: $exitScreenshot, ')
+          ..write('rating: $rating, ')
+          ..write('memo: $memo, ')
+          ..write('trackings: $trackings, ')
+          ..write('mistakes: $mistakes, ')
+          ..write('transferAmount: $transferAmount, ')
+          ..write('transferScreenshot: $transferScreenshot, ')
           ..write('type: $type, ')
           ..write('status: $status, ')
-          ..write('entryPrice: $entryPrice, ')
           ..write('exitPrice: $exitPrice, ')
           ..write('quantity: $quantity, ')
           ..write('stopLoss: $stopLoss, ')
@@ -809,12 +1938,41 @@ class Trade extends DataClass implements Insertable<Trade> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
+    tag,
+    datetime,
+    exchanges,
+    entryType,
     symbol,
+    strategies,
+    side,
+    entryPrice,
+    positionMargin,
+    leverage,
+    orderType,
+    timeFrame,
+    entryFeeRate,
+    entryMentalStates,
+    entryScreenshot,
+    checklist,
+    stopLossPrice,
+    takeProfitPrice,
+    actualExitPrice,
+    marginClosedPercent,
+    exitType,
+    exitFeeRate,
+    exitDatetime,
+    exitMentalStates,
+    exitScreenshot,
+    rating,
+    memo,
+    trackings,
+    mistakes,
+    transferAmount,
+    transferScreenshot,
     type,
     status,
-    entryPrice,
     exitPrice,
     quantity,
     stopLoss,
@@ -830,16 +1988,45 @@ class Trade extends DataClass implements Insertable<Trade> {
     riskAmount,
     achievedR,
     tradeDuration,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Trade &&
           other.id == this.id &&
+          other.tag == this.tag &&
+          other.datetime == this.datetime &&
+          other.exchanges == this.exchanges &&
+          other.entryType == this.entryType &&
           other.symbol == this.symbol &&
+          other.strategies == this.strategies &&
+          other.side == this.side &&
+          other.entryPrice == this.entryPrice &&
+          other.positionMargin == this.positionMargin &&
+          other.leverage == this.leverage &&
+          other.orderType == this.orderType &&
+          other.timeFrame == this.timeFrame &&
+          other.entryFeeRate == this.entryFeeRate &&
+          other.entryMentalStates == this.entryMentalStates &&
+          other.entryScreenshot == this.entryScreenshot &&
+          other.checklist == this.checklist &&
+          other.stopLossPrice == this.stopLossPrice &&
+          other.takeProfitPrice == this.takeProfitPrice &&
+          other.actualExitPrice == this.actualExitPrice &&
+          other.marginClosedPercent == this.marginClosedPercent &&
+          other.exitType == this.exitType &&
+          other.exitFeeRate == this.exitFeeRate &&
+          other.exitDatetime == this.exitDatetime &&
+          other.exitMentalStates == this.exitMentalStates &&
+          other.exitScreenshot == this.exitScreenshot &&
+          other.rating == this.rating &&
+          other.memo == this.memo &&
+          other.trackings == this.trackings &&
+          other.mistakes == this.mistakes &&
+          other.transferAmount == this.transferAmount &&
+          other.transferScreenshot == this.transferScreenshot &&
           other.type == this.type &&
           other.status == this.status &&
-          other.entryPrice == this.entryPrice &&
           other.exitPrice == this.exitPrice &&
           other.quantity == this.quantity &&
           other.stopLoss == this.stopLoss &&
@@ -859,10 +2046,39 @@ class Trade extends DataClass implements Insertable<Trade> {
 
 class TradesCompanion extends UpdateCompanion<Trade> {
   final Value<int> id;
+  final Value<String?> tag;
+  final Value<DateTime> datetime;
+  final Value<String?> exchanges;
+  final Value<String?> entryType;
   final Value<String> symbol;
+  final Value<String?> strategies;
+  final Value<String?> side;
+  final Value<double> entryPrice;
+  final Value<double?> positionMargin;
+  final Value<double?> leverage;
+  final Value<String?> orderType;
+  final Value<String?> timeFrame;
+  final Value<double?> entryFeeRate;
+  final Value<String?> entryMentalStates;
+  final Value<String?> entryScreenshot;
+  final Value<String?> checklist;
+  final Value<double?> stopLossPrice;
+  final Value<double?> takeProfitPrice;
+  final Value<double?> actualExitPrice;
+  final Value<double?> marginClosedPercent;
+  final Value<String?> exitType;
+  final Value<double?> exitFeeRate;
+  final Value<DateTime?> exitDatetime;
+  final Value<String?> exitMentalStates;
+  final Value<String?> exitScreenshot;
+  final Value<int?> rating;
+  final Value<String?> memo;
+  final Value<String?> trackings;
+  final Value<String?> mistakes;
+  final Value<double?> transferAmount;
+  final Value<String?> transferScreenshot;
   final Value<String> type;
   final Value<String> status;
-  final Value<double> entryPrice;
   final Value<double?> exitPrice;
   final Value<double> quantity;
   final Value<double?> stopLoss;
@@ -880,10 +2096,39 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   final Value<int?> tradeDuration;
   const TradesCompanion({
     this.id = const Value.absent(),
+    this.tag = const Value.absent(),
+    this.datetime = const Value.absent(),
+    this.exchanges = const Value.absent(),
+    this.entryType = const Value.absent(),
     this.symbol = const Value.absent(),
+    this.strategies = const Value.absent(),
+    this.side = const Value.absent(),
+    this.entryPrice = const Value.absent(),
+    this.positionMargin = const Value.absent(),
+    this.leverage = const Value.absent(),
+    this.orderType = const Value.absent(),
+    this.timeFrame = const Value.absent(),
+    this.entryFeeRate = const Value.absent(),
+    this.entryMentalStates = const Value.absent(),
+    this.entryScreenshot = const Value.absent(),
+    this.checklist = const Value.absent(),
+    this.stopLossPrice = const Value.absent(),
+    this.takeProfitPrice = const Value.absent(),
+    this.actualExitPrice = const Value.absent(),
+    this.marginClosedPercent = const Value.absent(),
+    this.exitType = const Value.absent(),
+    this.exitFeeRate = const Value.absent(),
+    this.exitDatetime = const Value.absent(),
+    this.exitMentalStates = const Value.absent(),
+    this.exitScreenshot = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.memo = const Value.absent(),
+    this.trackings = const Value.absent(),
+    this.mistakes = const Value.absent(),
+    this.transferAmount = const Value.absent(),
+    this.transferScreenshot = const Value.absent(),
     this.type = const Value.absent(),
     this.status = const Value.absent(),
-    this.entryPrice = const Value.absent(),
     this.exitPrice = const Value.absent(),
     this.quantity = const Value.absent(),
     this.stopLoss = const Value.absent(),
@@ -902,10 +2147,39 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   });
   TradesCompanion.insert({
     this.id = const Value.absent(),
+    this.tag = const Value.absent(),
+    required DateTime datetime,
+    this.exchanges = const Value.absent(),
+    this.entryType = const Value.absent(),
     required String symbol,
+    this.strategies = const Value.absent(),
+    this.side = const Value.absent(),
+    required double entryPrice,
+    this.positionMargin = const Value.absent(),
+    this.leverage = const Value.absent(),
+    this.orderType = const Value.absent(),
+    this.timeFrame = const Value.absent(),
+    this.entryFeeRate = const Value.absent(),
+    this.entryMentalStates = const Value.absent(),
+    this.entryScreenshot = const Value.absent(),
+    this.checklist = const Value.absent(),
+    this.stopLossPrice = const Value.absent(),
+    this.takeProfitPrice = const Value.absent(),
+    this.actualExitPrice = const Value.absent(),
+    this.marginClosedPercent = const Value.absent(),
+    this.exitType = const Value.absent(),
+    this.exitFeeRate = const Value.absent(),
+    this.exitDatetime = const Value.absent(),
+    this.exitMentalStates = const Value.absent(),
+    this.exitScreenshot = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.memo = const Value.absent(),
+    this.trackings = const Value.absent(),
+    this.mistakes = const Value.absent(),
+    this.transferAmount = const Value.absent(),
+    this.transferScreenshot = const Value.absent(),
     required String type,
     required String status,
-    required double entryPrice,
     this.exitPrice = const Value.absent(),
     required double quantity,
     this.stopLoss = const Value.absent(),
@@ -921,19 +2195,49 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     this.riskAmount = const Value.absent(),
     this.achievedR = const Value.absent(),
     this.tradeDuration = const Value.absent(),
-  }) : symbol = Value(symbol),
+  }) : datetime = Value(datetime),
+       symbol = Value(symbol),
+       entryPrice = Value(entryPrice),
        type = Value(type),
        status = Value(status),
-       entryPrice = Value(entryPrice),
        quantity = Value(quantity),
        entryDate = Value(entryDate),
        accountBalance = Value(accountBalance);
   static Insertable<Trade> custom({
     Expression<int>? id,
+    Expression<String>? tag,
+    Expression<DateTime>? datetime,
+    Expression<String>? exchanges,
+    Expression<String>? entryType,
     Expression<String>? symbol,
+    Expression<String>? strategies,
+    Expression<String>? side,
+    Expression<double>? entryPrice,
+    Expression<double>? positionMargin,
+    Expression<double>? leverage,
+    Expression<String>? orderType,
+    Expression<String>? timeFrame,
+    Expression<double>? entryFeeRate,
+    Expression<String>? entryMentalStates,
+    Expression<String>? entryScreenshot,
+    Expression<String>? checklist,
+    Expression<double>? stopLossPrice,
+    Expression<double>? takeProfitPrice,
+    Expression<double>? actualExitPrice,
+    Expression<double>? marginClosedPercent,
+    Expression<String>? exitType,
+    Expression<double>? exitFeeRate,
+    Expression<DateTime>? exitDatetime,
+    Expression<String>? exitMentalStates,
+    Expression<String>? exitScreenshot,
+    Expression<int>? rating,
+    Expression<String>? memo,
+    Expression<String>? trackings,
+    Expression<String>? mistakes,
+    Expression<double>? transferAmount,
+    Expression<String>? transferScreenshot,
     Expression<String>? type,
     Expression<String>? status,
-    Expression<double>? entryPrice,
     Expression<double>? exitPrice,
     Expression<double>? quantity,
     Expression<double>? stopLoss,
@@ -952,10 +2256,40 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (tag != null) 'tag': tag,
+      if (datetime != null) 'datetime': datetime,
+      if (exchanges != null) 'exchanges': exchanges,
+      if (entryType != null) 'entry_type': entryType,
       if (symbol != null) 'symbol': symbol,
+      if (strategies != null) 'strategies': strategies,
+      if (side != null) 'side': side,
+      if (entryPrice != null) 'entry_price': entryPrice,
+      if (positionMargin != null) 'position_margin': positionMargin,
+      if (leverage != null) 'leverage': leverage,
+      if (orderType != null) 'order_type': orderType,
+      if (timeFrame != null) 'time_frame': timeFrame,
+      if (entryFeeRate != null) 'entry_fee_rate': entryFeeRate,
+      if (entryMentalStates != null) 'entry_mental_states': entryMentalStates,
+      if (entryScreenshot != null) 'entry_screenshot': entryScreenshot,
+      if (checklist != null) 'checklist': checklist,
+      if (stopLossPrice != null) 'stop_loss_price': stopLossPrice,
+      if (takeProfitPrice != null) 'take_profit_price': takeProfitPrice,
+      if (actualExitPrice != null) 'actual_exit_price': actualExitPrice,
+      if (marginClosedPercent != null)
+        'margin_closed_percent': marginClosedPercent,
+      if (exitType != null) 'exit_type': exitType,
+      if (exitFeeRate != null) 'exit_fee_rate': exitFeeRate,
+      if (exitDatetime != null) 'exit_datetime': exitDatetime,
+      if (exitMentalStates != null) 'exit_mental_states': exitMentalStates,
+      if (exitScreenshot != null) 'exit_screenshot': exitScreenshot,
+      if (rating != null) 'rating': rating,
+      if (memo != null) 'memo': memo,
+      if (trackings != null) 'trackings': trackings,
+      if (mistakes != null) 'mistakes': mistakes,
+      if (transferAmount != null) 'transfer_amount': transferAmount,
+      if (transferScreenshot != null) 'transfer_screenshot': transferScreenshot,
       if (type != null) 'type': type,
       if (status != null) 'status': status,
-      if (entryPrice != null) 'entry_price': entryPrice,
       if (exitPrice != null) 'exit_price': exitPrice,
       if (quantity != null) 'quantity': quantity,
       if (stopLoss != null) 'stop_loss': stopLoss,
@@ -976,10 +2310,39 @@ class TradesCompanion extends UpdateCompanion<Trade> {
 
   TradesCompanion copyWith({
     Value<int>? id,
+    Value<String?>? tag,
+    Value<DateTime>? datetime,
+    Value<String?>? exchanges,
+    Value<String?>? entryType,
     Value<String>? symbol,
+    Value<String?>? strategies,
+    Value<String?>? side,
+    Value<double>? entryPrice,
+    Value<double?>? positionMargin,
+    Value<double?>? leverage,
+    Value<String?>? orderType,
+    Value<String?>? timeFrame,
+    Value<double?>? entryFeeRate,
+    Value<String?>? entryMentalStates,
+    Value<String?>? entryScreenshot,
+    Value<String?>? checklist,
+    Value<double?>? stopLossPrice,
+    Value<double?>? takeProfitPrice,
+    Value<double?>? actualExitPrice,
+    Value<double?>? marginClosedPercent,
+    Value<String?>? exitType,
+    Value<double?>? exitFeeRate,
+    Value<DateTime?>? exitDatetime,
+    Value<String?>? exitMentalStates,
+    Value<String?>? exitScreenshot,
+    Value<int?>? rating,
+    Value<String?>? memo,
+    Value<String?>? trackings,
+    Value<String?>? mistakes,
+    Value<double?>? transferAmount,
+    Value<String?>? transferScreenshot,
     Value<String>? type,
     Value<String>? status,
-    Value<double>? entryPrice,
     Value<double?>? exitPrice,
     Value<double>? quantity,
     Value<double?>? stopLoss,
@@ -998,10 +2361,39 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   }) {
     return TradesCompanion(
       id: id ?? this.id,
+      tag: tag ?? this.tag,
+      datetime: datetime ?? this.datetime,
+      exchanges: exchanges ?? this.exchanges,
+      entryType: entryType ?? this.entryType,
       symbol: symbol ?? this.symbol,
+      strategies: strategies ?? this.strategies,
+      side: side ?? this.side,
+      entryPrice: entryPrice ?? this.entryPrice,
+      positionMargin: positionMargin ?? this.positionMargin,
+      leverage: leverage ?? this.leverage,
+      orderType: orderType ?? this.orderType,
+      timeFrame: timeFrame ?? this.timeFrame,
+      entryFeeRate: entryFeeRate ?? this.entryFeeRate,
+      entryMentalStates: entryMentalStates ?? this.entryMentalStates,
+      entryScreenshot: entryScreenshot ?? this.entryScreenshot,
+      checklist: checklist ?? this.checklist,
+      stopLossPrice: stopLossPrice ?? this.stopLossPrice,
+      takeProfitPrice: takeProfitPrice ?? this.takeProfitPrice,
+      actualExitPrice: actualExitPrice ?? this.actualExitPrice,
+      marginClosedPercent: marginClosedPercent ?? this.marginClosedPercent,
+      exitType: exitType ?? this.exitType,
+      exitFeeRate: exitFeeRate ?? this.exitFeeRate,
+      exitDatetime: exitDatetime ?? this.exitDatetime,
+      exitMentalStates: exitMentalStates ?? this.exitMentalStates,
+      exitScreenshot: exitScreenshot ?? this.exitScreenshot,
+      rating: rating ?? this.rating,
+      memo: memo ?? this.memo,
+      trackings: trackings ?? this.trackings,
+      mistakes: mistakes ?? this.mistakes,
+      transferAmount: transferAmount ?? this.transferAmount,
+      transferScreenshot: transferScreenshot ?? this.transferScreenshot,
       type: type ?? this.type,
       status: status ?? this.status,
-      entryPrice: entryPrice ?? this.entryPrice,
       exitPrice: exitPrice ?? this.exitPrice,
       quantity: quantity ?? this.quantity,
       stopLoss: stopLoss ?? this.stopLoss,
@@ -1026,17 +2418,106 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
+    if (tag.present) {
+      map['tag'] = Variable<String>(tag.value);
+    }
+    if (datetime.present) {
+      map['datetime'] = Variable<DateTime>(datetime.value);
+    }
+    if (exchanges.present) {
+      map['exchanges'] = Variable<String>(exchanges.value);
+    }
+    if (entryType.present) {
+      map['entry_type'] = Variable<String>(entryType.value);
+    }
     if (symbol.present) {
       map['symbol'] = Variable<String>(symbol.value);
+    }
+    if (strategies.present) {
+      map['strategies'] = Variable<String>(strategies.value);
+    }
+    if (side.present) {
+      map['side'] = Variable<String>(side.value);
+    }
+    if (entryPrice.present) {
+      map['entry_price'] = Variable<double>(entryPrice.value);
+    }
+    if (positionMargin.present) {
+      map['position_margin'] = Variable<double>(positionMargin.value);
+    }
+    if (leverage.present) {
+      map['leverage'] = Variable<double>(leverage.value);
+    }
+    if (orderType.present) {
+      map['order_type'] = Variable<String>(orderType.value);
+    }
+    if (timeFrame.present) {
+      map['time_frame'] = Variable<String>(timeFrame.value);
+    }
+    if (entryFeeRate.present) {
+      map['entry_fee_rate'] = Variable<double>(entryFeeRate.value);
+    }
+    if (entryMentalStates.present) {
+      map['entry_mental_states'] = Variable<String>(entryMentalStates.value);
+    }
+    if (entryScreenshot.present) {
+      map['entry_screenshot'] = Variable<String>(entryScreenshot.value);
+    }
+    if (checklist.present) {
+      map['checklist'] = Variable<String>(checklist.value);
+    }
+    if (stopLossPrice.present) {
+      map['stop_loss_price'] = Variable<double>(stopLossPrice.value);
+    }
+    if (takeProfitPrice.present) {
+      map['take_profit_price'] = Variable<double>(takeProfitPrice.value);
+    }
+    if (actualExitPrice.present) {
+      map['actual_exit_price'] = Variable<double>(actualExitPrice.value);
+    }
+    if (marginClosedPercent.present) {
+      map['margin_closed_percent'] = Variable<double>(
+        marginClosedPercent.value,
+      );
+    }
+    if (exitType.present) {
+      map['exit_type'] = Variable<String>(exitType.value);
+    }
+    if (exitFeeRate.present) {
+      map['exit_fee_rate'] = Variable<double>(exitFeeRate.value);
+    }
+    if (exitDatetime.present) {
+      map['exit_datetime'] = Variable<DateTime>(exitDatetime.value);
+    }
+    if (exitMentalStates.present) {
+      map['exit_mental_states'] = Variable<String>(exitMentalStates.value);
+    }
+    if (exitScreenshot.present) {
+      map['exit_screenshot'] = Variable<String>(exitScreenshot.value);
+    }
+    if (rating.present) {
+      map['rating'] = Variable<int>(rating.value);
+    }
+    if (memo.present) {
+      map['memo'] = Variable<String>(memo.value);
+    }
+    if (trackings.present) {
+      map['trackings'] = Variable<String>(trackings.value);
+    }
+    if (mistakes.present) {
+      map['mistakes'] = Variable<String>(mistakes.value);
+    }
+    if (transferAmount.present) {
+      map['transfer_amount'] = Variable<double>(transferAmount.value);
+    }
+    if (transferScreenshot.present) {
+      map['transfer_screenshot'] = Variable<String>(transferScreenshot.value);
     }
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
-    }
-    if (entryPrice.present) {
-      map['entry_price'] = Variable<double>(entryPrice.value);
     }
     if (exitPrice.present) {
       map['exit_price'] = Variable<double>(exitPrice.value);
@@ -1090,10 +2571,39 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   String toString() {
     return (StringBuffer('TradesCompanion(')
           ..write('id: $id, ')
+          ..write('tag: $tag, ')
+          ..write('datetime: $datetime, ')
+          ..write('exchanges: $exchanges, ')
+          ..write('entryType: $entryType, ')
           ..write('symbol: $symbol, ')
+          ..write('strategies: $strategies, ')
+          ..write('side: $side, ')
+          ..write('entryPrice: $entryPrice, ')
+          ..write('positionMargin: $positionMargin, ')
+          ..write('leverage: $leverage, ')
+          ..write('orderType: $orderType, ')
+          ..write('timeFrame: $timeFrame, ')
+          ..write('entryFeeRate: $entryFeeRate, ')
+          ..write('entryMentalStates: $entryMentalStates, ')
+          ..write('entryScreenshot: $entryScreenshot, ')
+          ..write('checklist: $checklist, ')
+          ..write('stopLossPrice: $stopLossPrice, ')
+          ..write('takeProfitPrice: $takeProfitPrice, ')
+          ..write('actualExitPrice: $actualExitPrice, ')
+          ..write('marginClosedPercent: $marginClosedPercent, ')
+          ..write('exitType: $exitType, ')
+          ..write('exitFeeRate: $exitFeeRate, ')
+          ..write('exitDatetime: $exitDatetime, ')
+          ..write('exitMentalStates: $exitMentalStates, ')
+          ..write('exitScreenshot: $exitScreenshot, ')
+          ..write('rating: $rating, ')
+          ..write('memo: $memo, ')
+          ..write('trackings: $trackings, ')
+          ..write('mistakes: $mistakes, ')
+          ..write('transferAmount: $transferAmount, ')
+          ..write('transferScreenshot: $transferScreenshot, ')
           ..write('type: $type, ')
           ..write('status: $status, ')
-          ..write('entryPrice: $entryPrice, ')
           ..write('exitPrice: $exitPrice, ')
           ..write('quantity: $quantity, ')
           ..write('stopLoss: $stopLoss, ')
@@ -1109,6 +2619,406 @@ class TradesCompanion extends UpdateCompanion<Trade> {
           ..write('riskAmount: $riskAmount, ')
           ..write('achievedR: $achievedR, ')
           ..write('tradeDuration: $tradeDuration')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserDefinedValuesTable extends UserDefinedValues
+    with TableInfo<$UserDefinedValuesTable, UserDefinedValue> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserDefinedValuesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isDefaultMeta = const VerificationMeta(
+    'isDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefault = GeneratedColumn<bool>(
+    'is_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    category,
+    value,
+    isDefault,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_defined_values';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserDefinedValue> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('is_default')) {
+      context.handle(
+        _isDefaultMeta,
+        isDefault.isAcceptableOrUnknown(data['is_default']!, _isDefaultMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserDefinedValue map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserDefinedValue(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+      isDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UserDefinedValuesTable createAlias(String alias) {
+    return $UserDefinedValuesTable(attachedDatabase, alias);
+  }
+}
+
+class UserDefinedValue extends DataClass
+    implements Insertable<UserDefinedValue> {
+  final int id;
+  final String category;
+  final String value;
+  final bool isDefault;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const UserDefinedValue({
+    required this.id,
+    required this.category,
+    required this.value,
+    required this.isDefault,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['category'] = Variable<String>(category);
+    map['value'] = Variable<String>(value);
+    map['is_default'] = Variable<bool>(isDefault);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  UserDefinedValuesCompanion toCompanion(bool nullToAbsent) {
+    return UserDefinedValuesCompanion(
+      id: Value(id),
+      category: Value(category),
+      value: Value(value),
+      isDefault: Value(isDefault),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory UserDefinedValue.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserDefinedValue(
+      id: serializer.fromJson<int>(json['id']),
+      category: serializer.fromJson<String>(json['category']),
+      value: serializer.fromJson<String>(json['value']),
+      isDefault: serializer.fromJson<bool>(json['isDefault']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'category': serializer.toJson<String>(category),
+      'value': serializer.toJson<String>(value),
+      'isDefault': serializer.toJson<bool>(isDefault),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  UserDefinedValue copyWith({
+    int? id,
+    String? category,
+    String? value,
+    bool? isDefault,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => UserDefinedValue(
+    id: id ?? this.id,
+    category: category ?? this.category,
+    value: value ?? this.value,
+    isDefault: isDefault ?? this.isDefault,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  UserDefinedValue copyWithCompanion(UserDefinedValuesCompanion data) {
+    return UserDefinedValue(
+      id: data.id.present ? data.id.value : this.id,
+      category: data.category.present ? data.category.value : this.category,
+      value: data.value.present ? data.value.value : this.value,
+      isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserDefinedValue(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('value: $value, ')
+          ..write('isDefault: $isDefault, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, category, value, isDefault, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserDefinedValue &&
+          other.id == this.id &&
+          other.category == this.category &&
+          other.value == this.value &&
+          other.isDefault == this.isDefault &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class UserDefinedValuesCompanion extends UpdateCompanion<UserDefinedValue> {
+  final Value<int> id;
+  final Value<String> category;
+  final Value<String> value;
+  final Value<bool> isDefault;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const UserDefinedValuesCompanion({
+    this.id = const Value.absent(),
+    this.category = const Value.absent(),
+    this.value = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  UserDefinedValuesCompanion.insert({
+    this.id = const Value.absent(),
+    required String category,
+    required String value,
+    this.isDefault = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : category = Value(category),
+       value = Value(value),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<UserDefinedValue> custom({
+    Expression<int>? id,
+    Expression<String>? category,
+    Expression<String>? value,
+    Expression<bool>? isDefault,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (category != null) 'category': category,
+      if (value != null) 'value': value,
+      if (isDefault != null) 'is_default': isDefault,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  UserDefinedValuesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? category,
+    Value<String>? value,
+    Value<bool>? isDefault,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return UserDefinedValuesCompanion(
+      id: id ?? this.id,
+      category: category ?? this.category,
+      value: value ?? this.value,
+      isDefault: isDefault ?? this.isDefault,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (isDefault.present) {
+      map['is_default'] = Variable<bool>(isDefault.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserDefinedValuesCompanion(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('value: $value, ')
+          ..write('isDefault: $isDefault, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -2372,6 +4282,8 @@ abstract class _$TradeMateDatabase extends GeneratedDatabase {
   _$TradeMateDatabase(QueryExecutor e) : super(e);
   $TradeMateDatabaseManager get managers => $TradeMateDatabaseManager(this);
   late final $TradesTable trades = $TradesTable(this);
+  late final $UserDefinedValuesTable userDefinedValues =
+      $UserDefinedValuesTable(this);
   late final $AccountTransactionsTable accountTransactions =
       $AccountTransactionsTable(this);
   late final $TradeStatisticsTableTable tradeStatisticsTable =
@@ -2382,6 +4294,7 @@ abstract class _$TradeMateDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     trades,
+    userDefinedValues,
     accountTransactions,
     tradeStatisticsTable,
   ];
@@ -2390,10 +4303,39 @@ abstract class _$TradeMateDatabase extends GeneratedDatabase {
 typedef $$TradesTableCreateCompanionBuilder =
     TradesCompanion Function({
       Value<int> id,
+      Value<String?> tag,
+      required DateTime datetime,
+      Value<String?> exchanges,
+      Value<String?> entryType,
       required String symbol,
+      Value<String?> strategies,
+      Value<String?> side,
+      required double entryPrice,
+      Value<double?> positionMargin,
+      Value<double?> leverage,
+      Value<String?> orderType,
+      Value<String?> timeFrame,
+      Value<double?> entryFeeRate,
+      Value<String?> entryMentalStates,
+      Value<String?> entryScreenshot,
+      Value<String?> checklist,
+      Value<double?> stopLossPrice,
+      Value<double?> takeProfitPrice,
+      Value<double?> actualExitPrice,
+      Value<double?> marginClosedPercent,
+      Value<String?> exitType,
+      Value<double?> exitFeeRate,
+      Value<DateTime?> exitDatetime,
+      Value<String?> exitMentalStates,
+      Value<String?> exitScreenshot,
+      Value<int?> rating,
+      Value<String?> memo,
+      Value<String?> trackings,
+      Value<String?> mistakes,
+      Value<double?> transferAmount,
+      Value<String?> transferScreenshot,
       required String type,
       required String status,
-      required double entryPrice,
       Value<double?> exitPrice,
       required double quantity,
       Value<double?> stopLoss,
@@ -2413,10 +4355,39 @@ typedef $$TradesTableCreateCompanionBuilder =
 typedef $$TradesTableUpdateCompanionBuilder =
     TradesCompanion Function({
       Value<int> id,
+      Value<String?> tag,
+      Value<DateTime> datetime,
+      Value<String?> exchanges,
+      Value<String?> entryType,
       Value<String> symbol,
+      Value<String?> strategies,
+      Value<String?> side,
+      Value<double> entryPrice,
+      Value<double?> positionMargin,
+      Value<double?> leverage,
+      Value<String?> orderType,
+      Value<String?> timeFrame,
+      Value<double?> entryFeeRate,
+      Value<String?> entryMentalStates,
+      Value<String?> entryScreenshot,
+      Value<String?> checklist,
+      Value<double?> stopLossPrice,
+      Value<double?> takeProfitPrice,
+      Value<double?> actualExitPrice,
+      Value<double?> marginClosedPercent,
+      Value<String?> exitType,
+      Value<double?> exitFeeRate,
+      Value<DateTime?> exitDatetime,
+      Value<String?> exitMentalStates,
+      Value<String?> exitScreenshot,
+      Value<int?> rating,
+      Value<String?> memo,
+      Value<String?> trackings,
+      Value<String?> mistakes,
+      Value<double?> transferAmount,
+      Value<String?> transferScreenshot,
       Value<String> type,
       Value<String> status,
-      Value<double> entryPrice,
       Value<double?> exitPrice,
       Value<double> quantity,
       Value<double?> stopLoss,
@@ -2448,8 +4419,158 @@ class $$TradesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get tag => $composableBuilder(
+    column: $table.tag,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get datetime => $composableBuilder(
+    column: $table.datetime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exchanges => $composableBuilder(
+    column: $table.exchanges,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entryType => $composableBuilder(
+    column: $table.entryType,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get symbol => $composableBuilder(
     column: $table.symbol,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get strategies => $composableBuilder(
+    column: $table.strategies,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get side => $composableBuilder(
+    column: $table.side,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get entryPrice => $composableBuilder(
+    column: $table.entryPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get positionMargin => $composableBuilder(
+    column: $table.positionMargin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leverage => $composableBuilder(
+    column: $table.leverage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timeFrame => $composableBuilder(
+    column: $table.timeFrame,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get entryFeeRate => $composableBuilder(
+    column: $table.entryFeeRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entryMentalStates => $composableBuilder(
+    column: $table.entryMentalStates,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entryScreenshot => $composableBuilder(
+    column: $table.entryScreenshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get checklist => $composableBuilder(
+    column: $table.checklist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get stopLossPrice => $composableBuilder(
+    column: $table.stopLossPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get takeProfitPrice => $composableBuilder(
+    column: $table.takeProfitPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get actualExitPrice => $composableBuilder(
+    column: $table.actualExitPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get marginClosedPercent => $composableBuilder(
+    column: $table.marginClosedPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exitType => $composableBuilder(
+    column: $table.exitType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get exitFeeRate => $composableBuilder(
+    column: $table.exitFeeRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get exitDatetime => $composableBuilder(
+    column: $table.exitDatetime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exitMentalStates => $composableBuilder(
+    column: $table.exitMentalStates,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exitScreenshot => $composableBuilder(
+    column: $table.exitScreenshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rating => $composableBuilder(
+    column: $table.rating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get memo => $composableBuilder(
+    column: $table.memo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trackings => $composableBuilder(
+    column: $table.trackings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mistakes => $composableBuilder(
+    column: $table.mistakes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get transferAmount => $composableBuilder(
+    column: $table.transferAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get transferScreenshot => $composableBuilder(
+    column: $table.transferScreenshot,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2460,11 +4581,6 @@ class $$TradesTableFilterComposer
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get entryPrice => $composableBuilder(
-    column: $table.entryPrice,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2558,8 +4674,158 @@ class $$TradesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get tag => $composableBuilder(
+    column: $table.tag,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get datetime => $composableBuilder(
+    column: $table.datetime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exchanges => $composableBuilder(
+    column: $table.exchanges,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entryType => $composableBuilder(
+    column: $table.entryType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get symbol => $composableBuilder(
     column: $table.symbol,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get strategies => $composableBuilder(
+    column: $table.strategies,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get side => $composableBuilder(
+    column: $table.side,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get entryPrice => $composableBuilder(
+    column: $table.entryPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get positionMargin => $composableBuilder(
+    column: $table.positionMargin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leverage => $composableBuilder(
+    column: $table.leverage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeFrame => $composableBuilder(
+    column: $table.timeFrame,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get entryFeeRate => $composableBuilder(
+    column: $table.entryFeeRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entryMentalStates => $composableBuilder(
+    column: $table.entryMentalStates,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entryScreenshot => $composableBuilder(
+    column: $table.entryScreenshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get checklist => $composableBuilder(
+    column: $table.checklist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get stopLossPrice => $composableBuilder(
+    column: $table.stopLossPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get takeProfitPrice => $composableBuilder(
+    column: $table.takeProfitPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get actualExitPrice => $composableBuilder(
+    column: $table.actualExitPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get marginClosedPercent => $composableBuilder(
+    column: $table.marginClosedPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exitType => $composableBuilder(
+    column: $table.exitType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get exitFeeRate => $composableBuilder(
+    column: $table.exitFeeRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get exitDatetime => $composableBuilder(
+    column: $table.exitDatetime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exitMentalStates => $composableBuilder(
+    column: $table.exitMentalStates,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exitScreenshot => $composableBuilder(
+    column: $table.exitScreenshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rating => $composableBuilder(
+    column: $table.rating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get memo => $composableBuilder(
+    column: $table.memo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trackings => $composableBuilder(
+    column: $table.trackings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mistakes => $composableBuilder(
+    column: $table.mistakes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get transferAmount => $composableBuilder(
+    column: $table.transferAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get transferScreenshot => $composableBuilder(
+    column: $table.transferScreenshot,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2570,11 +4836,6 @@ class $$TradesTableOrderingComposer
 
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get entryPrice => $composableBuilder(
-    column: $table.entryPrice,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2666,19 +4927,136 @@ class $$TradesTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<String> get tag =>
+      $composableBuilder(column: $table.tag, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get datetime =>
+      $composableBuilder(column: $table.datetime, builder: (column) => column);
+
+  GeneratedColumn<String> get exchanges =>
+      $composableBuilder(column: $table.exchanges, builder: (column) => column);
+
+  GeneratedColumn<String> get entryType =>
+      $composableBuilder(column: $table.entryType, builder: (column) => column);
+
   GeneratedColumn<String> get symbol =>
       $composableBuilder(column: $table.symbol, builder: (column) => column);
+
+  GeneratedColumn<String> get strategies => $composableBuilder(
+    column: $table.strategies,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get side =>
+      $composableBuilder(column: $table.side, builder: (column) => column);
+
+  GeneratedColumn<double> get entryPrice => $composableBuilder(
+    column: $table.entryPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get positionMargin => $composableBuilder(
+    column: $table.positionMargin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get leverage =>
+      $composableBuilder(column: $table.leverage, builder: (column) => column);
+
+  GeneratedColumn<String> get orderType =>
+      $composableBuilder(column: $table.orderType, builder: (column) => column);
+
+  GeneratedColumn<String> get timeFrame =>
+      $composableBuilder(column: $table.timeFrame, builder: (column) => column);
+
+  GeneratedColumn<double> get entryFeeRate => $composableBuilder(
+    column: $table.entryFeeRate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entryMentalStates => $composableBuilder(
+    column: $table.entryMentalStates,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entryScreenshot => $composableBuilder(
+    column: $table.entryScreenshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get checklist =>
+      $composableBuilder(column: $table.checklist, builder: (column) => column);
+
+  GeneratedColumn<double> get stopLossPrice => $composableBuilder(
+    column: $table.stopLossPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get takeProfitPrice => $composableBuilder(
+    column: $table.takeProfitPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get actualExitPrice => $composableBuilder(
+    column: $table.actualExitPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get marginClosedPercent => $composableBuilder(
+    column: $table.marginClosedPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exitType =>
+      $composableBuilder(column: $table.exitType, builder: (column) => column);
+
+  GeneratedColumn<double> get exitFeeRate => $composableBuilder(
+    column: $table.exitFeeRate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get exitDatetime => $composableBuilder(
+    column: $table.exitDatetime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exitMentalStates => $composableBuilder(
+    column: $table.exitMentalStates,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exitScreenshot => $composableBuilder(
+    column: $table.exitScreenshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get rating =>
+      $composableBuilder(column: $table.rating, builder: (column) => column);
+
+  GeneratedColumn<String> get memo =>
+      $composableBuilder(column: $table.memo, builder: (column) => column);
+
+  GeneratedColumn<String> get trackings =>
+      $composableBuilder(column: $table.trackings, builder: (column) => column);
+
+  GeneratedColumn<String> get mistakes =>
+      $composableBuilder(column: $table.mistakes, builder: (column) => column);
+
+  GeneratedColumn<double> get transferAmount => $composableBuilder(
+    column: $table.transferAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get transferScreenshot => $composableBuilder(
+    column: $table.transferScreenshot,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
-
-  GeneratedColumn<double> get entryPrice => $composableBuilder(
-    column: $table.entryPrice,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<double> get exitPrice =>
       $composableBuilder(column: $table.exitPrice, builder: (column) => column);
@@ -2769,10 +5147,39 @@ class $$TradesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<String?> tag = const Value.absent(),
+                Value<DateTime> datetime = const Value.absent(),
+                Value<String?> exchanges = const Value.absent(),
+                Value<String?> entryType = const Value.absent(),
                 Value<String> symbol = const Value.absent(),
+                Value<String?> strategies = const Value.absent(),
+                Value<String?> side = const Value.absent(),
+                Value<double> entryPrice = const Value.absent(),
+                Value<double?> positionMargin = const Value.absent(),
+                Value<double?> leverage = const Value.absent(),
+                Value<String?> orderType = const Value.absent(),
+                Value<String?> timeFrame = const Value.absent(),
+                Value<double?> entryFeeRate = const Value.absent(),
+                Value<String?> entryMentalStates = const Value.absent(),
+                Value<String?> entryScreenshot = const Value.absent(),
+                Value<String?> checklist = const Value.absent(),
+                Value<double?> stopLossPrice = const Value.absent(),
+                Value<double?> takeProfitPrice = const Value.absent(),
+                Value<double?> actualExitPrice = const Value.absent(),
+                Value<double?> marginClosedPercent = const Value.absent(),
+                Value<String?> exitType = const Value.absent(),
+                Value<double?> exitFeeRate = const Value.absent(),
+                Value<DateTime?> exitDatetime = const Value.absent(),
+                Value<String?> exitMentalStates = const Value.absent(),
+                Value<String?> exitScreenshot = const Value.absent(),
+                Value<int?> rating = const Value.absent(),
+                Value<String?> memo = const Value.absent(),
+                Value<String?> trackings = const Value.absent(),
+                Value<String?> mistakes = const Value.absent(),
+                Value<double?> transferAmount = const Value.absent(),
+                Value<String?> transferScreenshot = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<String> status = const Value.absent(),
-                Value<double> entryPrice = const Value.absent(),
                 Value<double?> exitPrice = const Value.absent(),
                 Value<double> quantity = const Value.absent(),
                 Value<double?> stopLoss = const Value.absent(),
@@ -2790,10 +5197,39 @@ class $$TradesTableTableManager
                 Value<int?> tradeDuration = const Value.absent(),
               }) => TradesCompanion(
                 id: id,
+                tag: tag,
+                datetime: datetime,
+                exchanges: exchanges,
+                entryType: entryType,
                 symbol: symbol,
+                strategies: strategies,
+                side: side,
+                entryPrice: entryPrice,
+                positionMargin: positionMargin,
+                leverage: leverage,
+                orderType: orderType,
+                timeFrame: timeFrame,
+                entryFeeRate: entryFeeRate,
+                entryMentalStates: entryMentalStates,
+                entryScreenshot: entryScreenshot,
+                checklist: checklist,
+                stopLossPrice: stopLossPrice,
+                takeProfitPrice: takeProfitPrice,
+                actualExitPrice: actualExitPrice,
+                marginClosedPercent: marginClosedPercent,
+                exitType: exitType,
+                exitFeeRate: exitFeeRate,
+                exitDatetime: exitDatetime,
+                exitMentalStates: exitMentalStates,
+                exitScreenshot: exitScreenshot,
+                rating: rating,
+                memo: memo,
+                trackings: trackings,
+                mistakes: mistakes,
+                transferAmount: transferAmount,
+                transferScreenshot: transferScreenshot,
                 type: type,
                 status: status,
-                entryPrice: entryPrice,
                 exitPrice: exitPrice,
                 quantity: quantity,
                 stopLoss: stopLoss,
@@ -2813,10 +5249,39 @@ class $$TradesTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<String?> tag = const Value.absent(),
+                required DateTime datetime,
+                Value<String?> exchanges = const Value.absent(),
+                Value<String?> entryType = const Value.absent(),
                 required String symbol,
+                Value<String?> strategies = const Value.absent(),
+                Value<String?> side = const Value.absent(),
+                required double entryPrice,
+                Value<double?> positionMargin = const Value.absent(),
+                Value<double?> leverage = const Value.absent(),
+                Value<String?> orderType = const Value.absent(),
+                Value<String?> timeFrame = const Value.absent(),
+                Value<double?> entryFeeRate = const Value.absent(),
+                Value<String?> entryMentalStates = const Value.absent(),
+                Value<String?> entryScreenshot = const Value.absent(),
+                Value<String?> checklist = const Value.absent(),
+                Value<double?> stopLossPrice = const Value.absent(),
+                Value<double?> takeProfitPrice = const Value.absent(),
+                Value<double?> actualExitPrice = const Value.absent(),
+                Value<double?> marginClosedPercent = const Value.absent(),
+                Value<String?> exitType = const Value.absent(),
+                Value<double?> exitFeeRate = const Value.absent(),
+                Value<DateTime?> exitDatetime = const Value.absent(),
+                Value<String?> exitMentalStates = const Value.absent(),
+                Value<String?> exitScreenshot = const Value.absent(),
+                Value<int?> rating = const Value.absent(),
+                Value<String?> memo = const Value.absent(),
+                Value<String?> trackings = const Value.absent(),
+                Value<String?> mistakes = const Value.absent(),
+                Value<double?> transferAmount = const Value.absent(),
+                Value<String?> transferScreenshot = const Value.absent(),
                 required String type,
                 required String status,
-                required double entryPrice,
                 Value<double?> exitPrice = const Value.absent(),
                 required double quantity,
                 Value<double?> stopLoss = const Value.absent(),
@@ -2834,10 +5299,39 @@ class $$TradesTableTableManager
                 Value<int?> tradeDuration = const Value.absent(),
               }) => TradesCompanion.insert(
                 id: id,
+                tag: tag,
+                datetime: datetime,
+                exchanges: exchanges,
+                entryType: entryType,
                 symbol: symbol,
+                strategies: strategies,
+                side: side,
+                entryPrice: entryPrice,
+                positionMargin: positionMargin,
+                leverage: leverage,
+                orderType: orderType,
+                timeFrame: timeFrame,
+                entryFeeRate: entryFeeRate,
+                entryMentalStates: entryMentalStates,
+                entryScreenshot: entryScreenshot,
+                checklist: checklist,
+                stopLossPrice: stopLossPrice,
+                takeProfitPrice: takeProfitPrice,
+                actualExitPrice: actualExitPrice,
+                marginClosedPercent: marginClosedPercent,
+                exitType: exitType,
+                exitFeeRate: exitFeeRate,
+                exitDatetime: exitDatetime,
+                exitMentalStates: exitMentalStates,
+                exitScreenshot: exitScreenshot,
+                rating: rating,
+                memo: memo,
+                trackings: trackings,
+                mistakes: mistakes,
+                transferAmount: transferAmount,
+                transferScreenshot: transferScreenshot,
                 type: type,
                 status: status,
-                entryPrice: entryPrice,
                 exitPrice: exitPrice,
                 quantity: quantity,
                 stopLoss: stopLoss,
@@ -2874,6 +5368,232 @@ typedef $$TradesTableProcessedTableManager =
       $$TradesTableUpdateCompanionBuilder,
       (Trade, BaseReferences<_$TradeMateDatabase, $TradesTable, Trade>),
       Trade,
+      PrefetchHooks Function()
+    >;
+typedef $$UserDefinedValuesTableCreateCompanionBuilder =
+    UserDefinedValuesCompanion Function({
+      Value<int> id,
+      required String category,
+      required String value,
+      Value<bool> isDefault,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$UserDefinedValuesTableUpdateCompanionBuilder =
+    UserDefinedValuesCompanion Function({
+      Value<int> id,
+      Value<String> category,
+      Value<String> value,
+      Value<bool> isDefault,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$UserDefinedValuesTableFilterComposer
+    extends Composer<_$TradeMateDatabase, $UserDefinedValuesTable> {
+  $$UserDefinedValuesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UserDefinedValuesTableOrderingComposer
+    extends Composer<_$TradeMateDatabase, $UserDefinedValuesTable> {
+  $$UserDefinedValuesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UserDefinedValuesTableAnnotationComposer
+    extends Composer<_$TradeMateDatabase, $UserDefinedValuesTable> {
+  $$UserDefinedValuesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDefault =>
+      $composableBuilder(column: $table.isDefault, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$UserDefinedValuesTableTableManager
+    extends
+        RootTableManager<
+          _$TradeMateDatabase,
+          $UserDefinedValuesTable,
+          UserDefinedValue,
+          $$UserDefinedValuesTableFilterComposer,
+          $$UserDefinedValuesTableOrderingComposer,
+          $$UserDefinedValuesTableAnnotationComposer,
+          $$UserDefinedValuesTableCreateCompanionBuilder,
+          $$UserDefinedValuesTableUpdateCompanionBuilder,
+          (
+            UserDefinedValue,
+            BaseReferences<
+              _$TradeMateDatabase,
+              $UserDefinedValuesTable,
+              UserDefinedValue
+            >,
+          ),
+          UserDefinedValue,
+          PrefetchHooks Function()
+        > {
+  $$UserDefinedValuesTableTableManager(
+    _$TradeMateDatabase db,
+    $UserDefinedValuesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserDefinedValuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserDefinedValuesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UserDefinedValuesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserDefinedValuesCompanion(
+                id: id,
+                category: category,
+                value: value,
+                isDefault: isDefault,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String category,
+                required String value,
+                Value<bool> isDefault = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => UserDefinedValuesCompanion.insert(
+                id: id,
+                category: category,
+                value: value,
+                isDefault: isDefault,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UserDefinedValuesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TradeMateDatabase,
+      $UserDefinedValuesTable,
+      UserDefinedValue,
+      $$UserDefinedValuesTableFilterComposer,
+      $$UserDefinedValuesTableOrderingComposer,
+      $$UserDefinedValuesTableAnnotationComposer,
+      $$UserDefinedValuesTableCreateCompanionBuilder,
+      $$UserDefinedValuesTableUpdateCompanionBuilder,
+      (
+        UserDefinedValue,
+        BaseReferences<
+          _$TradeMateDatabase,
+          $UserDefinedValuesTable,
+          UserDefinedValue
+        >,
+      ),
+      UserDefinedValue,
       PrefetchHooks Function()
     >;
 typedef $$AccountTransactionsTableCreateCompanionBuilder =
@@ -3518,6 +6238,8 @@ class $TradeMateDatabaseManager {
   $TradeMateDatabaseManager(this._db);
   $$TradesTableTableManager get trades =>
       $$TradesTableTableManager(_db, _db.trades);
+  $$UserDefinedValuesTableTableManager get userDefinedValues =>
+      $$UserDefinedValuesTableTableManager(_db, _db.userDefinedValues);
   $$AccountTransactionsTableTableManager get accountTransactions =>
       $$AccountTransactionsTableTableManager(_db, _db.accountTransactions);
   $$TradeStatisticsTableTableTableManager get tradeStatisticsTable =>

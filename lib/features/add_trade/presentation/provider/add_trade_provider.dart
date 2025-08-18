@@ -17,37 +17,279 @@ class AddTradeProvider with ChangeNotifier {
   String get errorMessage => _errorMessage;
   Trade? get currentTrade => _currentTrade;
 
-  // Form fields
+  // Trade Transfers
+  String _tag = '';
+  DateTime? _datetime;
+  String? _exchanges;
+  EntryType? _entryType;
   String _symbol = '';
-  TradeType _type = TradeType.buy;
+  String? _strategies;
+  Side? _side;
   double _entryPrice = 0.0;
+  double? _positionMargin;
+  double? _leverage;
+  OrderType? _orderType;
+  String? _timeFrame;
+  double? _entryFeeRate;
+  String? _entryMentalStates;
+  String? _entryScreenshot;
+  
+  // Checklist
+  List<String>? _checklist;
+  
+  // Trade Management
+  double? _stopLossPrice;
+  double? _takeProfitPrice;
+  
+  // Trade Exit
+  double? _actualExitPrice;
+  double? _marginClosedPercent;
+  ExitType? _exitType;
+  double? _exitFeeRate;
+  DateTime? _exitDatetime;
+  String? _exitMentalStates;
+  String? _exitScreenshot;
+  
+  // Memo
+  int? _rating;
+  String _memo = '';
+  
+  // Trackings
+  String? _trackings;
+  String? _mistakes;
+  
+  // Transfers
+  double? _transferAmount;
+  String? _transferScreenshot;
+  
+  // Legacy fields (keeping for backward compatibility)
+  TradeType _type = TradeType.buy;
+  TradeStatus _tradeStatus = TradeStatus.open;
+  double? _exitPrice;
   double _quantity = 0.0;
   double? _stopLoss;
   double? _takeProfit;
+  double? _pnl;
+  double? _pnlPercent;
+  double? _riskRewardRatio;
+  DateTime _entryDate = DateTime.now();
+  DateTime? _exitDate;
   String _notes = '';
+  String? _screenshotPath;
   double _accountBalance = 0.0;
+  double? _riskAmount;
+  double? _achievedR;
+  int? _tradeDuration;
 
+  // Getters
+  String get tag => _tag;
+  DateTime? get datetime => _datetime;
+  String? get exchanges => _exchanges;
+  EntryType? get entryType => _entryType;
   String get symbol => _symbol;
-  TradeType get type => _type;
+  String? get strategies => _strategies;
+  Side? get side => _side;
   double get entryPrice => _entryPrice;
+  double? get positionMargin => _positionMargin;
+  double? get leverage => _leverage;
+  OrderType? get orderType => _orderType;
+  String? get timeFrame => _timeFrame;
+  double? get entryFeeRate => _entryFeeRate;
+  String? get entryMentalStates => _entryMentalStates;
+  String? get entryScreenshot => _entryScreenshot;
+  List<String>? get checklist => _checklist;
+  double? get stopLossPrice => _stopLossPrice;
+  double? get takeProfitPrice => _takeProfitPrice;
+  double? get actualExitPrice => _actualExitPrice;
+  double? get marginClosedPercent => _marginClosedPercent;
+  ExitType? get exitType => _exitType;
+  double? get exitFeeRate => _exitFeeRate;
+  DateTime? get exitDatetime => _exitDatetime;
+  String? get exitMentalStates => _exitMentalStates;
+  String? get exitScreenshot => _exitScreenshot;
+  int? get rating => _rating;
+  String get memo => _memo;
+  String? get trackings => _trackings;
+  String? get mistakes => _mistakes;
+  double? get transferAmount => _transferAmount;
+  String? get transferScreenshot => _transferScreenshot;
+  TradeType get type => _type;
+  TradeStatus get tradeStatus => _tradeStatus;
+  double? get exitPrice => _exitPrice;
   double get quantity => _quantity;
   double? get stopLoss => _stopLoss;
   double? get takeProfit => _takeProfit;
+  double? get pnl => _pnl;
+  double? get pnlPercent => _pnlPercent;
+  double? get riskRewardRatio => _riskRewardRatio;
+  DateTime get entryDate => _entryDate;
+  DateTime? get exitDate => _exitDate;
   String get notes => _notes;
+  String? get screenshotPath => _screenshotPath;
   double get accountBalance => _accountBalance;
+  double? get riskAmount => _riskAmount;
+  double? get achievedR => _achievedR;
+  int? get tradeDuration => _tradeDuration;
+
+  // Update methods for new fields
+  void updateTag(String value) {
+    _tag = value;
+    notifyListeners();
+  }
+
+  void updateDatetime(DateTime value) {
+    _datetime = value;
+    notifyListeners();
+  }
+
+  void updateExchanges(String? value) {
+    _exchanges = value;
+    notifyListeners();
+  }
+
+  void updateEntryType(EntryType? value) {
+    _entryType = value;
+    notifyListeners();
+  }
 
   void updateSymbol(String value) {
     _symbol = value;
     notifyListeners();
   }
 
-  void updateType(TradeType value) {
-    _type = value;
+  void updateStrategies(String? value) {
+    _strategies = value;
+    notifyListeners();
+  }
+
+  void updateSide(Side? value) {
+    _side = value;
     notifyListeners();
   }
 
   void updateEntryPrice(double value) {
     _entryPrice = value;
+    notifyListeners();
+  }
+
+  void updatePositionMargin(double? value) {
+    _positionMargin = value;
+    notifyListeners();
+  }
+
+  void updateLeverage(double? value) {
+    _leverage = value;
+    notifyListeners();
+  }
+
+  void updateOrderType(OrderType? value) {
+    _orderType = value;
+    notifyListeners();
+  }
+
+  void updateTimeFrame(String? value) {
+    _timeFrame = value;
+    notifyListeners();
+  }
+
+  void updateEntryFeeRate(double? value) {
+    _entryFeeRate = value;
+    notifyListeners();
+  }
+
+  void updateEntryMentalStates(String? value) {
+    _entryMentalStates = value;
+    notifyListeners();
+  }
+
+  void updateEntryScreenshot(String? value) {
+    _entryScreenshot = value;
+    notifyListeners();
+  }
+
+  void updateChecklist(List<String>? value) {
+    _checklist = value;
+    notifyListeners();
+  }
+
+  void updateStopLossPrice(double? value) {
+    _stopLossPrice = value;
+    notifyListeners();
+  }
+
+  void updateTakeProfitPrice(double? value) {
+    _takeProfitPrice = value;
+    notifyListeners();
+  }
+
+  void updateActualExitPrice(double? value) {
+    _actualExitPrice = value;
+    notifyListeners();
+  }
+
+  void updateMarginClosedPercent(double? value) {
+    _marginClosedPercent = value;
+    notifyListeners();
+  }
+
+  void updateExitType(ExitType? value) {
+    _exitType = value;
+    notifyListeners();
+  }
+
+  void updateExitFeeRate(double? value) {
+    _exitFeeRate = value;
+    notifyListeners();
+  }
+
+  void updateExitDatetime(DateTime? value) {
+    _exitDatetime = value;
+    notifyListeners();
+  }
+
+  void updateExitMentalStates(String? value) {
+    _exitMentalStates = value;
+    notifyListeners();
+  }
+
+  void updateExitScreenshot(String? value) {
+    _exitScreenshot = value;
+    notifyListeners();
+  }
+
+  void updateRating(int? value) {
+    _rating = value;
+    notifyListeners();
+  }
+
+  void updateMemo(String value) {
+    _memo = value;
+    notifyListeners();
+  }
+
+  void updateTrackings(String? value) {
+    _trackings = value;
+    notifyListeners();
+  }
+
+  void updateMistakes(String? value) {
+    _mistakes = value;
+    notifyListeners();
+  }
+
+  void updateTransferAmount(double? value) {
+    _transferAmount = value;
+    notifyListeners();
+  }
+
+  void updateTransferScreenshot(String? value) {
+    _transferScreenshot = value;
+    notifyListeners();
+  }
+
+  // Legacy update methods
+  void updateType(TradeType value) {
+    _type = value;
     notifyListeners();
   }
 
@@ -77,17 +319,17 @@ class AddTradeProvider with ChangeNotifier {
   }
 
   // Calculate risk amount
-  double? get riskAmount {
-    if (_stopLoss == null) return null;
-    final riskPerUnit = (_entryPrice - _stopLoss!).abs();
+  double? get calculatedRiskAmount {
+    if (_stopLossPrice == null) return null;
+    final riskPerUnit = (_entryPrice - _stopLossPrice!).abs();
     return riskPerUnit * _quantity;
   }
 
   // Calculate risk/reward ratio
-  double? get riskRewardRatio {
-    if (_stopLoss == null || _takeProfit == null) return null;
-    final risk = (_entryPrice - _stopLoss!).abs();
-    final reward = (_takeProfit! - _entryPrice).abs();
+  double? get calculatedRiskRewardRatio {
+    if (_stopLossPrice == null || _takeProfitPrice == null) return null;
+    final risk = (_entryPrice - _stopLossPrice!).abs();
+    final reward = (_takeProfitPrice! - _entryPrice).abs();
     if (risk == 0) return null;
     return reward / risk;
   }
@@ -113,18 +355,62 @@ class AddTradeProvider with ChangeNotifier {
       notifyListeners();
 
       final trade = Trade(
+        // Trade Transfers
+        tag: _tag.isEmpty ? null : _tag,
+        datetime: _datetime ?? DateTime.now(),
+        exchanges: _exchanges,
+        entryType: _entryType,
         symbol: _symbol,
-        type: _type,
-        status: TradeStatus.open,
+        strategies: _strategies,
+        side: _side,
         entryPrice: _entryPrice,
+        positionMargin: _positionMargin,
+        leverage: _leverage,
+        orderType: _orderType,
+        timeFrame: _timeFrame,
+        entryFeeRate: _entryFeeRate,
+        entryMentalStates: _entryMentalStates,
+        entryScreenshot: _entryScreenshot,
+        // Checklist
+        checklist: _checklist,
+        // Trade Management
+        stopLossPrice: _stopLossPrice,
+        takeProfitPrice: _takeProfitPrice,
+        // Trade Exit
+        actualExitPrice: _actualExitPrice,
+        marginClosedPercent: _marginClosedPercent,
+        exitType: _exitType,
+        exitFeeRate: _exitFeeRate,
+        exitDatetime: _exitDatetime,
+        exitMentalStates: _exitMentalStates,
+        exitScreenshot: _exitScreenshot,
+        // Memo
+        rating: _rating,
+        memo: _memo.isEmpty ? null : _memo,
+        // Trackings
+        trackings: _trackings,
+        mistakes: _mistakes,
+        // Transfers
+        transferAmount: _transferAmount,
+        transferScreenshot: _transferScreenshot,
+        // Legacy fields
+        type: _type,
+        status: _tradeStatus,
+        exitPrice: _exitPrice,
         quantity: _quantity,
         stopLoss: _stopLoss,
         takeProfit: _takeProfit,
-        entryDate: DateTime.now(),
+        pnl: _pnl,
+        pnlPercent: _pnlPercent,
+        riskRewardRatio: _riskRewardRatio,
+        entryDate: _entryDate,
+        exitDate: _exitDate,
         notes: _notes.isEmpty ? null : _notes,
+        screenshotPath: _screenshotPath,
         accountBalance: _accountBalance,
-        riskAmount: riskAmount,
-        riskRewardRatio: riskRewardRatio,
+        riskAmount: _riskAmount,
+        achievedR: _achievedR,
+        tradeDuration: _tradeDuration,
       );
 
       final tradeId = await addTradeUseCase(trade);
@@ -145,14 +431,69 @@ class AddTradeProvider with ChangeNotifier {
   }
 
   void _resetForm() {
+    // Trade Transfers
+    _tag = '';
+    _datetime = null;
+    _exchanges = null;
+    _entryType = null;
     _symbol = '';
-    _type = TradeType.buy;
+    _strategies = null;
+    _side = null;
     _entryPrice = 0.0;
+    _positionMargin = null;
+    _leverage = null;
+    _orderType = null;
+    _timeFrame = null;
+    _entryFeeRate = null;
+    _entryMentalStates = null;
+    _entryScreenshot = null;
+    
+    // Checklist
+    _checklist = null;
+    
+    // Trade Management
+    _stopLossPrice = null;
+    _takeProfitPrice = null;
+    
+    // Trade Exit
+    _actualExitPrice = null;
+    _marginClosedPercent = null;
+    _exitType = null;
+    _exitFeeRate = null;
+    _exitDatetime = null;
+    _exitMentalStates = null;
+    _exitScreenshot = null;
+    
+    // Memo
+    _rating = null;
+    _memo = '';
+    
+    // Trackings
+    _trackings = null;
+    _mistakes = null;
+    
+    // Transfers
+    _transferAmount = null;
+    _transferScreenshot = null;
+    
+    // Legacy fields
+    _type = TradeType.buy;
+    _tradeStatus = TradeStatus.open;
+    _exitPrice = null;
     _quantity = 0.0;
     _stopLoss = null;
     _takeProfit = null;
+    _pnl = null;
+    _pnlPercent = null;
+    _riskRewardRatio = null;
+    _entryDate = DateTime.now();
+    _exitDate = null;
     _notes = '';
+    _screenshotPath = null;
     // Don't reset account balance as it's usually constant
+    _riskAmount = null;
+    _achievedR = null;
+    _tradeDuration = null;
   }
 
   void reset() {

@@ -9,10 +9,55 @@ part 'database.g.dart';
 // Trade table
 class Trades extends Table {
   IntColumn get id => integer().autoIncrement()();
+  
+  // Trade Transfers
+  TextColumn get tag => text().nullable()();
+  DateTimeColumn get datetime => dateTime()();
+  TextColumn get exchanges => text().nullable()();
+  TextColumn get entryType => text().nullable()(); // Trade, Margin In/Out, Deposit, Withdrawal, Ignore
   TextColumn get symbol => text()();
+  TextColumn get strategies => text().nullable()();
+  TextColumn get side => text().nullable()(); // LONG, SHORT
+  RealColumn get entryPrice => real()();
+  RealColumn get positionMargin => real().nullable()();
+  RealColumn get leverage => real().nullable()();
+  TextColumn get orderType => text().nullable()(); // Market, Limit, Stop
+  TextColumn get timeFrame => text().nullable()();
+  RealColumn get entryFeeRate => real().nullable()();
+  TextColumn get entryMentalStates => text().nullable()();
+  TextColumn get entryScreenshot => text().nullable()();
+  
+  // Checklist
+  TextColumn get checklist => text().nullable()(); // JSON string of checklist items
+  
+  // Trade Management
+  RealColumn get stopLossPrice => real().nullable()();
+  RealColumn get takeProfitPrice => real().nullable()();
+  
+  // Trade Exit
+  RealColumn get actualExitPrice => real().nullable()();
+  RealColumn get marginClosedPercent => real().nullable()();
+  TextColumn get exitType => text().nullable()(); // TP, SL
+  RealColumn get exitFeeRate => real().nullable()();
+  DateTimeColumn get exitDatetime => dateTime().nullable()();
+  TextColumn get exitMentalStates => text().nullable()();
+  TextColumn get exitScreenshot => text().nullable()();
+  
+  // Memo
+  IntColumn get rating => integer().nullable()(); // 1-5
+  TextColumn get memo => text().nullable()();
+  
+  // Trackings
+  TextColumn get trackings => text().nullable()();
+  TextColumn get mistakes => text().nullable()();
+  
+  // Transfers
+  RealColumn get transferAmount => real().nullable()();
+  TextColumn get transferScreenshot => text().nullable()();
+  
+  // Legacy fields (keeping for backward compatibility)
   TextColumn get type => text()(); // BUY, SELL
   TextColumn get status => text()(); // OPEN, CLOSED
-  RealColumn get entryPrice => real()();
   RealColumn get exitPrice => real().nullable()();
   RealColumn get quantity => real()();
   RealColumn get stopLoss => real().nullable()();
@@ -28,6 +73,16 @@ class Trades extends Table {
   RealColumn get riskAmount => real().nullable()();
   RealColumn get achievedR => real().nullable()();
   IntColumn get tradeDuration => integer().nullable()(); // in minutes
+}
+
+// User-defined values table for dropdowns
+class UserDefinedValues extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get category => text()(); // exchanges, symbols, strategies, etc.
+  TextColumn get value => text()();
+  BoolColumn get isDefault => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 }
 
 // Account transactions table
@@ -58,12 +113,12 @@ class TradeStatisticsTable extends Table {
   DateTimeColumn get lastUpdated => dateTime()();
 }
 
-@DriftDatabase(tables: [Trades, AccountTransactions, TradeStatisticsTable])
+@DriftDatabase(tables: [Trades, UserDefinedValues, AccountTransactions, TradeStatisticsTable])
 class TradeMateDatabase extends _$TradeMateDatabase {
   TradeMateDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
 
   // Trade operations
   Future<List<Trade>> getAllTrades() async {
@@ -87,6 +142,40 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   
   Future<int> deleteTrade(int id) => 
       (delete(trades)..where((t) => t.id.equals(id))).go();
+
+  // User-defined values operations
+  Future<List<UserDefinedValue>> getUserDefinedValues(String category) =>
+      (select(userDefinedValues)
+        ..where((v) => v.category.equals(category))
+        ..orderBy([(v) => OrderingTerm.asc(v.value)]))
+      .get();
+  
+  Future<int> insertUserDefinedValue(UserDefinedValuesCompanion value) =>
+      into(userDefinedValues).insert(value);
+  
+  Future<bool> updateUserDefinedValue(UserDefinedValuesCompanion value) =>
+      update(userDefinedValues).replace(value);
+  
+  Future<int> deleteUserDefinedValue(int id) =>
+      (delete(userDefinedValues)..where((v) => v.id.equals(id))).go();
+  
+  Future<List<UserDefinedValue>> getDefaultValues(String category) =>
+      (select(userDefinedValues)
+        ..where((v) => v.category.equals(category) & v.isDefault.equals(true))
+        ..orderBy([(v) => OrderingTerm.asc(v.value)]))
+      .get();
+  
+  Future<void> setDefaultValue(String category, String value, bool isDefault) async {
+    // First, unset all defaults for this category
+    await (update(userDefinedValues)
+      ..where((v) => v.category.equals(category)))
+      .write(const UserDefinedValuesCompanion(isDefault: Value(false)));
+    
+    // Then set the new default
+    await (update(userDefinedValues)
+      ..where((v) => v.category.equals(category) & v.value.equals(value)))
+      .write(UserDefinedValuesCompanion(isDefault: Value(isDefault)));
+  }
 
   // Account transaction operations
   Future<List<AccountTransaction>> getAllTransactions() => 

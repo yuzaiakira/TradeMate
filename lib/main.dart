@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/utils/app_theme.dart';
 import 'core/data/database.dart';
+import 'core/data/repositories/user_defined_values_repository.dart';
+import 'core/providers/user_defined_values_provider.dart';
 import 'features/add_trade/data/repositories/trade_repository_impl.dart';
 import 'features/add_trade/domain/repositories/trade_repository.dart';
 import 'features/add_trade/domain/usecases/add_trade_usecase.dart';
@@ -43,6 +45,9 @@ class TradeMateApp extends StatelessWidget {
         Provider<StatisticsRepository>(
           create: (context) => StatisticsRepositoryImpl(database),
         ),
+        Provider<UserDefinedValuesRepository>(
+          create: (context) => UserDefinedValuesRepositoryImpl(database),
+        ),
         
         // Use cases
         Provider<AddTradeUseCase>(
@@ -65,6 +70,11 @@ class TradeMateApp extends StatelessWidget {
         ChangeNotifierProvider<HomeProvider>(
           create: (context) => HomeProvider(
             context.read<GetStatisticsUseCase>(),
+          ),
+        ),
+        ChangeNotifierProvider<UserDefinedValuesProvider>(
+          create: (context) => UserDefinedValuesProvider(
+            context.read<UserDefinedValuesRepository>(),
           ),
         ),
       ],

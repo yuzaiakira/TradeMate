@@ -2,13 +2,62 @@ import 'package:equatable/equatable.dart';
 
 enum TradeType { buy, sell }
 enum TradeStatus { open, closed }
+enum EntryType { trade, marginInOut, deposit, withdrawal, ignore }
+enum Side { long, short }
+enum OrderType { market, limit, stop }
+enum ExitType { tp, sl }
 
 class Trade extends Equatable {
   final int? id;
+  
+  // Trade Transfers
+  final String? tag;
+  final DateTime datetime;
+  final String? exchanges;
+  final EntryType? entryType;
   final String symbol;
+  final String? strategies;
+  final Side? side;
+  final double entryPrice;
+  final double? positionMargin;
+  final double? leverage;
+  final OrderType? orderType;
+  final String? timeFrame;
+  final double? entryFeeRate;
+  final String? entryMentalStates;
+  final String? entryScreenshot;
+  
+  // Checklist
+  final List<String>? checklist;
+  
+  // Trade Management
+  final double? stopLossPrice;
+  final double? takeProfitPrice;
+  
+  // Trade Exit
+  final double? actualExitPrice;
+  final double? marginClosedPercent;
+  final ExitType? exitType;
+  final double? exitFeeRate;
+  final DateTime? exitDatetime;
+  final String? exitMentalStates;
+  final String? exitScreenshot;
+  
+  // Memo
+  final int? rating; // 1-5
+  final String? memo;
+  
+  // Trackings
+  final String? trackings;
+  final String? mistakes;
+  
+  // Transfers
+  final double? transferAmount;
+  final String? transferScreenshot;
+  
+  // Legacy fields (keeping for backward compatibility)
   final TradeType type;
   final TradeStatus status;
-  final double entryPrice;
   final double? exitPrice;
   final double quantity;
   final double? stopLoss;
@@ -27,10 +76,47 @@ class Trade extends Equatable {
 
   const Trade({
     this.id,
+    // Trade Transfers
+    this.tag,
+    required this.datetime,
+    this.exchanges,
+    this.entryType,
     required this.symbol,
+    this.strategies,
+    this.side,
+    required this.entryPrice,
+    this.positionMargin,
+    this.leverage,
+    this.orderType,
+    this.timeFrame,
+    this.entryFeeRate,
+    this.entryMentalStates,
+    this.entryScreenshot,
+    // Checklist
+    this.checklist,
+    // Trade Management
+    this.stopLossPrice,
+    this.takeProfitPrice,
+    // Trade Exit
+    this.actualExitPrice,
+    this.marginClosedPercent,
+    this.exitType,
+    this.exitFeeRate,
+    this.exitDatetime,
+    this.exitMentalStates,
+    this.exitScreenshot,
+    // Memo
+    this.rating,
+    this.memo,
+    // Trackings
+    this.trackings,
+    this.mistakes,
+    // Transfers
+    this.transferAmount,
+    this.transferScreenshot,
+    // Legacy fields
     required this.type,
     required this.status,
-    required this.entryPrice,
     this.exitPrice,
     required this.quantity,
     this.stopLoss,
@@ -103,10 +189,39 @@ class Trade extends Equatable {
   // Copy with method
   Trade copyWith({
     int? id,
+    String? tag,
+    DateTime? datetime,
+    String? exchanges,
+    EntryType? entryType,
     String? symbol,
+    String? strategies,
+    Side? side,
+    double? entryPrice,
+    double? positionMargin,
+    double? leverage,
+    OrderType? orderType,
+    String? timeFrame,
+    double? entryFeeRate,
+    String? entryMentalStates,
+    String? entryScreenshot,
+    List<String>? checklist,
+    double? stopLossPrice,
+    double? takeProfitPrice,
+    double? actualExitPrice,
+    double? marginClosedPercent,
+    ExitType? exitType,
+    double? exitFeeRate,
+    DateTime? exitDatetime,
+    String? exitMentalStates,
+    String? exitScreenshot,
+    int? rating,
+    String? memo,
+    String? trackings,
+    String? mistakes,
+    double? transferAmount,
+    String? transferScreenshot,
     TradeType? type,
     TradeStatus? status,
-    double? entryPrice,
     double? exitPrice,
     double? quantity,
     double? stopLoss,
@@ -125,10 +240,39 @@ class Trade extends Equatable {
   }) {
     return Trade(
       id: id ?? this.id,
+      tag: tag ?? this.tag,
+      datetime: datetime ?? this.datetime,
+      exchanges: exchanges ?? this.exchanges,
+      entryType: entryType ?? this.entryType,
       symbol: symbol ?? this.symbol,
+      strategies: strategies ?? this.strategies,
+      side: side ?? this.side,
+      entryPrice: entryPrice ?? this.entryPrice,
+      positionMargin: positionMargin ?? this.positionMargin,
+      leverage: leverage ?? this.leverage,
+      orderType: orderType ?? this.orderType,
+      timeFrame: timeFrame ?? this.timeFrame,
+      entryFeeRate: entryFeeRate ?? this.entryFeeRate,
+      entryMentalStates: entryMentalStates ?? this.entryMentalStates,
+      entryScreenshot: entryScreenshot ?? this.entryScreenshot,
+      checklist: checklist ?? this.checklist,
+      stopLossPrice: stopLossPrice ?? this.stopLossPrice,
+      takeProfitPrice: takeProfitPrice ?? this.takeProfitPrice,
+      actualExitPrice: actualExitPrice ?? this.actualExitPrice,
+      marginClosedPercent: marginClosedPercent ?? this.marginClosedPercent,
+      exitType: exitType ?? this.exitType,
+      exitFeeRate: exitFeeRate ?? this.exitFeeRate,
+      exitDatetime: exitDatetime ?? this.exitDatetime,
+      exitMentalStates: exitMentalStates ?? this.exitMentalStates,
+      exitScreenshot: exitScreenshot ?? this.exitScreenshot,
+      rating: rating ?? this.rating,
+      memo: memo ?? this.memo,
+      trackings: trackings ?? this.trackings,
+      mistakes: mistakes ?? this.mistakes,
+      transferAmount: transferAmount ?? this.transferAmount,
+      transferScreenshot: transferScreenshot ?? this.transferScreenshot,
       type: type ?? this.type,
       status: status ?? this.status,
-      entryPrice: entryPrice ?? this.entryPrice,
       exitPrice: exitPrice ?? this.exitPrice,
       quantity: quantity ?? this.quantity,
       stopLoss: stopLoss ?? this.stopLoss,
@@ -150,10 +294,39 @@ class Trade extends Equatable {
   @override
   List<Object?> get props => [
     id,
+    tag,
+    datetime,
+    exchanges,
+    entryType,
     symbol,
+    strategies,
+    side,
+    entryPrice,
+    positionMargin,
+    leverage,
+    orderType,
+    timeFrame,
+    entryFeeRate,
+    entryMentalStates,
+    entryScreenshot,
+    checklist,
+    stopLossPrice,
+    takeProfitPrice,
+    actualExitPrice,
+    marginClosedPercent,
+    exitType,
+    exitFeeRate,
+    exitDatetime,
+    exitMentalStates,
+    exitScreenshot,
+    rating,
+    memo,
+    trackings,
+    mistakes,
+    transferAmount,
+    transferScreenshot,
     type,
     status,
-    entryPrice,
     exitPrice,
     quantity,
     stopLoss,
