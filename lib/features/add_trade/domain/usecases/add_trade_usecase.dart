@@ -14,12 +14,20 @@ class AddTradeUseCase {
     if (trade.entryPrice <= 0) {
       throw ArgumentError('Entry price must be greater than 0');
     }
-    if (trade.quantity <= 0) {
-      throw ArgumentError('Quantity must be greater than 0');
+    
+    // For new trades, calculate quantity from positionMargin if available
+    Trade tradeToSave = trade;
+    if (trade.quantity <= 0 && trade.positionMargin != null && trade.positionMargin! > 0) {
+      final calculatedQuantity = trade.positionMargin! / trade.entryPrice;
+      tradeToSave = trade.copyWith(quantity: calculatedQuantity);
+    }
+    
+    if (tradeToSave.quantity <= 0) {
+      throw ArgumentError('Quantity must be greater than 0. Please provide either quantity or position margin.');
     }
 
     // Calculate derived fields
-    final calculatedTrade = _calculateTradeFields(trade);
+    final calculatedTrade = _calculateTradeFields(tradeToSave);
     
     return await repository.insertTrade(calculatedTrade);
   }

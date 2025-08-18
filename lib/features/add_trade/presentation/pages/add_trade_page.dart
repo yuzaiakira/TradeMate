@@ -14,6 +14,17 @@ class AddTradePage extends StatefulWidget {
 }
 
 class _AddTradePageState extends State<AddTradePage> {
+  final ScrollController _scrollController = ScrollController();
+  final Map<String, bool> _expandedSections = {
+    'trade_transfers': true,
+    'checklist': false,
+    'trade_management': false,
+    'trade_exit': false,
+    'memo': false,
+    'trackings': false,
+    'transfers': false,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -24,98 +35,472 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSection(String sectionKey) {
+    setState(() {
+      _expandedSections[sectionKey] = !(_expandedSections[sectionKey] ?? false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Trade'),
+        elevation: 0,
+        backgroundColor: AppTheme.primaryColor,
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () => _showHelpDialog(context),
+          ),
+        ],
       ),
       body: Consumer2<AddTradeProvider, UserDefinedValuesProvider>(
         builder: (context, addTradeProvider, userValuesProvider, child) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Trade Transfers Section
-                _buildTradeTransfersSection(context, addTradeProvider, userValuesProvider),
-                const SizedBox(height: 16),
-                
-                // Checklist Section
-                _buildChecklistSection(addTradeProvider),
-                const SizedBox(height: 16),
-                
-                // Trade Management Section
-                _buildTradeManagementSection(addTradeProvider),
-                const SizedBox(height: 16),
-                
-                // Trade Exit Section
-                _buildTradeExitSection(context, addTradeProvider, userValuesProvider),
-                const SizedBox(height: 16),
-                
-                // Memo Section
-                _buildMemoSection(addTradeProvider),
-                const SizedBox(height: 16),
-                
-                // Trackings Section
-                _buildTrackingsSection(context, addTradeProvider, userValuesProvider),
-                const SizedBox(height: 16),
-                
-                // Transfers Section
-                _buildTransfersSection(addTradeProvider),
-                const SizedBox(height: 24),
-                
-                // Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: addTradeProvider.isFormValid ? addTradeProvider.addTrade : null,
-                    style: AppTheme.primaryButtonStyle.copyWith(
-                      minimumSize: const WidgetStatePropertyAll(Size(0, 50)),
-                    ),
-                    child: _buildSubmitButtonContent(addTradeProvider),
+          return Column(
+            children: [
+              // Progress indicator
+              _buildProgressIndicator(addTradeProvider),
+              
+              // Main content
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Welcome message
+                      _buildWelcomeMessage(),
+                      const SizedBox(height: 24),
+                      
+                      // Trade Transfers Section
+                      _buildExpandableSection(
+                        'trade_transfers',
+                        'Trade Transfers',
+                        Icons.swap_horiz,
+                        _buildTradeTransfersSection(context, addTradeProvider, userValuesProvider),
+                        isRequired: true,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Checklist Section
+                      _buildExpandableSection(
+                        'checklist',
+                        'Pre-Trade Checklist',
+                        Icons.checklist,
+                        _buildChecklistSection(addTradeProvider),
+                        isRequired: false,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Trade Management Section
+                      _buildExpandableSection(
+                        'trade_management',
+                        'Trade Management',
+                        Icons.settings,
+                        _buildTradeManagementSection(addTradeProvider),
+                        isRequired: false,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Trade Exit Section
+                      _buildExpandableSection(
+                        'trade_exit',
+                        'Trade Exit',
+                        Icons.exit_to_app,
+                        _buildTradeExitSection(context, addTradeProvider, userValuesProvider),
+                        isRequired: false,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Memo Section
+                      _buildExpandableSection(
+                        'memo',
+                        'Memo & Rating',
+                        Icons.note,
+                        _buildMemoSection(addTradeProvider),
+                        isRequired: false,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Trackings Section
+                      _buildExpandableSection(
+                        'trackings',
+                        'Analysis & Tracking',
+                        Icons.analytics,
+                        _buildTrackingsSection(context, addTradeProvider, userValuesProvider),
+                        isRequired: false,
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Transfers Section
+                      _buildExpandableSection(
+                        'transfers',
+                        'Transfers',
+                        Icons.money,
+                        _buildTransfersSection(addTradeProvider),
+                        isRequired: false,
+                      ),
+                      const SizedBox(height: 32),
+                      
+                      // Submit Button
+                      _buildSubmitSection(addTradeProvider),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // Status Messages
+                      _buildStatusMessages(addTradeProvider),
+                    ],
                   ),
                 ),
-                
-                const SizedBox(height: 16),
-                
-                // Error Message
-                if (addTradeProvider.status == AddTradeStatus.error)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppTheme.errorColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.errorColor),
-                    ),
-                    child: Text(
-                      addTradeProvider.errorMessage,
-                      style: TextStyle(color: AppTheme.errorColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                
-                // Success Message
-                if (addTradeProvider.status == AddTradeStatus.success)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppTheme.successColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.successColor),
-                    ),
-                    child: Text(
-                      'Trade added successfully!',
-                      style: TextStyle(color: AppTheme.successColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
+    );
+  }
+
+  Widget _buildProgressIndicator(AddTradeProvider provider) {
+    final requiredFields = [
+      provider.symbol.isNotEmpty,
+      provider.entryPrice > 0,
+      provider.datetime != null,
+      (provider.quantity > 0 || (provider.positionMargin != null && provider.positionMargin! > 0)),
+    ];
+    final completedFields = requiredFields.where((field) => field).length;
+    final progress = completedFields / requiredFields.length;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Progress: ${(progress * 100).toInt()}%',
+                style: AppTheme.bodyStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primaryColor,
+                ),
+              ),
+              Text(
+                '$completedFields/${requiredFields.length} required fields',
+                style: AppTheme.captionStyle,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: progress,
+            backgroundColor: AppTheme.borderColor,
+            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWelcomeMessage() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.lightbulb_outline,
+            color: AppTheme.primaryColor,
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome to TradeMate!',
+                  style: AppTheme.subheadingStyle.copyWith(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Fill in the required fields to add your trade. You can expand/collapse sections as needed.',
+                  style: AppTheme.captionStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpandableSection(
+    String sectionKey,
+    String title,
+    IconData icon,
+    Widget content,
+    {bool isRequired = false}
+  ) {
+    final isExpanded = _expandedSections[sectionKey] ?? false;
+    
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: isRequired ? AppTheme.primaryColor.withValues(alpha: 0.3) : AppTheme.borderColor,
+          width: isRequired ? 2 : 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          // Section header
+          InkWell(
+            onTap: () => _toggleSection(sectionKey),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: isRequired 
+                    ? AppTheme.primaryColor.withValues(alpha: 0.1)
+                    : Colors.grey.withValues(alpha: 0.05),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    icon,
+                    color: isRequired ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          title,
+                          style: AppTheme.subheadingStyle.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: isRequired ? AppTheme.primaryColor : AppTheme.textPrimaryColor,
+                          ),
+                        ),
+                        if (isRequired) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Required',
+                              style: AppTheme.captionStyle.copyWith(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Section content
+          if (isExpanded)
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: content,
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubmitSection(AddTradeProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Form validation summary
+          if (!provider.isFormValid) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.errorColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: AppTheme.errorColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Please complete all required fields to continue',
+                      style: AppTheme.captionStyle.copyWith(
+                        color: AppTheme.errorColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          
+          // Submit button
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: ElevatedButton(
+              onPressed: provider.isFormValid ? provider.addTrade : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: provider.isFormValid 
+                    ? AppTheme.primaryColor 
+                    : AppTheme.borderColor,
+                foregroundColor: provider.isFormValid 
+                    ? Colors.white 
+                    : AppTheme.textSecondaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: provider.isFormValid ? 4 : 0,
+              ),
+              child: _buildSubmitButtonContent(provider),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusMessages(AddTradeProvider provider) {
+    return Column(
+      children: [
+        // Error Message
+        if (provider.status == AddTradeStatus.error)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppTheme.errorColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.errorColor),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: AppTheme.errorColor,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    provider.errorMessage,
+                    style: TextStyle(
+                      color: AppTheme.errorColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        
+        // Success Message
+        if (provider.status == AddTradeStatus.success)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppTheme.successColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.successColor),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  color: AppTheme.successColor,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Trade added successfully!',
+                        style: TextStyle(
+                          color: AppTheme.successColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Your trade has been saved to the database.',
+                        style: AppTheme.captionStyle.copyWith(
+                          color: AppTheme.successColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
@@ -124,400 +509,507 @@ class _AddTradePageState extends State<AddTradePage> {
     AddTradeProvider addTradeProvider, 
     UserDefinedValuesProvider userValuesProvider
   ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Trade Transfers', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Tag
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Tag',
-                hintText: 'Enter trade tag',
-                prefixIcon: Icons.tag,
-              ),
-              onChanged: addTradeProvider.updateTag,
+    return Column(
+      children: [
+        // Tag
+        _buildFormField(
+          label: 'Tag',
+          hint: 'Enter trade tag (optional)',
+          icon: Icons.tag,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Tag',
+              hintText: 'Enter trade tag',
+              prefixIcon: Icons.tag,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Datetime
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Datetime',
-                hintText: 'Select date and time',
-                prefixIcon: Icons.schedule,
-              ),
-              readOnly: true,
-              onTap: () => _selectDateTime(context, addTradeProvider),
-              controller: TextEditingController(
-                text: addTradeProvider.datetime?.toString().substring(0, 16) ?? 'Select datetime',
-              ),
+            onChanged: addTradeProvider.updateTag,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Datetime
+        _buildFormField(
+          label: 'Trade Date & Time',
+          hint: 'When did you enter this trade?',
+          icon: Icons.schedule,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Datetime',
+              hintText: 'Select date and time',
+              prefixIcon: Icons.schedule,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Exchanges - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('exchanges'),
-              builder: (context, snapshot) {
-                final exchanges = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Exchanges',
-                  prefixIcon: Icons.swap_horiz,
-                  options: exchanges,
-                  selectedValues: addTradeProvider.exchanges != null ? [addTradeProvider.exchanges!] : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateExchanges(values.first);
-                    } else {
-                      addTradeProvider.updateExchanges(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('exchanges', value);
-                    addTradeProvider.updateExchanges(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select exchange',
-                );
-              },
+            readOnly: true,
+            onTap: () => _selectDateTime(context, addTradeProvider),
+            controller: TextEditingController(
+              text: addTradeProvider.datetime?.toString().substring(0, 16) ?? 'Select datetime',
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Entry Type
-            DropdownButtonFormField<EntryType>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Entry Type',
-                prefixIcon: Icons.input,
-              ),
-              value: addTradeProvider.entryType,
-              items: EntryType.values
-                  .map((type) => DropdownMenuItem(
-                        value: type,
-                        child: Text(_getEntryTypeDisplayName(type)),
-                      ))
-                  .toList(),
-              onChanged: addTradeProvider.updateEntryType,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Exchanges
+        _buildFormField(
+          label: 'Exchange',
+          hint: 'Which exchange did you use?',
+          icon: Icons.swap_horiz,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('exchanges'),
+            builder: (context, snapshot) {
+              final exchanges = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Exchanges',
+                prefixIcon: Icons.swap_horiz,
+                options: exchanges,
+                selectedValues: addTradeProvider.exchanges != null ? [addTradeProvider.exchanges!] : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateExchanges(values.first);
+                  } else {
+                    addTradeProvider.updateExchanges(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('exchanges', value);
+                  addTradeProvider.updateExchanges(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select exchange',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Entry Type
+        _buildFormField(
+          label: 'Entry Type',
+          hint: 'What type of entry is this?',
+          icon: Icons.input,
+          child: DropdownButtonFormField<EntryType>(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Entry Type',
+              prefixIcon: Icons.input,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Symbol - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('symbols'),
-              builder: (context, snapshot) {
-                final symbols = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Symbol',
-                  prefixIcon: Icons.currency_exchange,
-                  options: symbols,
-                  selectedValues: addTradeProvider.symbol.isNotEmpty ? [addTradeProvider.symbol] : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateSymbol(values.first);
-                    } else {
-                      addTradeProvider.updateSymbol('');
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('symbols', value);
-                    addTradeProvider.updateSymbol(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select symbol',
-                );
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Strategies - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('strategies'),
-              builder: (context, snapshot) {
-                final strategies = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Strategies',
-                  prefixIcon: Icons.trending_up,
-                  options: strategies,
-                  selectedValues: addTradeProvider.strategies != null ? [addTradeProvider.strategies!] : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateStrategies(values.first);
-                    } else {
-                      addTradeProvider.updateStrategies(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('strategies', value);
-                    addTradeProvider.updateStrategies(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select strategy',
-                );
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Side
-            DropdownButtonFormField<Side>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Side',
+            value: addTradeProvider.entryType,
+            items: EntryType.values
+                .map((type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(_getEntryTypeDisplayName(type)),
+                    ))
+                .toList(),
+            onChanged: addTradeProvider.updateEntryType,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Symbol
+        _buildFormField(
+          label: 'Trading Pair',
+          hint: 'Which asset are you trading?',
+          icon: Icons.currency_exchange,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('symbols'),
+            builder: (context, snapshot) {
+              final symbols = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Symbol',
+                prefixIcon: Icons.currency_exchange,
+                options: symbols,
+                selectedValues: addTradeProvider.symbol.isNotEmpty ? [addTradeProvider.symbol] : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateSymbol(values.first);
+                  } else {
+                    addTradeProvider.updateSymbol('');
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('symbols', value);
+                  addTradeProvider.updateSymbol(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select symbol',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Strategies
+        _buildFormField(
+          label: 'Strategy',
+          hint: 'What strategy are you using?',
+          icon: Icons.trending_up,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('strategies'),
+            builder: (context, snapshot) {
+              final strategies = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Strategies',
                 prefixIcon: Icons.trending_up,
-              ),
-              value: addTradeProvider.side,
-              items: Side.values
-                  .map((side) => DropdownMenuItem(
-                        value: side,
-                        child: Text(side.name.toUpperCase()),
-                      ))
-                  .toList(),
-              onChanged: addTradeProvider.updateSide,
+                options: strategies,
+                selectedValues: addTradeProvider.strategies != null ? [addTradeProvider.strategies!] : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateStrategies(values.first);
+                  } else {
+                    addTradeProvider.updateStrategies(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('strategies', value);
+                  addTradeProvider.updateStrategies(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select strategy',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Side
+        _buildFormField(
+          label: 'Position Side',
+          hint: 'Are you going long or short?',
+          icon: Icons.trending_up,
+          child: DropdownButtonFormField<Side>(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Side',
+              prefixIcon: Icons.trending_up,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Entry Price
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Entry Price',
-                hintText: '0.00',
-                prefixIcon: Icons.attach_money,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final price = double.tryParse(value) ?? 0.0;
-                addTradeProvider.updateEntryPrice(price);
-              },
+            value: addTradeProvider.side,
+            items: Side.values
+                .map((side) => DropdownMenuItem(
+                      value: side,
+                      child: Text(side.name.toUpperCase()),
+                    ))
+                .toList(),
+            onChanged: addTradeProvider.updateSide,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Entry Price
+        _buildFormField(
+          label: 'Entry Price',
+          hint: 'At what price did you enter?',
+          icon: Icons.attach_money,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Entry Price',
+              hintText: '0.00',
+              prefixIcon: Icons.attach_money,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Position Margin
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Position Margin',
-                hintText: '0.00',
-                prefixIcon: Icons.account_balance_wallet,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final margin = double.tryParse(value);
-                addTradeProvider.updatePositionMargin(margin);
-              },
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final price = double.tryParse(value) ?? 0.0;
+              addTradeProvider.updateEntryPrice(price);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Position Margin
+        _buildFormField(
+          label: 'Position Size',
+          hint: 'How much are you investing?',
+          icon: Icons.account_balance_wallet,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Position Margin',
+              hintText: '0.00',
+              prefixIcon: Icons.account_balance_wallet,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Leverage
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Leverage',
-                hintText: '1x',
-                prefixIcon: Icons.trending_up,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final leverage = double.tryParse(value);
-                addTradeProvider.updateLeverage(leverage);
-              },
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final margin = double.tryParse(value);
+              addTradeProvider.updatePositionMargin(margin);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Leverage
+        _buildFormField(
+          label: 'Leverage',
+          hint: 'What leverage are you using?',
+          icon: Icons.trending_up,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Leverage',
+              hintText: '1x',
+              prefixIcon: Icons.trending_up,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Order Type
-            DropdownButtonFormField<OrderType>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Order Type',
-                prefixIcon: Icons.shopping_cart,
-              ),
-              value: addTradeProvider.orderType,
-              items: OrderType.values
-                  .map((type) => DropdownMenuItem(
-                        value: type,
-                        child: Text(type.name.toUpperCase()),
-                      ))
-                  .toList(),
-              onChanged: addTradeProvider.updateOrderType,
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final leverage = double.tryParse(value);
+              addTradeProvider.updateLeverage(leverage);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Order Type
+        _buildFormField(
+          label: 'Order Type',
+          hint: 'What type of order did you place?',
+          icon: Icons.shopping_cart,
+          child: DropdownButtonFormField<OrderType>(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Order Type',
+              prefixIcon: Icons.shopping_cart,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Time Frame
-            DropdownButtonFormField<String>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Time Frame',
-                prefixIcon: Icons.timer,
-              ),
-              value: addTradeProvider.timeFrame,
-              items: ['1m', '5m', '15m', '30m', '1h', '4h', '1d', '1w']
-                  .map((timeframe) => DropdownMenuItem(
-                        value: timeframe,
-                        child: Text(timeframe),
-                      ))
-                  .toList(),
-              onChanged: addTradeProvider.updateTimeFrame,
+            value: addTradeProvider.orderType,
+            items: OrderType.values
+                .map((type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(type.name.toUpperCase()),
+                    ))
+                .toList(),
+            onChanged: addTradeProvider.updateOrderType,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Time Frame
+        _buildFormField(
+          label: 'Time Frame',
+          hint: 'What time frame are you trading?',
+          icon: Icons.timer,
+          child: DropdownButtonFormField<String>(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Time Frame',
+              prefixIcon: Icons.timer,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Entry Fee Rate - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('entryFeeRates'),
-              builder: (context, snapshot) {
-                final feeRates = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Entry Fee Rate',
-                  prefixIcon: Icons.percent,
-                  options: feeRates,
-                  selectedValues: addTradeProvider.entryFeeRate != null 
-                      ? [addTradeProvider.entryFeeRate.toString()] 
-                      : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      final rate = double.tryParse(values.first);
-                      addTradeProvider.updateEntryFeeRate(rate);
-                    } else {
-                      addTradeProvider.updateEntryFeeRate(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('entryFeeRates', value);
-                    final rate = double.tryParse(value);
+            value: addTradeProvider.timeFrame,
+            items: ['1m', '5m', '15m', '30m', '1h', '4h', '1d', '1w']
+                .map((timeframe) => DropdownMenuItem(
+                      value: timeframe,
+                      child: Text(timeframe),
+                    ))
+                .toList(),
+            onChanged: addTradeProvider.updateTimeFrame,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Entry Fee Rate
+        _buildFormField(
+          label: 'Entry Fee Rate',
+          hint: 'What fee rate did you pay?',
+          icon: Icons.percent,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('entryFeeRates'),
+            builder: (context, snapshot) {
+              final feeRates = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Entry Fee Rate',
+                prefixIcon: Icons.percent,
+                options: feeRates,
+                selectedValues: addTradeProvider.entryFeeRate != null 
+                    ? [addTradeProvider.entryFeeRate.toString()] 
+                    : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    final rate = double.tryParse(values.first);
                     addTradeProvider.updateEntryFeeRate(rate);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select fee rate',
-                );
-              },
+                  } else {
+                    addTradeProvider.updateEntryFeeRate(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('entryFeeRates', value);
+                  final rate = double.tryParse(value);
+                  addTradeProvider.updateEntryFeeRate(rate);
+                },
+                allowMultiple: false,
+                hintText: 'Select fee rate',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Entry Mental States
+        _buildFormField(
+          label: 'Mental State',
+          hint: 'How are you feeling about this trade?',
+          icon: Icons.psychology,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('entryMentalStates'),
+            builder: (context, snapshot) {
+              final mentalStates = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Entry Mental States',
+                prefixIcon: Icons.psychology,
+                options: mentalStates,
+                selectedValues: addTradeProvider.entryMentalStates != null 
+                    ? [addTradeProvider.entryMentalStates!] 
+                    : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateEntryMentalStates(values.first);
+                  } else {
+                    addTradeProvider.updateEntryMentalStates(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('entryMentalStates', value);
+                  addTradeProvider.updateEntryMentalStates(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select mental state',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Entry Screenshot
+        _buildFormField(
+          label: 'Entry Screenshot',
+          hint: 'Add a screenshot of your entry (optional)',
+          icon: Icons.photo,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Entry Screenshot Path',
+              hintText: 'Path to screenshot',
+              prefixIcon: Icons.photo,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Entry Mental States - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('entryMentalStates'),
-              builder: (context, snapshot) {
-                final mentalStates = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Entry Mental States',
-                  prefixIcon: Icons.psychology,
-                  options: mentalStates,
-                  selectedValues: addTradeProvider.entryMentalStates != null 
-                      ? [addTradeProvider.entryMentalStates!] 
-                      : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateEntryMentalStates(values.first);
-                    } else {
-                      addTradeProvider.updateEntryMentalStates(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('entryMentalStates', value);
-                    addTradeProvider.updateEntryMentalStates(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select mental state',
-                );
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Entry Screenshot
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Entry Screenshot Path',
-                hintText: 'Path to screenshot',
-                prefixIcon: Icons.photo,
+            onChanged: addTradeProvider.updateEntryScreenshot,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormField({
+    required String label,
+    required String hint,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 16, color: AppTheme.textSecondaryColor),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: AppTheme.bodyStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimaryColor,
               ),
-              onChanged: addTradeProvider.updateEntryScreenshot,
             ),
           ],
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(
+          hint,
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        child,
+      ],
     );
   }
 
   Widget _buildChecklistSection(AddTradeProvider provider) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Checklist', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Checklist items
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Checklist Items',
-                hintText: 'Enter checklist items (one per line)',
-                prefixIcon: Icons.checklist,
-              ),
-              maxLines: 5,
-              onChanged: (value) {
-                final items = value.split('\n').where((item) => item.trim().isNotEmpty).toList();
-                provider.updateChecklist(items);
-              },
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Pre-trade checklist helps ensure you\'re following your trading plan.',
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        TextFormField(
+          decoration: AppTheme.inputDecoration(
+            labelText: 'Checklist Items',
+            hintText: 'Enter checklist items (one per line)',
+            prefixIcon: Icons.checklist,
+          ),
+          maxLines: 5,
+          onChanged: (value) {
+            final items = value.split('\n').where((item) => item.trim().isNotEmpty).toList();
+            provider.updateChecklist(items);
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildTradeManagementSection(AddTradeProvider provider) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Trade Management', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Stop Loss Price
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Stop Loss Price',
-                hintText: '0.00',
-                prefixIcon: Icons.stop_circle,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final stopLoss = double.tryParse(value);
-                provider.updateStopLossPrice(stopLoss);
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Take Profit Price
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Take Profit Price',
-                hintText: '0.00',
-                prefixIcon: Icons.trending_up,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final takeProfit = double.tryParse(value);
-                provider.updateTakeProfitPrice(takeProfit);
-              },
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Set your stop loss and take profit levels to manage risk.',
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Stop Loss Price',
+          hint: 'At what price will you exit if the trade goes against you?',
+          icon: Icons.stop_circle,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Stop Loss Price',
+              hintText: '0.00',
+              prefixIcon: Icons.stop_circle,
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final stopLoss = double.tryParse(value);
+              provider.updateStopLossPrice(stopLoss);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Take Profit Price',
+          hint: 'At what price will you take your profits?',
+          icon: Icons.trending_up,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Take Profit Price',
+              hintText: '0.00',
+              prefixIcon: Icons.trending_up,
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final takeProfit = double.tryParse(value);
+              provider.updateTakeProfitPrice(takeProfit);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -526,206 +1018,242 @@ class _AddTradePageState extends State<AddTradePage> {
     AddTradeProvider addTradeProvider, 
     UserDefinedValuesProvider userValuesProvider
   ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Trade Exit', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Actual Exit Price
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Actual Exit Price',
-                hintText: '0.00',
-                prefixIcon: Icons.exit_to_app,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final exitPrice = double.tryParse(value);
-                addTradeProvider.updateActualExitPrice(exitPrice);
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Margin Closed Percent
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: '% of Margin Closed',
-                hintText: '100',
-                prefixIcon: Icons.percent,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final percent = double.tryParse(value);
-                addTradeProvider.updateMarginClosedPercent(percent);
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Exit Type
-            DropdownButtonFormField<ExitType>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Exit Type',
-                prefixIcon: Icons.exit_to_app,
-              ),
-              value: addTradeProvider.exitType,
-              items: ExitType.values
-                  .map((type) => DropdownMenuItem(
-                        value: type,
-                        child: Text(type.name.toUpperCase()),
-                      ))
-                  .toList(),
-              onChanged: addTradeProvider.updateExitType,
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Exit Fee Rate - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('exitFeeRates'),
-              builder: (context, snapshot) {
-                final feeRates = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Exit Fee Rate',
-                  prefixIcon: Icons.percent,
-                  options: feeRates,
-                  selectedValues: addTradeProvider.exitFeeRate != null 
-                      ? [addTradeProvider.exitFeeRate.toString()] 
-                      : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      final rate = double.tryParse(values.first);
-                      addTradeProvider.updateExitFeeRate(rate);
-                    } else {
-                      addTradeProvider.updateExitFeeRate(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('exitFeeRates', value);
-                    final rate = double.tryParse(value);
-                    addTradeProvider.updateExitFeeRate(rate);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select fee rate',
-                );
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Exit Datetime
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Exit Datetime',
-                hintText: 'Select exit date and time',
-                prefixIcon: Icons.schedule,
-              ),
-              readOnly: true,
-              onTap: () => _selectExitDateTime(context, addTradeProvider),
-              controller: TextEditingController(
-                text: addTradeProvider.exitDatetime?.toString().substring(0, 16) ?? 'Select exit datetime',
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Exit Mental States - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('exitMentalStates'),
-              builder: (context, snapshot) {
-                final mentalStates = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Exit Mental States',
-                  prefixIcon: Icons.psychology,
-                  options: mentalStates,
-                  selectedValues: addTradeProvider.exitMentalStates != null 
-                      ? [addTradeProvider.exitMentalStates!] 
-                      : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateExitMentalStates(values.first);
-                    } else {
-                      addTradeProvider.updateExitMentalStates(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('exitMentalStates', value);
-                    addTradeProvider.updateExitMentalStates(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select mental state',
-                );
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Exit Screenshot
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Exit Screenshot Path',
-                hintText: 'Path to screenshot',
-                prefixIcon: Icons.photo,
-              ),
-              onChanged: addTradeProvider.updateExitScreenshot,
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Fill in exit details when you close the trade.',
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Actual Exit Price',
+          hint: 'At what price did you exit the trade?',
+          icon: Icons.exit_to_app,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Actual Exit Price',
+              hintText: '0.00',
+              prefixIcon: Icons.exit_to_app,
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final exitPrice = double.tryParse(value);
+              addTradeProvider.updateActualExitPrice(exitPrice);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Position Closed',
+          hint: 'What percentage of your position did you close?',
+          icon: Icons.percent,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: '% of Margin Closed',
+              hintText: '100',
+              prefixIcon: Icons.percent,
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final percent = double.tryParse(value);
+              addTradeProvider.updateMarginClosedPercent(percent);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Exit Type',
+          hint: 'Did you hit take profit or stop loss?',
+          icon: Icons.exit_to_app,
+          child: DropdownButtonFormField<ExitType>(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Exit Type',
+              prefixIcon: Icons.exit_to_app,
+            ),
+            value: addTradeProvider.exitType,
+            items: ExitType.values
+                .map((type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(type.name.toUpperCase()),
+                    ))
+                .toList(),
+            onChanged: addTradeProvider.updateExitType,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Exit Fee Rate',
+          hint: 'What fee rate did you pay on exit?',
+          icon: Icons.percent,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('exitFeeRates'),
+            builder: (context, snapshot) {
+              final feeRates = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Exit Fee Rate',
+                prefixIcon: Icons.percent,
+                options: feeRates,
+                selectedValues: addTradeProvider.exitFeeRate != null 
+                    ? [addTradeProvider.exitFeeRate.toString()] 
+                    : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    final rate = double.tryParse(values.first);
+                    addTradeProvider.updateExitFeeRate(rate);
+                  } else {
+                    addTradeProvider.updateExitFeeRate(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('exitFeeRates', value);
+                  final rate = double.tryParse(value);
+                  addTradeProvider.updateExitFeeRate(rate);
+                },
+                allowMultiple: false,
+                hintText: 'Select fee rate',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Exit Date & Time',
+          hint: 'When did you exit this trade?',
+          icon: Icons.schedule,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Exit Datetime',
+              hintText: 'Select exit date and time',
+              prefixIcon: Icons.schedule,
+            ),
+            readOnly: true,
+            onTap: () => _selectExitDateTime(context, addTradeProvider),
+            controller: TextEditingController(
+              text: addTradeProvider.exitDatetime?.toString().substring(0, 16) ?? 'Select exit datetime',
+            ),
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Exit Mental State',
+          hint: 'How did you feel when you exited?',
+          icon: Icons.psychology,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('exitMentalStates'),
+            builder: (context, snapshot) {
+              final mentalStates = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Exit Mental States',
+                prefixIcon: Icons.psychology,
+                options: mentalStates,
+                selectedValues: addTradeProvider.exitMentalStates != null 
+                    ? [addTradeProvider.exitMentalStates!] 
+                    : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateExitMentalStates(values.first);
+                  } else {
+                    addTradeProvider.updateExitMentalStates(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('exitMentalStates', value);
+                  addTradeProvider.updateExitMentalStates(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select mental state',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Exit Screenshot',
+          hint: 'Add a screenshot of your exit (optional)',
+          icon: Icons.photo,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Exit Screenshot Path',
+              hintText: 'Path to screenshot',
+              prefixIcon: Icons.photo,
+            ),
+            onChanged: addTradeProvider.updateExitScreenshot,
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildMemoSection(AddTradeProvider provider) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Memo', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Rating
-            DropdownButtonFormField<int>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Rating',
-                prefixIcon: Icons.star,
-              ),
-              value: provider.rating,
-              items: [1, 2, 3, 4, 5]
-                  .map((rating) => DropdownMenuItem(
-                        value: rating,
-                        child: Row(
-                          children: [
-                            Text('$rating '),
-                            ...List.generate(rating, (index) => const Icon(Icons.star, size: 16)),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-              onChanged: provider.updateRating,
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Memo
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Memo',
-                hintText: 'Enter trade memo...',
-                prefixIcon: Icons.note,
-              ),
-              maxLines: 3,
-              onChanged: provider.updateMemo,
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Rate your trade and add notes for future reference.',
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Trade Rating',
+          hint: 'How would you rate this trade?',
+          icon: Icons.star,
+          child: DropdownButtonFormField<int>(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Rating',
+              prefixIcon: Icons.star,
+            ),
+            value: provider.rating,
+            items: [1, 2, 3, 4, 5]
+                .map((rating) => DropdownMenuItem(
+                      value: rating,
+                      child: Row(
+                        children: [
+                          Text('$rating '),
+                          ...List.generate(rating, (index) => const Icon(Icons.star, size: 16)),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            onChanged: provider.updateRating,
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Memo',
+          hint: 'Add your thoughts and lessons learned',
+          icon: Icons.note,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Memo',
+              hintText: 'Enter trade memo...',
+              prefixIcon: Icons.note,
+            ),
+            maxLines: 3,
+            onChanged: provider.updateMemo,
+          ),
+        ),
+      ],
     );
   }
 
@@ -734,118 +1262,134 @@ class _AddTradePageState extends State<AddTradePage> {
     AddTradeProvider addTradeProvider, 
     UserDefinedValuesProvider userValuesProvider
   ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Trackings', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Trackings - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('trackings'),
-              builder: (context, snapshot) {
-                final trackings = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Trackings',
-                  prefixIcon: Icons.track_changes,
-                  options: trackings,
-                  selectedValues: addTradeProvider.trackings != null 
-                      ? [addTradeProvider.trackings!] 
-                      : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateTrackings(values.first);
-                    } else {
-                      addTradeProvider.updateTrackings(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('trackings', value);
-                    addTradeProvider.updateTrackings(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select tracking method',
-                );
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Mistakes - Multi-select dropdown
-            FutureBuilder<List<String>>(
-              future: userValuesProvider.getValues('mistakes'),
-              builder: (context, snapshot) {
-                final mistakes = snapshot.data ?? [];
-                return MultiSelectDropdown(
-                  label: 'Mistakes',
-                  prefixIcon: Icons.error,
-                  options: mistakes,
-                  selectedValues: addTradeProvider.mistakes != null 
-                      ? [addTradeProvider.mistakes!] 
-                      : [],
-                  onChanged: (values) {
-                    if (values.isNotEmpty) {
-                      addTradeProvider.updateMistakes(values.first);
-                    } else {
-                      addTradeProvider.updateMistakes(null);
-                    }
-                  },
-                  onAddNewValue: (value) async {
-                    await userValuesProvider.addValue('mistakes', value);
-                    addTradeProvider.updateMistakes(value);
-                  },
-                  allowMultiple: false,
-                  hintText: 'Select mistake type',
-                );
-              },
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Track what you analyzed and any mistakes made.',
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Analysis Method',
+          hint: 'What did you analyze before entering?',
+          icon: Icons.track_changes,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('trackings'),
+            builder: (context, snapshot) {
+              final trackings = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Trackings',
+                prefixIcon: Icons.track_changes,
+                options: trackings,
+                selectedValues: addTradeProvider.trackings != null 
+                    ? [addTradeProvider.trackings!] 
+                    : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateTrackings(values.first);
+                  } else {
+                    addTradeProvider.updateTrackings(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('trackings', value);
+                  addTradeProvider.updateTrackings(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select tracking method',
+              );
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Mistakes Made',
+          hint: 'What mistakes did you make in this trade?',
+          icon: Icons.error,
+          child: FutureBuilder<List<String>>(
+            future: userValuesProvider.getValues('mistakes'),
+            builder: (context, snapshot) {
+              final mistakes = snapshot.data ?? [];
+              return MultiSelectDropdown(
+                label: 'Mistakes',
+                prefixIcon: Icons.error,
+                options: mistakes,
+                selectedValues: addTradeProvider.mistakes != null 
+                    ? [addTradeProvider.mistakes!] 
+                    : [],
+                onChanged: (values) {
+                  if (values.isNotEmpty) {
+                    addTradeProvider.updateMistakes(values.first);
+                  } else {
+                    addTradeProvider.updateMistakes(null);
+                  }
+                },
+                onAddNewValue: (value) async {
+                  await userValuesProvider.addValue('mistakes', value);
+                  addTradeProvider.updateMistakes(value);
+                },
+                allowMultiple: false,
+                hintText: 'Select mistake type',
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildTransfersSection(AddTradeProvider provider) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Transfers', style: AppTheme.subheadingStyle),
-            const SizedBox(height: 16),
-            
-            // Transfer Amount
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Transfer Amount',
-                hintText: '0.00',
-                prefixIcon: Icons.money,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final amount = double.tryParse(value);
-                provider.updateTransferAmount(amount);
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Transfer Screenshot
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Transfer Screenshot Path',
-                hintText: 'Path to screenshot',
-                prefixIcon: Icons.photo,
-              ),
-              onChanged: provider.updateTransferScreenshot,
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Record any transfers related to this trade.',
+          style: AppTheme.captionStyle.copyWith(
+            color: AppTheme.textSecondaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Transfer Amount',
+          hint: 'How much did you transfer?',
+          icon: Icons.money,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Transfer Amount',
+              hintText: '0.00',
+              prefixIcon: Icons.money,
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              final amount = double.tryParse(value);
+              provider.updateTransferAmount(amount);
+            },
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        _buildFormField(
+          label: 'Transfer Screenshot',
+          hint: 'Add a screenshot of the transfer (optional)',
+          icon: Icons.photo,
+          child: TextFormField(
+            decoration: AppTheme.inputDecoration(
+              labelText: 'Transfer Screenshot Path',
+              hintText: 'Path to screenshot',
+              prefixIcon: Icons.photo,
+            ),
+            onChanged: provider.updateTransferScreenshot,
+          ),
+        ),
+      ],
     );
   }
 
@@ -903,6 +1447,53 @@ class _AddTradePageState extends State<AddTradePage> {
     }
   }
 
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('How to Add a Trade'),
+        content: const SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Required Fields:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text('• Symbol (trading pair)'),
+              Text('• Entry Price'),
+              Text('• Trade Date & Time'),
+              SizedBox(height: 16),
+              Text(
+                'Optional Fields:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text('• All other fields are optional but recommended for better analysis'),
+              SizedBox(height: 16),
+              Text(
+                'Tips:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text('• You can expand/collapse sections by tapping the headers'),
+              Text('• Add new values to dropdowns by typing and pressing "Add"'),
+              Text('• Your custom values will be saved for future use'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Got it!'),
+          ),
+        ],
+      ),
+    );
+  }
+
   String _getEntryTypeDisplayName(EntryType type) {
     switch (type) {
       case EntryType.trade:
@@ -937,7 +1528,13 @@ class _AddTradePageState extends State<AddTradePage> {
           ],
         );
       default:
-        return const Text('Add Trade');
+        return const Text(
+          'Add Trade',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        );
     }
   }
 }

@@ -336,10 +336,17 @@ class AddTradeProvider with ChangeNotifier {
 
   // Validate form
   bool get isFormValid {
-    return _symbol.isNotEmpty && 
-           _entryPrice > 0 && 
-           _quantity > 0 && 
-           _accountBalance > 0;
+    // Check if we have the basic required fields
+    if (_symbol.isEmpty || _entryPrice <= 0 || _datetime == null) {
+      return false;
+    }
+    
+    // Check if we have either quantity or positionMargin
+    if (_quantity <= 0 && (_positionMargin == null || _positionMargin! <= 0)) {
+      return false;
+    }
+    
+    return true;
   }
 
   Future<void> addTrade() async {
@@ -353,6 +360,12 @@ class AddTradeProvider with ChangeNotifier {
     try {
       _status = AddTradeStatus.loading;
       notifyListeners();
+
+      // Calculate quantity from positionMargin if available
+      double calculatedQuantity = _quantity;
+      if (_quantity <= 0 && _positionMargin != null && _positionMargin! > 0 && _entryPrice > 0) {
+        calculatedQuantity = _positionMargin! / _entryPrice;
+      }
 
       final trade = Trade(
         // Trade Transfers
@@ -397,7 +410,7 @@ class AddTradeProvider with ChangeNotifier {
         type: _type,
         status: _tradeStatus,
         exitPrice: _exitPrice,
-        quantity: _quantity,
+        quantity: calculatedQuantity,
         stopLoss: _stopLoss,
         takeProfit: _takeProfit,
         pnl: _pnl,

@@ -118,7 +118,16 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   TradeMateDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migrations {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+    );
+  }
 
   // Trade operations
   Future<List<Trade>> getAllTrades() async {
@@ -273,7 +282,7 @@ class TradeMateDatabase extends _$TradeMateDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'trademate.db'));
+    final file = File(p.join(dbFolder.path, 'trademate_v2.db'));
     return NativeDatabase.createInBackground(file);
   });
 }
