@@ -4,6 +4,7 @@ import '../../../../core/utils/app_theme.dart';
 import '../../../../core/widgets/multi_select_dropdown.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
 import '../../../add_trade/domain/entities/trade.dart';
+import '../../../add_trade/presentation/pages/edit_trade_page.dart';
 import '../provider/trade_list_provider.dart';
 import '../widgets/trade_card.dart';
 import '../widgets/trade_filter_sheet.dart';
@@ -554,9 +555,10 @@ class _TradeListPageState extends State<TradeListPage> {
   }
 
   void _editTrade(BuildContext context, Trade trade) {
-    // Navigate to edit trade page (you can implement this later)
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Edit functionality coming soon!')),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EditTradePage(trade: trade),
+      ),
     );
   }
 

@@ -349,6 +349,74 @@ class AddTradeProvider with ChangeNotifier {
     return true;
   }
 
+  // Build trade from current form data
+  Trade buildTrade() {
+    // Calculate quantity from positionMargin if available
+    double calculatedQuantity = _quantity;
+    if (_quantity <= 0 && _positionMargin != null && _positionMargin! > 0 && _entryPrice > 0) {
+      calculatedQuantity = _positionMargin! / _entryPrice;
+    }
+
+    return Trade(
+      // Trade Transfers
+      tag: _tag.isEmpty ? null : _tag,
+      datetime: _datetime ?? DateTime.now(),
+      exchanges: _exchanges,
+      entryType: _entryType,
+      symbol: _symbol,
+      strategies: _strategies,
+      side: _side,
+      entryPrice: _entryPrice,
+      positionMargin: _positionMargin,
+      leverage: _leverage,
+      orderType: _orderType,
+      timeFrame: _timeFrame,
+      entryFeeRate: _entryFeeRate,
+      entryMentalStates: _entryMentalStates,
+      entryScreenshot: _entryScreenshot,
+      // Checklist
+      checklist: _checklist,
+      // Trade Management
+      stopLossPrice: _stopLossPrice,
+      takeProfitPrice: _takeProfitPrice,
+      // Trade Exit
+      actualExitPrice: _actualExitPrice,
+      marginClosedPercent: _marginClosedPercent,
+      exitType: _exitType,
+      exitFeeRate: _exitFeeRate,
+      exitDatetime: _exitDatetime,
+      exitMentalStates: _exitMentalStates,
+      exitScreenshot: _exitScreenshot,
+      // Memo
+      rating: _rating,
+      memo: _memo.isEmpty ? null : _memo,
+      // Trackings
+      trackings: _trackings,
+      mistakes: _mistakes,
+      // Transfers
+      transferAmount: _transferAmount,
+      transferScreenshot: _transferScreenshot,
+      // Legacy fields
+      type: _type,
+      status: _tradeStatus,
+      exitPrice: _exitPrice,
+      quantity: calculatedQuantity,
+      stopLoss: _stopLoss,
+      takeProfit: _takeProfit,
+      pnl: _pnl,
+      pnlPercent: _pnlPercent,
+      riskRewardRatio: _riskRewardRatio,
+      entryDate: _entryDate,
+      exitDate: _exitDate,
+      notes: _notes.isEmpty ? null : _notes,
+      screenshotPath: _screenshotPath,
+      accountBalance: _accountBalance,
+      riskAmount: _riskAmount,
+      achievedR: _achievedR,
+      tradeDuration: _tradeDuration,
+    );
+  }
+
   Future<void> addTrade() async {
     if (!isFormValid) {
       _status = AddTradeStatus.error;
@@ -361,70 +429,7 @@ class AddTradeProvider with ChangeNotifier {
       _status = AddTradeStatus.loading;
       notifyListeners();
 
-      // Calculate quantity from positionMargin if available
-      double calculatedQuantity = _quantity;
-      if (_quantity <= 0 && _positionMargin != null && _positionMargin! > 0 && _entryPrice > 0) {
-        calculatedQuantity = _positionMargin! / _entryPrice;
-      }
-
-      final trade = Trade(
-        // Trade Transfers
-        tag: _tag.isEmpty ? null : _tag,
-        datetime: _datetime ?? DateTime.now(),
-        exchanges: _exchanges,
-        entryType: _entryType,
-        symbol: _symbol,
-        strategies: _strategies,
-        side: _side,
-        entryPrice: _entryPrice,
-        positionMargin: _positionMargin,
-        leverage: _leverage,
-        orderType: _orderType,
-        timeFrame: _timeFrame,
-        entryFeeRate: _entryFeeRate,
-        entryMentalStates: _entryMentalStates,
-        entryScreenshot: _entryScreenshot,
-        // Checklist
-        checklist: _checklist,
-        // Trade Management
-        stopLossPrice: _stopLossPrice,
-        takeProfitPrice: _takeProfitPrice,
-        // Trade Exit
-        actualExitPrice: _actualExitPrice,
-        marginClosedPercent: _marginClosedPercent,
-        exitType: _exitType,
-        exitFeeRate: _exitFeeRate,
-        exitDatetime: _exitDatetime,
-        exitMentalStates: _exitMentalStates,
-        exitScreenshot: _exitScreenshot,
-        // Memo
-        rating: _rating,
-        memo: _memo.isEmpty ? null : _memo,
-        // Trackings
-        trackings: _trackings,
-        mistakes: _mistakes,
-        // Transfers
-        transferAmount: _transferAmount,
-        transferScreenshot: _transferScreenshot,
-        // Legacy fields
-        type: _type,
-        status: _tradeStatus,
-        exitPrice: _exitPrice,
-        quantity: calculatedQuantity,
-        stopLoss: _stopLoss,
-        takeProfit: _takeProfit,
-        pnl: _pnl,
-        pnlPercent: _pnlPercent,
-        riskRewardRatio: _riskRewardRatio,
-        entryDate: _entryDate,
-        exitDate: _exitDate,
-        notes: _notes.isEmpty ? null : _notes,
-        screenshotPath: _screenshotPath,
-        accountBalance: _accountBalance,
-        riskAmount: _riskAmount,
-        achievedR: _achievedR,
-        tradeDuration: _tradeDuration,
-      );
+      final trade = buildTrade();
 
       final tradeId = await addTradeUseCase(trade);
       
