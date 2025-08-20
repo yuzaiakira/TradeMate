@@ -92,6 +92,25 @@ class UserDefinedValuesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Load all values for all categories
+  Future<void> loadAllValues() async {
+    final categories = [
+      'symbols',
+      'exchanges',
+      'strategies',
+      'entryFeeRates',
+      'exitFeeRates',
+      'entryMentalStates',
+      'exitMentalStates',
+      'trackings',
+      'mistakes',
+    ];
+    
+    for (final category in categories) {
+      await getValues(category);
+    }
+  }
+
   // Clear all caches
   void clearCache() {
     _valuesCache.clear();

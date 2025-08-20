@@ -5,6 +5,7 @@ import '../provider/add_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../../../core/widgets/multi_select_dropdown.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
+import 'manage_values_page.dart';
 
 class AddTradePage extends StatefulWidget {
   const AddTradePage({super.key});
@@ -60,6 +61,16 @@ class _AddTradePageState extends State<AddTradePage> {
           style: AppTheme.subheadingStyle.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, size: 20),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ManageValuesPage(),
+              ),
+            ),
+            tooltip: 'Manage Values',
+          ),
           IconButton(
             icon: const Icon(Icons.help_outline_rounded, size: 20),
             onPressed: () => _showHelpDialog(context),
