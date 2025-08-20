@@ -500,6 +500,7 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Trade Date & Time',
           hint: 'When did you enter this trade?',
           icon: Icons.schedule,
+          isRequired: true,
           child: TextFormField(
             decoration: AppTheme.inputDecoration(
               labelText: 'Datetime',
@@ -578,6 +579,7 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Trading Pair',
           hint: 'Which asset are you trading?',
           icon: Icons.currency_exchange,
+          isRequired: true,
           child: FutureBuilder<List<String>>(
             future: userValuesProvider.getValues('symbols'),
             builder: (context, snapshot) {
@@ -656,6 +658,7 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Entry Price',
           hint: 'At what price did you enter?',
           icon: Icons.attach_money,
+          isRequired: true,
           child: TextFormField(
             decoration: AppTheme.inputDecoration(
               labelText: 'Entry Price',
@@ -677,6 +680,7 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Position Size',
           hint: 'How much are you investing?',
           icon: Icons.account_balance_wallet,
+          isRequired: true,
           child: TextFormField(
             decoration: AppTheme.inputDecoration(
               labelText: 'Position Margin',
@@ -857,6 +861,7 @@ class _AddTradePageState extends State<AddTradePage> {
     required String hint,
     required IconData icon,
     required Widget child,
+    bool isRequired = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -872,6 +877,24 @@ class _AddTradePageState extends State<AddTradePage> {
                 color: AppTheme.textPrimaryColor,
               ),
             ),
+            if (isRequired) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'REQUIRED',
+                  style: AppTheme.labelStyle.copyWith(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
         const SizedBox(height: 2),
@@ -1553,6 +1576,7 @@ class _AddTradePageState extends State<AddTradePage> {
               Text('• Symbol (trading pair)'),
               Text('• Entry Price'),
               Text('• Trade Date & Time'),
+              Text('• Position Size (quantity or margin)'),
               SizedBox(height: 16),
               Text(
                 'Optional Fields:',
