@@ -57,9 +57,7 @@ class _AddTradePageState extends State<AddTradePage> {
       appBar: AppBar(
         title: Text(
           'Add Trade',
-          style: AppTheme.subheadingStyle.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTheme.subheadingStyle.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
@@ -75,7 +73,7 @@ class _AddTradePageState extends State<AddTradePage> {
             children: [
               // Progress indicator
               _buildProgressIndicator(addTradeProvider),
-              
+
               // Main content
               Expanded(
                 child: SingleChildScrollView(
@@ -85,17 +83,21 @@ class _AddTradePageState extends State<AddTradePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 12),
-                      
+
                       // Trade Transfers Section
                       _buildExpandableSection(
                         'trade_transfers',
                         'Trade Transfers',
                         Icons.swap_horiz,
-                        _buildTradeTransfersSection(context, addTradeProvider, userValuesProvider),
+                        _buildTradeTransfersSection(
+                          context,
+                          addTradeProvider,
+                          userValuesProvider,
+                        ),
                         isRequired: true,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Checklist Section
                       _buildExpandableSection(
                         'checklist',
@@ -105,7 +107,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         isRequired: false,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Trade Management Section
                       _buildExpandableSection(
                         'trade_management',
@@ -115,17 +117,21 @@ class _AddTradePageState extends State<AddTradePage> {
                         isRequired: false,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Trade Exit Section
                       _buildExpandableSection(
                         'trade_exit',
                         'Trade Exit',
                         Icons.exit_to_app,
-                        _buildTradeExitSection(context, addTradeProvider, userValuesProvider),
+                        _buildTradeExitSection(
+                          context,
+                          addTradeProvider,
+                          userValuesProvider,
+                        ),
                         isRequired: false,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Memo Section
                       _buildExpandableSection(
                         'memo',
@@ -135,17 +141,21 @@ class _AddTradePageState extends State<AddTradePage> {
                         isRequired: false,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Trackings Section
                       _buildExpandableSection(
                         'trackings',
                         'Analysis & Tracking',
                         Icons.analytics,
-                        _buildTrackingsSection(context, addTradeProvider, userValuesProvider),
+                        _buildTrackingsSection(
+                          context,
+                          addTradeProvider,
+                          userValuesProvider,
+                        ),
                         isRequired: false,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Transfers Section
                       _buildExpandableSection(
                         'transfers',
@@ -155,12 +165,12 @@ class _AddTradePageState extends State<AddTradePage> {
                         isRequired: false,
                       ),
                       const SizedBox(height: 32),
-                      
+
                       // Submit Button
                       _buildSubmitSection(addTradeProvider),
-                      
+
                       const SizedBox(height: 12),
-                      
+
                       // Status Messages
                       _buildStatusMessages(addTradeProvider),
                     ],
@@ -179,83 +189,56 @@ class _AddTradePageState extends State<AddTradePage> {
       provider.symbol.isNotEmpty,
       provider.entryPrice > 0,
       provider.datetime != null,
-      (provider.quantity > 0 || (provider.positionMargin != null && provider.positionMargin! > 0)),
+      (provider.quantity > 0 ||
+          (provider.positionMargin != null && provider.positionMargin! > 0)),
     ];
     final completedFields = requiredFields.where((field) => field).length;
     final progress = completedFields / requiredFields.length;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       decoration: AppTheme.cardDecoration,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Text('Required fields', style: AppTheme.captionStyle),
                 Text(
-                  'Progress',
-                  style: AppTheme.captionStyle,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '${(progress * 100).toInt()}%',
-                  style: AppTheme.bodyStyle.copyWith(
-                    fontWeight: FontWeight.w600,
+                  '$completedFields/${requiredFields.length}',
+                  style: AppTheme.captionStyle.copyWith(
                     color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Required fields',
-                      style: AppTheme.captionStyle,
-                    ),
-                    Text(
-                      '$completedFields/${requiredFields.length}',
-                      style: AppTheme.captionStyle.copyWith(
-                        color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: AppTheme.borderColor,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
-                  minHeight: 2,
-                ),
-              ],
+            const SizedBox(height: 6),
+            LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppTheme.borderColor,
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+              minHeight: 6,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
-
 
   Widget _buildExpandableSection(
     String sectionKey,
     String title,
     IconData icon,
-    Widget content,
-    {bool isRequired = false}
-  ) {
+    Widget content, {
+    bool isRequired = false,
+  }) {
     final isExpanded = _expandedSections[sectionKey] ?? false;
-    
+
     return Container(
       decoration: AppTheme.cardDecoration.copyWith(
         border: Border.all(
@@ -272,16 +255,20 @@ class _AddTradePageState extends State<AddTradePage> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isRequired 
+                color: isRequired
                     ? AppTheme.primaryColor.withValues(alpha: 0.1)
                     : AppTheme.borderColor.withValues(alpha: 0.3),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(7)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(7),
+                ),
               ),
               child: Row(
                 children: [
                   Icon(
                     icon,
-                    color: isRequired ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+                    color: isRequired
+                        ? AppTheme.primaryColor
+                        : AppTheme.textSecondaryColor,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -292,13 +279,18 @@ class _AddTradePageState extends State<AddTradePage> {
                           title,
                           style: AppTheme.bodyStyle.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: isRequired ? AppTheme.primaryColor : AppTheme.textPrimaryColor,
+                            color: isRequired
+                                ? AppTheme.primaryColor
+                                : AppTheme.textPrimaryColor,
                           ),
                         ),
                         if (isRequired) ...[
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppTheme.primaryColor,
                               borderRadius: BorderRadius.circular(4),
@@ -317,7 +309,9 @@ class _AddTradePageState extends State<AddTradePage> {
                     ),
                   ),
                   Icon(
-                    isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                    isExpanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
                     color: AppTheme.textSecondaryColor,
                     size: 20,
                   ),
@@ -325,13 +319,10 @@ class _AddTradePageState extends State<AddTradePage> {
               ),
             ),
           ),
-          
+
           // Section content
           if (isExpanded)
-            Container(
-              padding: const EdgeInsets.all(12),
-              child: content,
-            ),
+            Container(padding: const EdgeInsets.all(12), child: content),
         ],
       ),
     );
@@ -350,7 +341,9 @@ class _AddTradePageState extends State<AddTradePage> {
               decoration: BoxDecoration(
                 color: AppTheme.errorColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppTheme.errorColor.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
@@ -373,15 +366,15 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             const SizedBox(height: 16),
           ],
-          
+
           // Submit button
           SizedBox(
             width: double.infinity,
             height: 40,
             child: ElevatedButton(
               onPressed: provider.isFormValid ? provider.addTrade : null,
-              style: provider.isFormValid 
-                  ? AppTheme.primaryButtonStyle 
+              style: provider.isFormValid
+                  ? AppTheme.primaryButtonStyle
                   : AppTheme.secondaryButtonStyle,
               child: _buildSubmitButtonContent(provider),
             ),
@@ -406,11 +399,7 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.error_outline,
-                  color: AppTheme.errorColor,
-                  size: 24,
-                ),
+                Icon(Icons.error_outline, color: AppTheme.errorColor, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -424,7 +413,7 @@ class _AddTradePageState extends State<AddTradePage> {
               ],
             ),
           ),
-        
+
         // Success Message
         if (provider.status == AddTradeStatus.success)
           Container(
@@ -472,9 +461,9 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   Widget _buildTradeTransfersSection(
-    BuildContext context, 
-    AddTradeProvider addTradeProvider, 
-    UserDefinedValuesProvider userValuesProvider
+    BuildContext context,
+    AddTradeProvider addTradeProvider,
+    UserDefinedValuesProvider userValuesProvider,
   ) {
     return Column(
       children: [
@@ -492,9 +481,9 @@ class _AddTradePageState extends State<AddTradePage> {
             onChanged: addTradeProvider.updateTag,
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Datetime
         _buildFormField(
           label: 'Trade Date & Time',
@@ -510,13 +499,15 @@ class _AddTradePageState extends State<AddTradePage> {
             readOnly: true,
             onTap: () => _selectDateTime(context, addTradeProvider),
             controller: TextEditingController(
-              text: addTradeProvider.datetime?.toString().substring(0, 16) ?? 'Select datetime',
+              text:
+                  addTradeProvider.datetime?.toString().substring(0, 16) ??
+                  'Select datetime',
             ),
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Exchanges
         _buildFormField(
           label: 'Exchange',
@@ -530,7 +521,9 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Exchanges',
                 prefixIcon: Icons.swap_horiz,
                 options: exchanges,
-                selectedValues: addTradeProvider.exchanges != null ? [addTradeProvider.exchanges!] : [],
+                selectedValues: addTradeProvider.exchanges != null
+                    ? [addTradeProvider.exchanges!]
+                    : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
                     addTradeProvider.updateExchanges(values.first);
@@ -548,9 +541,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Entry Type
         _buildFormField(
           label: 'Entry Type',
@@ -563,17 +556,19 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             value: addTradeProvider.entryType,
             items: EntryType.values
-                .map((type) => DropdownMenuItem(
-                      value: type,
-                      child: Text(_getEntryTypeDisplayName(type)),
-                    ))
+                .map(
+                  (type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(_getEntryTypeDisplayName(type)),
+                  ),
+                )
                 .toList(),
             onChanged: addTradeProvider.updateEntryType,
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Symbol
         _buildFormField(
           label: 'Trading Pair',
@@ -588,7 +583,9 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Symbol',
                 prefixIcon: Icons.currency_exchange,
                 options: symbols,
-                selectedValues: addTradeProvider.symbol.isNotEmpty ? [addTradeProvider.symbol] : [],
+                selectedValues: addTradeProvider.symbol.isNotEmpty
+                    ? [addTradeProvider.symbol]
+                    : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
                     addTradeProvider.updateSymbol(values.first);
@@ -606,9 +603,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Strategies
         _buildFormField(
           label: 'Strategy',
@@ -622,7 +619,9 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Strategies',
                 prefixIcon: Icons.trending_up,
                 options: strategies,
-                selectedValues: addTradeProvider.strategies != null ? [addTradeProvider.strategies!] : [],
+                selectedValues: addTradeProvider.strategies != null
+                    ? [addTradeProvider.strategies!]
+                    : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
                     addTradeProvider.updateStrategies(values.first);
@@ -640,9 +639,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Side
         _buildFormField(
           label: 'Position Side',
@@ -650,9 +649,9 @@ class _AddTradePageState extends State<AddTradePage> {
           icon: Icons.trending_up,
           child: _buildPositionSideSwitch(addTradeProvider),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Entry Price
         _buildFormField(
           label: 'Entry Price',
@@ -672,9 +671,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Position Margin
         _buildFormField(
           label: 'Position Size',
@@ -694,9 +693,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Leverage
         _buildFormField(
           label: 'Leverage',
@@ -715,9 +714,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Order Type
         _buildFormField(
           label: 'Order Type',
@@ -730,17 +729,19 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             value: addTradeProvider.orderType,
             items: OrderType.values
-                .map((type) => DropdownMenuItem(
-                      value: type,
-                      child: Text(type.name.toUpperCase()),
-                    ))
+                .map(
+                  (type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(type.name.toUpperCase()),
+                  ),
+                )
                 .toList(),
             onChanged: addTradeProvider.updateOrderType,
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Time Frame
         _buildFormField(
           label: 'Time Frame',
@@ -753,17 +754,19 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             value: addTradeProvider.timeFrame,
             items: ['1m', '5m', '15m', '30m', '1h', '4h', '1d', '1w']
-                .map((timeframe) => DropdownMenuItem(
-                      value: timeframe,
-                      child: Text(timeframe),
-                    ))
+                .map(
+                  (timeframe) => DropdownMenuItem(
+                    value: timeframe,
+                    child: Text(timeframe),
+                  ),
+                )
                 .toList(),
             onChanged: addTradeProvider.updateTimeFrame,
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Entry Fee Rate
         _buildFormField(
           label: 'Entry Fee Rate',
@@ -777,8 +780,8 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Entry Fee Rate',
                 prefixIcon: Icons.percent,
                 options: feeRates,
-                selectedValues: addTradeProvider.entryFeeRate != null 
-                    ? [addTradeProvider.entryFeeRate.toString()] 
+                selectedValues: addTradeProvider.entryFeeRate != null
+                    ? [addTradeProvider.entryFeeRate.toString()]
                     : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
@@ -799,9 +802,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Entry Mental States
         _buildFormField(
           label: 'Mental State',
@@ -815,8 +818,8 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Entry Mental States',
                 prefixIcon: Icons.psychology,
                 options: mentalStates,
-                selectedValues: addTradeProvider.entryMentalStates != null 
-                    ? [addTradeProvider.entryMentalStates!] 
+                selectedValues: addTradeProvider.entryMentalStates != null
+                    ? [addTradeProvider.entryMentalStates!]
                     : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
@@ -835,9 +838,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Entry Screenshot
         _buildFormField(
           label: 'Entry Screenshot',
@@ -929,7 +932,10 @@ class _AddTradePageState extends State<AddTradePage> {
           ),
           maxLines: 5,
           onChanged: (value) {
-            final items = value.split('\n').where((item) => item.trim().isNotEmpty).toList();
+            final items = value
+                .split('\n')
+                .where((item) => item.trim().isNotEmpty)
+                .toList();
             provider.updateChecklist(items);
           },
         ),
@@ -948,7 +954,7 @@ class _AddTradePageState extends State<AddTradePage> {
           ),
         ),
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Stop Loss Price',
           hint: 'At what price will you exit if the trade goes against you?',
@@ -966,9 +972,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Take Profit Price',
           hint: 'At what price will you take your profits?',
@@ -991,9 +997,9 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   Widget _buildTradeExitSection(
-    BuildContext context, 
-    AddTradeProvider addTradeProvider, 
-    UserDefinedValuesProvider userValuesProvider
+    BuildContext context,
+    AddTradeProvider addTradeProvider,
+    UserDefinedValuesProvider userValuesProvider,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1005,7 +1011,7 @@ class _AddTradePageState extends State<AddTradePage> {
           ),
         ),
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Actual Exit Price',
           hint: 'At what price did you exit the trade?',
@@ -1023,9 +1029,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Position Closed',
           hint: 'What percentage of your position did you close?',
@@ -1043,9 +1049,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Exit Type',
           hint: 'Did you hit take profit or stop loss?',
@@ -1057,17 +1063,19 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             value: addTradeProvider.exitType,
             items: ExitType.values
-                .map((type) => DropdownMenuItem(
-                      value: type,
-                      child: Text(type.name.toUpperCase()),
-                    ))
+                .map(
+                  (type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(type.name.toUpperCase()),
+                  ),
+                )
                 .toList(),
             onChanged: addTradeProvider.updateExitType,
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Exit Fee Rate',
           hint: 'What fee rate did you pay on exit?',
@@ -1080,8 +1088,8 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Exit Fee Rate',
                 prefixIcon: Icons.percent,
                 options: feeRates,
-                selectedValues: addTradeProvider.exitFeeRate != null 
-                    ? [addTradeProvider.exitFeeRate.toString()] 
+                selectedValues: addTradeProvider.exitFeeRate != null
+                    ? [addTradeProvider.exitFeeRate.toString()]
                     : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
@@ -1102,9 +1110,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Exit Date & Time',
           hint: 'When did you exit this trade?',
@@ -1118,13 +1126,15 @@ class _AddTradePageState extends State<AddTradePage> {
             readOnly: true,
             onTap: () => _selectExitDateTime(context, addTradeProvider),
             controller: TextEditingController(
-              text: addTradeProvider.exitDatetime?.toString().substring(0, 16) ?? 'Select exit datetime',
+              text:
+                  addTradeProvider.exitDatetime?.toString().substring(0, 16) ??
+                  'Select exit datetime',
             ),
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Exit Mental State',
           hint: 'How did you feel when you exited?',
@@ -1137,8 +1147,8 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Exit Mental States',
                 prefixIcon: Icons.psychology,
                 options: mentalStates,
-                selectedValues: addTradeProvider.exitMentalStates != null 
-                    ? [addTradeProvider.exitMentalStates!] 
+                selectedValues: addTradeProvider.exitMentalStates != null
+                    ? [addTradeProvider.exitMentalStates!]
                     : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
@@ -1157,9 +1167,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Exit Screenshot',
           hint: 'Add a screenshot of your exit (optional)',
@@ -1188,7 +1198,7 @@ class _AddTradePageState extends State<AddTradePage> {
           ),
         ),
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Trade Rating',
           hint: 'How would you rate this trade?',
@@ -1200,22 +1210,27 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             value: provider.rating,
             items: [1, 2, 3, 4, 5]
-                .map((rating) => DropdownMenuItem(
-                      value: rating,
-                      child: Row(
-                        children: [
-                          Text('$rating '),
-                          ...List.generate(rating, (index) => const Icon(Icons.star, size: 16)),
-                        ],
-                      ),
-                    ))
+                .map(
+                  (rating) => DropdownMenuItem(
+                    value: rating,
+                    child: Row(
+                      children: [
+                        Text('$rating '),
+                        ...List.generate(
+                          rating,
+                          (index) => const Icon(Icons.star, size: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                 .toList(),
             onChanged: provider.updateRating,
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Memo',
           hint: 'Add your thoughts and lessons learned',
@@ -1235,9 +1250,9 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   Widget _buildTrackingsSection(
-    BuildContext context, 
-    AddTradeProvider addTradeProvider, 
-    UserDefinedValuesProvider userValuesProvider
+    BuildContext context,
+    AddTradeProvider addTradeProvider,
+    UserDefinedValuesProvider userValuesProvider,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1249,7 +1264,7 @@ class _AddTradePageState extends State<AddTradePage> {
           ),
         ),
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Analysis Method',
           hint: 'What did you analyze before entering?',
@@ -1262,8 +1277,8 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Trackings',
                 prefixIcon: Icons.track_changes,
                 options: trackings,
-                selectedValues: addTradeProvider.trackings != null 
-                    ? [addTradeProvider.trackings!] 
+                selectedValues: addTradeProvider.trackings != null
+                    ? [addTradeProvider.trackings!]
                     : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
@@ -1282,9 +1297,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Mistakes Made',
           hint: 'What mistakes did you make in this trade?',
@@ -1297,8 +1312,8 @@ class _AddTradePageState extends State<AddTradePage> {
                 label: 'Mistakes',
                 prefixIcon: Icons.error,
                 options: mistakes,
-                selectedValues: addTradeProvider.mistakes != null 
-                    ? [addTradeProvider.mistakes!] 
+                selectedValues: addTradeProvider.mistakes != null
+                    ? [addTradeProvider.mistakes!]
                     : [],
                 onChanged: (values) {
                   if (values.isNotEmpty) {
@@ -1332,7 +1347,7 @@ class _AddTradePageState extends State<AddTradePage> {
           ),
         ),
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Transfer Amount',
           hint: 'How much did you transfer?',
@@ -1350,9 +1365,9 @@ class _AddTradePageState extends State<AddTradePage> {
             },
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         _buildFormField(
           label: 'Transfer Screenshot',
           hint: 'Add a screenshot of the transfer (optional)',
@@ -1389,10 +1404,12 @@ class _AddTradePageState extends State<AddTradePage> {
             top: 0,
             bottom: 0,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
+              width:
+                  MediaQuery.of(context).size.width *
+                  0.4, // Half width minus padding
               decoration: BoxDecoration(
-                color: provider.side == Side.long 
-                    ? AppTheme.bullishColor 
+                color: provider.side == Side.long
+                    ? AppTheme.bullishColor
                     : AppTheme.bearishColor,
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -1421,8 +1438,8 @@ class _AddTradePageState extends State<AddTradePage> {
                             child: Icon(
                               Icons.trending_up,
                               key: ValueKey(provider.side == Side.long),
-                              color: provider.side == Side.long 
-                                  ? Colors.white 
+                              color: provider.side == Side.long
+                                  ? Colors.white
                                   : AppTheme.textSecondaryColor,
                               size: 20,
                             ),
@@ -1436,8 +1453,8 @@ class _AddTradePageState extends State<AddTradePage> {
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: provider.side == Side.long 
-                                    ? Colors.white 
+                                color: provider.side == Side.long
+                                    ? Colors.white
                                     : AppTheme.textSecondaryColor,
                               ),
                             ),
@@ -1468,8 +1485,8 @@ class _AddTradePageState extends State<AddTradePage> {
                             child: Icon(
                               Icons.trending_down,
                               key: ValueKey(provider.side == Side.short),
-                              color: provider.side == Side.short 
-                                  ? Colors.white 
+                              color: provider.side == Side.short
+                                  ? Colors.white
                                   : AppTheme.textSecondaryColor,
                               size: 20,
                             ),
@@ -1483,8 +1500,8 @@ class _AddTradePageState extends State<AddTradePage> {
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: provider.side == Side.short 
-                                    ? Colors.white 
+                                color: provider.side == Side.short
+                                    ? Colors.white
                                     : AppTheme.textSecondaryColor,
                               ),
                             ),
@@ -1503,23 +1520,26 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   // ignore: use_build_context_synchronously
-  Future<void> _selectDateTime(BuildContext context, AddTradeProvider provider) async {
+  Future<void> _selectDateTime(
+    BuildContext context,
+    AddTradeProvider provider,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    
+
     if (!mounted || picked == null) return;
-    
+
     final TimeOfDay? time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    
+
     if (!mounted || time == null) return;
-    
+
     final DateTime selectedDateTime = DateTime(
       picked.year,
       picked.month,
@@ -1531,23 +1551,26 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   // ignore: use_build_context_synchronously
-  Future<void> _selectExitDateTime(BuildContext context, AddTradeProvider provider) async {
+  Future<void> _selectExitDateTime(
+    BuildContext context,
+    AddTradeProvider provider,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    
+
     if (!mounted || picked == null) return;
-    
+
     final TimeOfDay? time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    
+
     if (!mounted || time == null) return;
-    
+
     final DateTime selectedDateTime = DateTime(
       picked.year,
       picked.month,
@@ -1580,11 +1603,17 @@ class _AddTradePageState extends State<AddTradePage> {
                 decoration: BoxDecoration(
                   color: AppTheme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.lightbulb_outline, color: AppTheme.primaryColor, size: 20),
+                    Icon(
+                      Icons.lightbulb_outline,
+                      color: AppTheme.primaryColor,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -1599,7 +1628,7 @@ class _AddTradePageState extends State<AddTradePage> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Required Fields section
               Text(
                 '📋 Required Fields',
@@ -1609,12 +1638,24 @@ class _AddTradePageState extends State<AddTradePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              _buildHelpItem('Symbol (Trading Pair)', 'The asset you\'re trading (e.g., BTC/USDT, ETH/USD)'),
-              _buildHelpItem('Entry Price', 'The price at which you entered the trade'),
-              _buildHelpItem('Trade Date & Time', 'When you opened the position'),
-              _buildHelpItem('Position Size', 'How much you invested (quantity or margin amount)'),
+              _buildHelpItem(
+                'Symbol (Trading Pair)',
+                'The asset you\'re trading (e.g., BTC/USDT, ETH/USD)',
+              ),
+              _buildHelpItem(
+                'Entry Price',
+                'The price at which you entered the trade',
+              ),
+              _buildHelpItem(
+                'Trade Date & Time',
+                'When you opened the position',
+              ),
+              _buildHelpItem(
+                'Position Size',
+                'How much you invested (quantity or margin amount)',
+              ),
               const SizedBox(height: 16),
-              
+
               // Optional Fields section
               Text(
                 '📝 Optional Fields',
@@ -1624,13 +1665,22 @@ class _AddTradePageState extends State<AddTradePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              _buildHelpItem('Exchange', 'Which platform you used (e.g., Binance, Coinbase)'),
-              _buildHelpItem('Strategy', 'Your trading strategy (e.g., Swing, Scalping, DCA)'),
-              _buildHelpItem('Stop Loss & Take Profit', 'Risk management levels'),
+              _buildHelpItem(
+                'Exchange',
+                'Which platform you used (e.g., Binance, Coinbase)',
+              ),
+              _buildHelpItem(
+                'Strategy',
+                'Your trading strategy (e.g., Swing, Scalping, DCA)',
+              ),
+              _buildHelpItem(
+                'Stop Loss & Take Profit',
+                'Risk management levels',
+              ),
               _buildHelpItem('Mental State', 'How you felt during the trade'),
               _buildHelpItem('Memo & Rating', 'Notes and trade evaluation'),
               const SizedBox(height: 16),
-              
+
               // Tips section
               Text(
                 '💡 Pro Tips',
@@ -1640,12 +1690,24 @@ class _AddTradePageState extends State<AddTradePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              _buildHelpItem('Expand/Collapse Sections', 'Tap section headers to show/hide fields'),
-              _buildHelpItem('Custom Values', 'Type and press "Add" to save new dropdown options'),
-              _buildHelpItem('Auto-Save', 'Your custom values are saved for future trades'),
-              _buildHelpItem('Progress Tracking', 'Watch the progress bar to see completion status'),
+              _buildHelpItem(
+                'Expand/Collapse Sections',
+                'Tap section headers to show/hide fields',
+              ),
+              _buildHelpItem(
+                'Custom Values',
+                'Type and press "Add" to save new dropdown options',
+              ),
+              _buildHelpItem(
+                'Auto-Save',
+                'Your custom values are saved for future trades',
+              ),
+              _buildHelpItem(
+                'Progress Tracking',
+                'Watch the progress bar to see completion status',
+              ),
               const SizedBox(height: 16),
-              
+
               // Best Practices section
               Text(
                 '🎯 Best Practices',
@@ -1655,23 +1717,41 @@ class _AddTradePageState extends State<AddTradePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              _buildHelpItem('Be Consistent', 'Use the same naming for similar trades'),
-              _buildHelpItem('Add Screenshots', 'Capture entry/exit points for analysis'),
-              _buildHelpItem('Rate Your Trades', 'Evaluate performance to improve'),
-              _buildHelpItem('Track Emotions', 'Monitor mental state for better decision making'),
+              _buildHelpItem(
+                'Be Consistent',
+                'Use the same naming for similar trades',
+              ),
+              _buildHelpItem(
+                'Add Screenshots',
+                'Capture entry/exit points for analysis',
+              ),
+              _buildHelpItem(
+                'Rate Your Trades',
+                'Evaluate performance to improve',
+              ),
+              _buildHelpItem(
+                'Track Emotions',
+                'Monitor mental state for better decision making',
+              ),
               const SizedBox(height: 16),
-              
+
               // Note section
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppTheme.warningColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppTheme.warningColor.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: AppTheme.warningColor.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppTheme.warningColor, size: 20),
+                    Icon(
+                      Icons.info_outline,
+                      color: AppTheme.warningColor,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -1775,10 +1855,7 @@ class _AddTradePageState extends State<AddTradePage> {
       default:
         return const Text(
           'Add Trade',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         );
     }
   }
