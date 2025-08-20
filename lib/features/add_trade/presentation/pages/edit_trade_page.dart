@@ -840,72 +840,68 @@ class _EditTradePageState extends State<EditTradePage> {
     }
   }
 
+  // ignore: use_build_context_synchronously
   Future<void> _selectDateTime(BuildContext context, AddTradeProvider provider) async {
-    // Capture context before any async operations
-    final navigatorContext = context;
-    
     final DateTime? picked = await showDatePicker(
-      context: navigatorContext,
+      context: context,
       initialDate: provider.datetime ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null && mounted) {
-      final TimeOfDay? time = await showTimePicker(
-        context: navigatorContext,
-        initialTime: TimeOfDay.fromDateTime(provider.datetime ?? DateTime.now()),
-      );
-      
-      if (time != null && mounted) {
-        final DateTime selectedDateTime = DateTime(
-          picked.year,
-          picked.month,
-          picked.day,
-          time.hour,
-          time.minute,
-        );
-        provider.updateDatetime(selectedDateTime);
-        // Update the datetime field in the form
-        setState(() {
-          _datetimeController.text = selectedDateTime.toString().substring(0, 16);
-        });
-      }
-    }
+    if (!mounted || picked == null) return;
+    
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(provider.datetime ?? DateTime.now()),
+    );
+    
+    if (!mounted || time == null) return;
+    
+    final DateTime selectedDateTime = DateTime(
+      picked.year,
+      picked.month,
+      picked.day,
+      time.hour,
+      time.minute,
+    );
+    provider.updateDatetime(selectedDateTime);
+    // Update the datetime field in the form
+    setState(() {
+      _datetimeController.text = selectedDateTime.toString().substring(0, 16);
+    });
   }
 
+  // ignore: use_build_context_synchronously
   Future<void> _selectExitDateTime(BuildContext context, AddTradeProvider provider) async {
-    // Capture context before any async operations
-    final navigatorContext = context;
-    
     final DateTime? picked = await showDatePicker(
-      context: navigatorContext,
+      context: context,
       initialDate: provider.exitDatetime ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null && mounted) {
-      final TimeOfDay? time = await showTimePicker(
-        context: navigatorContext,
-        initialTime: TimeOfDay.fromDateTime(provider.exitDatetime ?? DateTime.now()),
-      );
-      
-      if (time != null && mounted) {
-        final DateTime selectedDateTime = DateTime(
-          picked.year,
-          picked.month,
-          picked.day,
-          time.hour,
-          time.minute,
-        );
-        provider.updateExitDatetime(selectedDateTime);
-        // Update the exit datetime field in the form
-        setState(() {
-          _exitDatetimeController.text = selectedDateTime.toString().substring(0, 16);
-        });
-      }
-    }
+    if (!mounted || picked == null) return;
+    
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(provider.exitDatetime ?? DateTime.now()),
+    );
+    
+    if (!mounted || time == null) return;
+    
+    final DateTime selectedDateTime = DateTime(
+      picked.year,
+      picked.month,
+      picked.day,
+      time.hour,
+      time.minute,
+    );
+    provider.updateExitDatetime(selectedDateTime);
+    // Update the exit datetime field in the form
+    setState(() {
+      _exitDatetimeController.text = selectedDateTime.toString().substring(0, 16);
+    });
   }
 
   String _getEntryTypeDisplayName(EntryType type) {

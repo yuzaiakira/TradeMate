@@ -122,11 +122,11 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
         GestureDetector(
           onTap: _toggleDropdown,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               border: Border.all(color: AppTheme.borderColor),
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+              color: AppTheme.surfaceColor,
             ),
             child: Row(
               children: [
@@ -139,9 +139,9 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                 Expanded(
                   child: Text(
                     _getDisplayText(),
-                    style: TextStyle(
+                    style: AppTheme.bodyStyle.copyWith(
                       color: widget.selectedValues.isEmpty 
-                          ? AppTheme.textSecondaryColor 
+                          ? AppTheme.textTertiaryColor 
                           : AppTheme.textPrimaryColor,
                     ),
                   ),
@@ -159,13 +159,13 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: AppTheme.borderColor),
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+              color: AppTheme.surfaceColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -178,21 +178,34 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                     child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,
+                      style: AppTheme.bodyStyle,
                       decoration: InputDecoration(
                         hintText: 'Search...',
-                        prefixIcon: const Icon(Icons.search, size: 20),
+                        prefixIcon: Icon(Icons.search, size: 20, color: AppTheme.textSecondaryColor),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: AppTheme.borderColor),
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: AppTheme.borderColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: AppTheme.primaryColor),
+                        ),
+                        filled: true,
+                        fillColor: AppTheme.backgroundColor,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
+                        hintStyle: AppTheme.captionStyle,
                       ),
                       onSubmitted: (_) => _addNewValue(),
                     ),
                   ),
-                  const Divider(height: 1),
+                  Divider(height: 1, color: AppTheme.borderColor),
                 ],
                 if (widget.showSearch) ...[
                   Padding(
@@ -201,15 +214,28 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                       children: [
                         Expanded(
                           child: TextField(
+                            style: AppTheme.bodyStyle,
                             decoration: InputDecoration(
                               hintText: 'Add new value...',
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide: BorderSide(color: AppTheme.borderColor),
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide: BorderSide(color: AppTheme.borderColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide: BorderSide(color: AppTheme.primaryColor),
+                              ),
+                              filled: true,
+                              fillColor: AppTheme.backgroundColor,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 8,
                               ),
+                              hintStyle: AppTheme.captionStyle,
                             ),
                             onChanged: (value) => _newValue = value,
                             onSubmitted: (_) => _addNewValue(),
@@ -231,7 +257,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                       ],
                     ),
                   ),
-                  const Divider(height: 1),
+                  Divider(height: 1, color: AppTheme.borderColor),
                 ],
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 200),
@@ -246,7 +272,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                         dense: true,
                         title: Text(
                           option,
-                          style: TextStyle(
+                          style: AppTheme.bodyStyle.copyWith(
                             color: isSelected 
                                 ? AppTheme.primaryColor 
                                 : AppTheme.textPrimaryColor,

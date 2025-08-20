@@ -31,6 +31,11 @@ class _AddTradePageState extends State<AddTradePage> {
     // Initialize default values when the page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserDefinedValuesProvider>().initializeDefaultValues();
+      // Set default side to long if not already set
+      final addTradeProvider = context.read<AddTradeProvider>();
+      if (addTradeProvider.side == null) {
+        addTradeProvider.updateSide(Side.long);
+      }
     });
   }
 
@@ -240,47 +245,7 @@ class _AddTradePageState extends State<AddTradePage> {
     );
   }
 
-  Widget _buildWelcomeMessage() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.lightbulb_outline,
-            color: AppTheme.primaryColor,
-            size: 24,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Welcome to TradeMate!',
-                  style: AppTheme.subheadingStyle.copyWith(
-                    color: AppTheme.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Fill in the required fields to add your trade. You can expand/collapse sections as needed.',
-                  style: AppTheme.captionStyle.copyWith(
-                    color: AppTheme.textSecondaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildExpandableSection(
     String sectionKey,
@@ -1384,7 +1349,7 @@ class _AddTradePageState extends State<AddTradePage> {
 
   Widget _buildPositionSideSwitch(AddTradeProvider provider) {
     return Container(
-      height: 40,
+      height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: AppTheme.borderColor),
@@ -1414,98 +1379,94 @@ class _AddTradePageState extends State<AddTradePage> {
           Row(
             children: [
               Expanded(
-                child: GestureDetector(
+                child: InkWell(
                   onTap: () => provider.updateSide(Side.long),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        bottomLeft: Radius.circular(5),
-                      ),
-                      onTap: () => provider.updateSide(Side.long),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Icon(
-                                Icons.trending_up,
-                                key: ValueKey(provider.side == Side.long),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    bottomLeft: Radius.circular(5),
+                  ),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: SizedBox(
+                    height: 50,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              Icons.trending_up,
+                              key: ValueKey(provider.side == Side.long),
+                              color: provider.side == Side.long 
+                                  ? Colors.white 
+                                  : AppTheme.textSecondaryColor,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Text(
+                              'LONG',
+                              key: ValueKey(provider.side == Side.long),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
                                 color: provider.side == Side.long 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
-                                size: 20,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Text(
-                                'LONG',
-                                key: ValueKey(provider.side == Side.long),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: provider.side == Side.long 
-                                      ? Colors.white 
-                                      : AppTheme.textSecondaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
               Expanded(
-                child: GestureDetector(
+                child: InkWell(
                   onTap: () => provider.updateSide(Side.short),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(5),
-                        bottomRight: Radius.circular(5),
-                      ),
-                      onTap: () => provider.updateSide(Side.short),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Icon(
-                                Icons.trending_down,
-                                key: ValueKey(provider.side == Side.short),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: SizedBox(
+                    height: 50,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              Icons.trending_down,
+                              key: ValueKey(provider.side == Side.short),
+                              color: provider.side == Side.short 
+                                  ? Colors.white 
+                                  : AppTheme.textSecondaryColor,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Text(
+                              'SHORT',
+                              key: ValueKey(provider.side == Side.short),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
                                 color: provider.side == Side.short 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
-                                size: 20,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Text(
-                                'SHORT',
-                                key: ValueKey(provider.side == Side.short),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: provider.side == Side.short 
-                                      ? Colors.white 
-                                      : AppTheme.textSecondaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -1518,64 +1479,60 @@ class _AddTradePageState extends State<AddTradePage> {
     );
   }
 
+  // ignore: use_build_context_synchronously
   Future<void> _selectDateTime(BuildContext context, AddTradeProvider provider) async {
-    // Capture context before any async operations
-    final navigatorContext = context;
-    
     final DateTime? picked = await showDatePicker(
-      context: navigatorContext,
+      context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null && mounted) {
-      final TimeOfDay? time = await showTimePicker(
-        context: navigatorContext,
-        initialTime: TimeOfDay.now(),
-      );
-      
-      if (time != null && mounted) {
-        final DateTime selectedDateTime = DateTime(
-          picked.year,
-          picked.month,
-          picked.day,
-          time.hour,
-          time.minute,
-        );
-        provider.updateDatetime(selectedDateTime);
-      }
-    }
+    if (!mounted || picked == null) return;
+    
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    
+    if (!mounted || time == null) return;
+    
+    final DateTime selectedDateTime = DateTime(
+      picked.year,
+      picked.month,
+      picked.day,
+      time.hour,
+      time.minute,
+    );
+    provider.updateDatetime(selectedDateTime);
   }
 
+  // ignore: use_build_context_synchronously
   Future<void> _selectExitDateTime(BuildContext context, AddTradeProvider provider) async {
-    // Capture context before any async operations
-    final navigatorContext = context;
-    
     final DateTime? picked = await showDatePicker(
-      context: navigatorContext,
+      context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null && mounted) {
-      final TimeOfDay? time = await showTimePicker(
-        context: navigatorContext,
-        initialTime: TimeOfDay.now(),
-      );
-      
-      if (time != null && mounted) {
-        final DateTime selectedDateTime = DateTime(
-          picked.year,
-          picked.month,
-          picked.day,
-          time.hour,
-          time.minute,
-        );
-        provider.updateExitDatetime(selectedDateTime);
-      }
-    }
+    if (!mounted || picked == null) return;
+    
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    
+    if (!mounted || time == null) return;
+    
+    final DateTime selectedDateTime = DateTime(
+      picked.year,
+      picked.month,
+      picked.day,
+      time.hour,
+      time.minute,
+    );
+    provider.updateExitDatetime(selectedDateTime);
   }
 
   void _showHelpDialog(BuildContext context) {

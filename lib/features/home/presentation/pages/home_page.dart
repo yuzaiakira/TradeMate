@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/trade_statistics.dart';
 import '../provider/home_provider.dart';
-import '../widgets/statistics_card.dart';
+
 import '../widgets/account_growth_chart.dart';
 import '../../../../core/utils/app_theme.dart';
 

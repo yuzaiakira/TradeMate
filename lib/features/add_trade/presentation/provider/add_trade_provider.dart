@@ -456,7 +456,7 @@ class AddTradeProvider with ChangeNotifier {
     _entryType = null;
     _symbol = '';
     _strategies = null;
-    _side = null;
+    _side = Side.long;
     _entryPrice = 0.0;
     _positionMargin = null;
     _leverage = null;
