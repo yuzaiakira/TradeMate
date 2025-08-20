@@ -181,10 +181,12 @@ class _EditTradePageState extends State<EditTradePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Trade - ${widget.trade.symbol}'),
-        elevation: 0,
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
+        title: Text(
+          'Edit Trade - ${widget.trade.symbol}',
+          style: AppTheme.subheadingStyle.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: Consumer2<AddTradeProvider, EditTradeProvider>(
         builder: (context, addTradeProvider, editTradeProvider, child) {
@@ -206,35 +208,33 @@ class _EditTradePageState extends State<EditTradePage> {
 
   Widget _buildEditMessage() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.all(12),
+      decoration: AppTheme.cardDecoration.copyWith(
+        border: Border.all(color: AppTheme.primaryColor),
       ),
       child: Row(
         children: [
           Icon(
-            Icons.edit,
+            Icons.edit_rounded,
             color: AppTheme.primaryColor,
-            size: 24,
+            size: 18,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Editing Trade',
-                  style: AppTheme.subheadingStyle.copyWith(
+                  style: AppTheme.bodyStyle.copyWith(
                     color: AppTheme.primaryColor,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
-                  'Make your changes below and save to update the trade.',
+                  'Make changes and save to update',
                   style: AppTheme.captionStyle.copyWith(
                     color: AppTheme.textSecondaryColor,
                   ),
@@ -252,32 +252,32 @@ class _EditTradePageState extends State<EditTradePage> {
       children: [
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               children: [
                 // Trade Transfers Section
                 _buildTradeTransfersSection(addTradeProvider),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Checklist Section
                 _buildChecklistSection(addTradeProvider),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Trade Management Section
                 _buildTradeManagementSection(addTradeProvider),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Trade Exit Section
                 _buildTradeExitSection(addTradeProvider),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Memo Section
                 _buildMemoSection(addTradeProvider),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Trackings Section
                 _buildTrackingsSection(addTradeProvider),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Transfers Section
                 _buildTransfersSection(addTradeProvider),
@@ -297,18 +297,29 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildTradeTransfersSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Trade Transfers',
-              style: AppTheme.subheadingStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppTheme.primaryColor,
-              ),
+            Row(
+              children: [
+                Icon(
+                  Icons.swap_horiz_rounded,
+                  size: 16,
+                  color: AppTheme.textSecondaryColor,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'Trade Transfers',
+                  style: AppTheme.bodyStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimaryColor,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             
@@ -510,9 +521,10 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildChecklistSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -550,9 +562,10 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildTradeManagementSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -606,9 +619,10 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildTradeExitSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -728,9 +742,10 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildMemoSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -789,40 +804,18 @@ class _EditTradePageState extends State<EditTradePage> {
 
   Widget _buildSubmitSection(AddTradeProvider addTradeProvider, EditTradeProvider editTradeProvider) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: addTradeProvider.isFormValid ? () => _updateTrade(addTradeProvider, editTradeProvider) : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: addTradeProvider.isFormValid 
-                    ? AppTheme.primaryColor 
-                    : AppTheme.borderColor,
-                foregroundColor: addTradeProvider.isFormValid 
-                    ? Colors.white 
-                    : AppTheme.textSecondaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: addTradeProvider.isFormValid ? 4 : 0,
-              ),
-              child: _buildSubmitButtonContent(editTradeProvider),
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.all(12),
+      decoration: AppTheme.cardDecoration,
+      child: SizedBox(
+        width: double.infinity,
+        height: 40,
+        child: ElevatedButton(
+          onPressed: addTradeProvider.isFormValid ? () => _updateTrade(addTradeProvider, editTradeProvider) : null,
+          style: addTradeProvider.isFormValid 
+              ? AppTheme.primaryButtonStyle 
+              : AppTheme.secondaryButtonStyle,
+          child: _buildSubmitButtonContent(editTradeProvider),
+        ),
       ),
     );
   }
@@ -960,9 +953,10 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildTrackingsSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1008,9 +1002,10 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildTransfersSection(AddTradeProvider provider) {
-    return Card(
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1098,10 +1093,11 @@ class _EditTradePageState extends State<EditTradePage> {
 
   Widget _buildPositionSideSwitch(AddTradeProvider provider) {
     return Container(
-      height: 48,
+      height: 40,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(color: AppTheme.borderColor),
+        color: AppTheme.surfaceColor,
       ),
       child: Stack(
         children: [
@@ -1117,9 +1113,9 @@ class _EditTradePageState extends State<EditTradePage> {
               width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
               decoration: BoxDecoration(
                 color: provider.side == Side.long 
-                    ? AppTheme.successColor 
-                    : AppTheme.errorColor,
-                borderRadius: BorderRadius.circular(7),
+                    ? AppTheme.bullishColor 
+                    : AppTheme.bearishColor,
+                borderRadius: BorderRadius.circular(5),
               ),
             ),
           ),
@@ -1133,8 +1129,8 @@ class _EditTradePageState extends State<EditTradePage> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(7),
-                        bottomLeft: Radius.circular(7),
+                        topLeft: Radius.circular(5),
+                        bottomLeft: Radius.circular(5),
                       ),
                       onTap: () => provider.updateSide(Side.long),
                       child: Container(
@@ -1182,8 +1178,8 @@ class _EditTradePageState extends State<EditTradePage> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(7),
-                        bottomRight: Radius.circular(7),
+                        topRight: Radius.circular(5),
+                        bottomRight: Radius.circular(5),
                       ),
                       onTap: () => provider.updateSide(Side.short),
                       child: Container(

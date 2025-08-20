@@ -18,16 +18,13 @@ class TradeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Container(
+      decoration: AppTheme.cardDecoration,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -42,8 +39,8 @@ class TradeCard extends StatelessWidget {
                           children: [
                             Text(
                               trade.symbol,
-                              style: AppTheme.subheadingStyle.copyWith(
-                                fontWeight: FontWeight.bold,
+                              style: AppTheme.bodyStyle.copyWith(
+                                fontWeight: FontWeight.w600,
                                 color: AppTheme.textPrimaryColor,
                               ),
                             ),
@@ -186,30 +183,29 @@ class TradeCard extends StatelessWidget {
 
     switch (status) {
       case TradeStatus.open:
-        backgroundColor = Colors.orange.withValues(alpha: 0.1);
-        textColor = Colors.orange;
+        backgroundColor = AppTheme.warningColor;
+        textColor = Colors.white;
         text = 'OPEN';
         break;
       case TradeStatus.closed:
-        backgroundColor = Colors.green.withValues(alpha: 0.1);
-        textColor = Colors.green;
+        backgroundColor = AppTheme.bullishColor;
+        textColor = Colors.white;
         text = 'CLOSED';
         break;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: textColor.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         text,
-        style: AppTheme.captionStyle.copyWith(
+        style: AppTheme.labelStyle.copyWith(
           color: textColor,
           fontWeight: FontWeight.w600,
-          fontSize: 10,
+          fontSize: 9,
         ),
       ),
     );
@@ -239,14 +235,14 @@ class TradeCard extends StatelessWidget {
 
   Widget _buildPnLIndicator(double pnl) {
     final isPositive = pnl > 0;
-    final color = isPositive ? AppTheme.successColor : AppTheme.errorColor;
-    final icon = isPositive ? Icons.trending_up : Icons.trending_down;
+    final color = isPositive ? AppTheme.bullishColor : AppTheme.bearishColor;
+    final icon = isPositive ? Icons.trending_up_rounded : Icons.trending_down_rounded;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
@@ -254,14 +250,14 @@ class TradeCard extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 16,
+            size: 14,
             color: color,
           ),
           const SizedBox(width: 4),
           Text(
             '\$${pnl.toStringAsFixed(2)}',
-            style: AppTheme.bodyStyle.copyWith(
-              fontWeight: FontWeight.bold,
+            style: AppTheme.captionStyle.copyWith(
+              fontWeight: FontWeight.w600,
               color: color,
             ),
           ),

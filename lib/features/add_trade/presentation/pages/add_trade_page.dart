@@ -50,14 +50,17 @@ class _AddTradePageState extends State<AddTradePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Trade'),
-        elevation: 0,
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
+        title: Text(
+          'Add Trade',
+          style: AppTheme.subheadingStyle.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline),
+            icon: const Icon(Icons.help_outline_rounded, size: 20),
             onPressed: () => _showHelpDialog(context),
+            tooltip: 'Help',
           ),
         ],
       ),
@@ -72,13 +75,11 @@ class _AddTradePageState extends State<AddTradePage> {
               Expanded(
                 child: SingleChildScrollView(
                   controller: _scrollController,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Welcome message
-                      _buildWelcomeMessage(),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
                       
                       // Trade Transfers Section
                       _buildExpandableSection(
@@ -88,7 +89,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         _buildTradeTransfersSection(context, addTradeProvider, userValuesProvider),
                         isRequired: true,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Checklist Section
                       _buildExpandableSection(
@@ -98,7 +99,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         _buildChecklistSection(addTradeProvider),
                         isRequired: false,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Trade Management Section
                       _buildExpandableSection(
@@ -108,7 +109,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         _buildTradeManagementSection(addTradeProvider),
                         isRequired: false,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Trade Exit Section
                       _buildExpandableSection(
@@ -118,7 +119,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         _buildTradeExitSection(context, addTradeProvider, userValuesProvider),
                         isRequired: false,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Memo Section
                       _buildExpandableSection(
@@ -128,7 +129,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         _buildMemoSection(addTradeProvider),
                         isRequired: false,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Trackings Section
                       _buildExpandableSection(
@@ -138,7 +139,7 @@ class _AddTradePageState extends State<AddTradePage> {
                         _buildTrackingsSection(context, addTradeProvider, userValuesProvider),
                         isRequired: false,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Transfers Section
                       _buildExpandableSection(
@@ -153,7 +154,7 @@ class _AddTradePageState extends State<AddTradePage> {
                       // Submit Button
                       _buildSubmitSection(addTradeProvider),
                       
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       
                       // Status Messages
                       _buildStatusMessages(addTradeProvider),
@@ -179,40 +180,60 @@ class _AddTradePageState extends State<AddTradePage> {
     final progress = completedFields / requiredFields.length;
 
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
+      padding: const EdgeInsets.all(12),
+      decoration: AppTheme.cardDecoration,
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Progress: ${(progress * 100).toInt()}%',
-                style: AppTheme.bodyStyle.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryColor,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Progress',
+                  style: AppTheme.captionStyle,
                 ),
-              ),
-              Text(
-                '$completedFields/${requiredFields.length} required fields',
-                style: AppTheme.captionStyle,
-              ),
-            ],
+                const SizedBox(height: 2),
+                Text(
+                  '${(progress * 100).toInt()}%',
+                  style: AppTheme.bodyStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: AppTheme.borderColor,
-            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Required fields',
+                      style: AppTheme.captionStyle,
+                    ),
+                    Text(
+                      '$completedFields/${requiredFields.length}',
+                      style: AppTheme.captionStyle.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: AppTheme.borderColor,
+                  valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                  minHeight: 2,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -270,13 +291,11 @@ class _AddTradePageState extends State<AddTradePage> {
   ) {
     final isExpanded = _expandedSections[sectionKey] ?? false;
     
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isRequired ? AppTheme.primaryColor.withValues(alpha: 0.3) : AppTheme.borderColor,
-          width: isRequired ? 2 : 1,
+    return Container(
+      decoration: AppTheme.cardDecoration.copyWith(
+        border: Border.all(
+          color: isRequired ? AppTheme.primaryColor : AppTheme.borderColor,
+          width: 1,
         ),
       ),
       child: Column(
@@ -284,29 +303,29 @@ class _AddTradePageState extends State<AddTradePage> {
           // Section header
           InkWell(
             onTap: () => _toggleSection(sectionKey),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: isRequired 
                     ? AppTheme.primaryColor.withValues(alpha: 0.1)
-                    : Colors.grey.withValues(alpha: 0.05),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    : AppTheme.borderColor.withValues(alpha: 0.3),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(7)),
               ),
               child: Row(
                 children: [
                   Icon(
                     icon,
                     color: isRequired ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
-                    size: 24,
+                    size: 18,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Row(
                       children: [
                         Text(
                           title,
-                          style: AppTheme.subheadingStyle.copyWith(
+                          style: AppTheme.bodyStyle.copyWith(
                             fontWeight: FontWeight.w600,
                             color: isRequired ? AppTheme.primaryColor : AppTheme.textPrimaryColor,
                           ),
@@ -314,16 +333,17 @@ class _AddTradePageState extends State<AddTradePage> {
                         if (isRequired) ...[
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppTheme.primaryColor,
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              'Required',
-                              style: AppTheme.captionStyle.copyWith(
+                              'REQUIRED',
+                              style: AppTheme.labelStyle.copyWith(
                                 color: Colors.white,
-                                fontSize: 10,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
@@ -332,8 +352,9 @@ class _AddTradePageState extends State<AddTradePage> {
                     ),
                   ),
                   Icon(
-                    isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                     color: AppTheme.textSecondaryColor,
+                    size: 20,
                   ),
                 ],
               ),
@@ -343,7 +364,7 @@ class _AddTradePageState extends State<AddTradePage> {
           // Section content
           if (isExpanded)
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: content,
             ),
         ],
@@ -353,18 +374,8 @@ class _AddTradePageState extends State<AddTradePage> {
 
   Widget _buildSubmitSection(AddTradeProvider provider) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.all(12),
+      decoration: AppTheme.cardDecoration,
       child: Column(
         children: [
           // Form validation summary
@@ -401,21 +412,12 @@ class _AddTradePageState extends State<AddTradePage> {
           // Submit button
           SizedBox(
             width: double.infinity,
-            height: 56,
+            height: 40,
             child: ElevatedButton(
               onPressed: provider.isFormValid ? provider.addTrade : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: provider.isFormValid 
-                    ? AppTheme.primaryColor 
-                    : AppTheme.borderColor,
-                foregroundColor: provider.isFormValid 
-                    ? Colors.white 
-                    : AppTheme.textSecondaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: provider.isFormValid ? 4 : 0,
-              ),
+              style: provider.isFormValid 
+                  ? AppTheme.primaryButtonStyle 
+                  : AppTheme.secondaryButtonStyle,
               child: _buildSubmitButtonContent(provider),
             ),
           ),
@@ -896,25 +898,25 @@ class _AddTradePageState extends State<AddTradePage> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 16, color: AppTheme.textSecondaryColor),
-            const SizedBox(width: 8),
+            Icon(icon, size: 14, color: AppTheme.textSecondaryColor),
+            const SizedBox(width: 6),
             Text(
               label,
-              style: AppTheme.bodyStyle.copyWith(
+              style: AppTheme.labelStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textPrimaryColor,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           hint,
           style: AppTheme.captionStyle.copyWith(
-            color: AppTheme.textSecondaryColor,
+            color: AppTheme.textTertiaryColor,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         child,
       ],
     );
@@ -1382,10 +1384,11 @@ class _AddTradePageState extends State<AddTradePage> {
 
   Widget _buildPositionSideSwitch(AddTradeProvider provider) {
     return Container(
-      height: 48,
+      height: 40,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(color: AppTheme.borderColor),
+        color: AppTheme.surfaceColor,
       ),
       child: Stack(
         children: [
@@ -1401,9 +1404,9 @@ class _AddTradePageState extends State<AddTradePage> {
               width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
               decoration: BoxDecoration(
                 color: provider.side == Side.long 
-                    ? AppTheme.successColor 
-                    : AppTheme.errorColor,
-                borderRadius: BorderRadius.circular(7),
+                    ? AppTheme.bullishColor 
+                    : AppTheme.bearishColor,
+                borderRadius: BorderRadius.circular(5),
               ),
             ),
           ),
@@ -1417,8 +1420,8 @@ class _AddTradePageState extends State<AddTradePage> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(7),
-                        bottomLeft: Radius.circular(7),
+                        topLeft: Radius.circular(5),
+                        bottomLeft: Radius.circular(5),
                       ),
                       onTap: () => provider.updateSide(Side.long),
                       child: Container(
@@ -1466,8 +1469,8 @@ class _AddTradePageState extends State<AddTradePage> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(7),
-                        bottomRight: Radius.circular(7),
+                        topRight: Radius.circular(5),
+                        bottomRight: Radius.circular(5),
                       ),
                       onTap: () => provider.updateSide(Side.short),
                       child: Container(

@@ -39,21 +39,25 @@ class _TradeListPageState extends State<TradeListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trade List'),
-        elevation: 0,
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
+        title: Text(
+          'Trades',
+          style: AppTheme.subheadingStyle.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search_rounded, size: 20),
             onPressed: () => _showSearchDialog(context),
+            tooltip: 'Search',
           ),
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list_rounded, size: 20),
             onPressed: () => _showFilterSheet(context),
+            tooltip: 'Filter',
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert_rounded, size: 20),
             onSelected: (value) => _handleMenuAction(value),
             itemBuilder: (context) => [
               const PopupMenuItem(
@@ -112,40 +116,30 @@ class _TradeListPageState extends State<TradeListPage> {
     final stats = provider.statistics;
     
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.all(12),
+      decoration: AppTheme.cardDecoration,
       child: Column(
         children: [
           Row(
             children: [
               Icon(
-                Icons.analytics,
-                color: AppTheme.primaryColor,
-                size: 24,
+                Icons.bar_chart_rounded,
+                color: AppTheme.textSecondaryColor,
+                size: 16,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               Text(
-                'Trade Summary',
-                style: AppTheme.subheadingStyle.copyWith(
+                'Summary',
+                style: AppTheme.labelStyle.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryColor,
+                  color: AppTheme.textSecondaryColor,
                 ),
               ),
               const Spacer(),
               Text(
                 '${provider.trades.length} trades',
-                style: AppTheme.captionStyle.copyWith(
-                  color: AppTheme.textSecondaryColor,
-                ),
+                style: AppTheme.captionStyle,
               ),
             ],
           ),
@@ -154,12 +148,11 @@ class _TradeListPageState extends State<TradeListPage> {
             children: [
               Expanded(
                 child: _buildStatCard(
-                  'Total PnL',
-                  stats.totalPnL.toStringAsFixed(2),
+                  'P&L',
+                  '\$${stats.totalPnL.toStringAsFixed(2)}',
                   stats.totalPnL > 0 
-                      ? AppTheme.successColor 
-                      : AppTheme.errorColor,
-                  Icons.trending_up,
+                      ? AppTheme.bullishColor 
+                      : AppTheme.bearishColor,
                 ),
               ),
               const SizedBox(width: 8),
@@ -167,17 +160,15 @@ class _TradeListPageState extends State<TradeListPage> {
                 child: _buildStatCard(
                   'Win Rate',
                   '${stats.winRate.toStringAsFixed(1)}%',
-                  AppTheme.primaryColor,
-                  Icons.emoji_events,
+                  stats.winRate >= 50 ? AppTheme.bullishColor : AppTheme.bearishColor,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildStatCard(
                   'Avg R',
-                  stats.averageR.toStringAsFixed(2),
+                  '${stats.averageR.toStringAsFixed(2)}x',
                   AppTheme.primaryColor,
-                  Icons.speed,
                 ),
               ),
             ],
@@ -187,29 +178,27 @@ class _TradeListPageState extends State<TradeListPage> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, Color color, IconData icon) {
+  Widget _buildStatCard(String label, String value, Color color) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: AppTheme.borderColor),
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: AppTheme.bodyStyle.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
           Text(
             label,
-            style: AppTheme.captionStyle.copyWith(
-              color: AppTheme.textSecondaryColor,
+            style: AppTheme.captionStyle,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: AppTheme.priceStyle.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
@@ -292,14 +281,15 @@ class _TradeListPageState extends State<TradeListPage> {
 
     return RefreshIndicator(
       onRefresh: () => provider.loadTrades(),
+      color: AppTheme.primaryColor,
       child: ListView.builder(
         controller: _scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         itemCount: provider.trades.length,
         itemBuilder: (context, index) {
           final trade = provider.trades[index];
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: 8),
             child: TradeCard(
               trade: trade,
               onTap: () => _showTradeDetails(context, trade),
