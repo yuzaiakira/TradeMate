@@ -400,9 +400,17 @@ class _TradeListPageState extends State<TradeListPage> {
   Widget _buildTradeDetailsSheet(Trade trade) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        border: Border.all(color: AppTheme.borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -412,7 +420,7 @@ class _TradeListPageState extends State<TradeListPage> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppTheme.textSecondaryColor,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -424,12 +432,19 @@ class _TradeListPageState extends State<TradeListPage> {
               children: [
                 Text(
                   'Trade Details',
-                  style: AppTheme.headingStyle,
+                  style: AppTheme.headingStyle.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const Spacer(),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
+                  icon: Icon(
+                    Icons.close,
+                    color: AppTheme.textSecondaryColor,
+                    size: 20,
+                  ),
                 ),
               ],
             ),
@@ -452,24 +467,24 @@ class _TradeListPageState extends State<TradeListPage> {
                   ]),
                   
                   if (trade.exitPrice != null) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     _buildDetailSection('Exit Information', [
                       _buildDetailRow('Exit Price', '\$${trade.exitPrice!.toStringAsFixed(2)}'),
                       _buildDetailRow('Exit Date', _formatDateTime(trade.exitDate)),
-                      _buildDetailRow('PnL', '\$${trade.pnl?.toStringAsFixed(2) ?? '0.00'}'),
-                      _buildDetailRow('PnL %', '${trade.pnlPercent?.toStringAsFixed(2) ?? '0.00'}%'),
+                      _buildDetailRowWithColor('PnL', '\$${trade.pnl?.toStringAsFixed(2) ?? '0.00'}', trade.pnl ?? 0),
+                      _buildDetailRowWithColor('PnL %', '${trade.pnlPercent?.toStringAsFixed(2) ?? '0.00'}%', trade.pnlPercent ?? 0),
                     ]),
                   ],
                   
                   if (trade.memo?.isNotEmpty == true) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     _buildDetailSection('Memo', [
                       _buildDetailRow('Notes', trade.memo!),
                     ]),
                   ],
                   
                   if (trade.rating != null) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     _buildDetailSection('Rating', [
                       _buildDetailRow('Rating', '${trade.rating}/5 ${'⭐' * trade.rating!}'),
                     ]),
@@ -492,15 +507,16 @@ class _TradeListPageState extends State<TradeListPage> {
           style: AppTheme.subheadingStyle.copyWith(
             fontWeight: FontWeight.w600,
             color: AppTheme.primaryColor,
+            fontSize: 16,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: AppTheme.backgroundColor,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: AppTheme.borderColor),
           ),
           child: Column(
             children: children,
@@ -512,7 +528,7 @@ class _TradeListPageState extends State<TradeListPage> {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -523,13 +539,55 @@ class _TradeListPageState extends State<TradeListPage> {
               style: AppTheme.captionStyle.copyWith(
                 fontWeight: FontWeight.w500,
                 color: AppTheme.textSecondaryColor,
+                fontSize: 12,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: AppTheme.bodyStyle,
+              style: AppTheme.bodyStyle.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRowWithColor(String label, String value, double numericValue) {
+    final color = numericValue > 0 
+        ? AppTheme.bullishColor 
+        : numericValue < 0 
+            ? AppTheme.bearishColor 
+            : AppTheme.textPrimaryColor;
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: AppTheme.captionStyle.copyWith(
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textSecondaryColor,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: AppTheme.bodyStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: color,
+              ),
             ),
           ),
         ],

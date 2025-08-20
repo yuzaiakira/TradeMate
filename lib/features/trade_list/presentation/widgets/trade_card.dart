@@ -195,17 +195,17 @@ class TradeCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         text,
         style: AppTheme.labelStyle.copyWith(
           color: textColor,
           fontWeight: FontWeight.w600,
-          fontSize: 9,
+          fontSize: 10,
         ),
       ),
     );
@@ -239,26 +239,27 @@ class TradeCard extends StatelessWidget {
     final icon = isPositive ? Icons.trending_up_rounded : Icons.trending_down_rounded;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             icon,
-            size: 14,
+            size: 16,
             color: color,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             '\$${pnl.toStringAsFixed(2)}',
             style: AppTheme.captionStyle.copyWith(
               fontWeight: FontWeight.w600,
               color: color,
+              fontSize: 13,
             ),
           ),
         ],
@@ -268,26 +269,27 @@ class TradeCard extends StatelessWidget {
 
   Widget _buildRatingIndicator(int rating) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.amber.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+        color: Colors.amber.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             Icons.star,
-            size: 14,
+            size: 16,
             color: Colors.amber,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             '$rating',
             style: AppTheme.captionStyle.copyWith(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               color: Colors.amber,
+              fontSize: 13,
             ),
           ),
         ],
