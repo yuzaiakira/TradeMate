@@ -13,7 +13,7 @@ class MultiSelectDropdown extends StatefulWidget {
   final bool showSearch;
 
   const MultiSelectDropdown({
-    Key? key,
+    super.key,
     required this.label,
     required this.prefixIcon,
     required this.options,
@@ -23,7 +23,7 @@ class MultiSelectDropdown extends StatefulWidget {
     this.allowMultiple = true,
     this.hintText = 'Select options',
     this.showSearch = true,
-  }) : super(key: key);
+  });
 
   @override
   State<MultiSelectDropdown> createState() => _MultiSelectDropdownState();

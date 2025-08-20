@@ -32,22 +32,24 @@ class UpdateTradeUseCase {
     // Calculate derived fields
     final calculatedTrade = _calculateTradeFields(tradeToUpdate);
     
-    return await repository.updateTrade(calculatedTrade);
+    final result = await repository.updateTrade(calculatedTrade);
+    
+    return result;
   }
 
   Trade _calculateTradeFields(Trade trade) {
     // Calculate risk amount if stop loss is provided
     double? riskAmount;
-    if (trade.stopLoss != null) {
-      final riskPerUnit = (trade.entryPrice - trade.stopLoss!).abs();
+    if (trade.stopLossPrice != null) {
+      final riskPerUnit = (trade.entryPrice - trade.stopLossPrice!).abs();
       riskAmount = riskPerUnit * trade.quantity;
     }
 
     // Calculate risk/reward ratio
     double? riskRewardRatio;
-    if (trade.stopLoss != null && trade.takeProfit != null) {
-      final risk = (trade.entryPrice - trade.stopLoss!).abs();
-      final reward = (trade.takeProfit! - trade.entryPrice).abs();
+    if (trade.stopLossPrice != null && trade.takeProfitPrice != null) {
+      final risk = (trade.entryPrice - trade.stopLossPrice!).abs();
+      final reward = (trade.takeProfitPrice! - trade.entryPrice).abs();
       if (risk > 0) {
         riskRewardRatio = reward / risk;
       }
@@ -56,8 +58,8 @@ class UpdateTradeUseCase {
     // Calculate PnL if exit price is provided
     double? pnl;
     double? pnlPercent;
-    if (trade.exitPrice != null && trade.status == TradeStatus.closed) {
-      final priceDifference = trade.exitPrice! - trade.entryPrice;
+    if (trade.actualExitPrice != null && trade.status == TradeStatus.closed) {
+      final priceDifference = trade.actualExitPrice! - trade.entryPrice;
       final multiplier = trade.type == TradeType.buy ? 1 : -1;
       pnl = priceDifference * trade.quantity * multiplier;
       
@@ -73,8 +75,8 @@ class UpdateTradeUseCase {
 
     // Calculate trade duration
     int? tradeDuration;
-    if (trade.exitDate != null) {
-      tradeDuration = trade.exitDate!.difference(trade.entryDate).inMinutes;
+    if (trade.exitDatetime != null) {
+      tradeDuration = trade.exitDatetime!.difference(trade.datetime).inMinutes;
     }
 
     return trade.copyWith(

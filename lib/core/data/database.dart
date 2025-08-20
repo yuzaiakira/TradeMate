@@ -120,7 +120,6 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   @override
   int get schemaVersion => 1;
 
-  @override
   MigrationStrategy get migrations {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
@@ -146,8 +145,10 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   
   Future<int> insertTrade(TradesCompanion trade) => into(trades).insert(trade);
   
-  Future<bool> updateTrade(TradesCompanion trade) => 
-      update(trades).replace(trade);
+  Future<bool> updateTrade(TradesCompanion trade) {
+    final result = update(trades).replace(trade);
+    return result;
+  }
   
   Future<int> deleteTrade(int id) => 
       (delete(trades)..where((t) => t.id.equals(id))).go();

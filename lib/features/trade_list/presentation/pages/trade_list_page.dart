@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
-import '../../../../core/widgets/multi_select_dropdown.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 import '../../../add_trade/presentation/pages/edit_trade_page.dart';
@@ -19,7 +18,6 @@ class TradeListPage extends StatefulWidget {
 class _TradeListPageState extends State<TradeListPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  bool _showFilters = false;
 
   @override
   void initState() {
@@ -157,8 +155,8 @@ class _TradeListPageState extends State<TradeListPage> {
               Expanded(
                 child: _buildStatCard(
                   'Total PnL',
-                  stats.totalPnL?.toStringAsFixed(2) ?? '0.00',
-                  stats.totalPnL != null && stats.totalPnL! > 0 
+                  stats.totalPnL.toStringAsFixed(2),
+                  stats.totalPnL > 0 
                       ? AppTheme.successColor 
                       : AppTheme.errorColor,
                   Icons.trending_up,
@@ -168,7 +166,7 @@ class _TradeListPageState extends State<TradeListPage> {
               Expanded(
                 child: _buildStatCard(
                   'Win Rate',
-                  '${stats.winRate?.toStringAsFixed(1) ?? 0}%',
+                  '${stats.winRate.toStringAsFixed(1)}%',
                   AppTheme.primaryColor,
                   Icons.emoji_events,
                 ),
@@ -177,7 +175,7 @@ class _TradeListPageState extends State<TradeListPage> {
               Expanded(
                 child: _buildStatCard(
                   'Avg R',
-                  stats.averageR?.toStringAsFixed(2) ?? '0.00',
+                  stats.averageR.toStringAsFixed(2),
                   AppTheme.primaryColor,
                   Icons.speed,
                 ),
@@ -554,12 +552,18 @@ class _TradeListPageState extends State<TradeListPage> {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
-  void _editTrade(BuildContext context, Trade trade) {
-    Navigator.of(context).push(
+  void _editTrade(BuildContext context, Trade trade) async {
+    final navigator = Navigator.of(context);
+    final provider = context.read<TradeListProvider>();
+    await navigator.push(
       MaterialPageRoute(
         builder: (context) => EditTradePage(trade: trade),
       ),
     );
+    // Refresh the trade list when returning from edit page
+    if (mounted) {
+      provider.loadTrades();
+    }
   }
 
   void _deleteTrade(BuildContext context, Trade trade) {

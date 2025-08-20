@@ -40,11 +40,14 @@ class _EditTradePageState extends State<EditTradePage> {
   late TextEditingController _mistakesController;
   late TextEditingController _transferAmountController;
   late TextEditingController _transferScreenshotController;
+  late TextEditingController _datetimeController;
+  late TextEditingController _exitDatetimeController;
 
   @override
   void initState() {
     super.initState();
     _initializeControllers();
+    // Initialize form data in post frame callback to ensure provider is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditTradeProvider>().initializeWithTrade(widget.trade);
       _initializeFormWithTradeData();
@@ -74,6 +77,8 @@ class _EditTradePageState extends State<EditTradePage> {
     _mistakesController.dispose();
     _transferAmountController.dispose();
     _transferScreenshotController.dispose();
+    _datetimeController.dispose();
+    _exitDatetimeController.dispose();
     super.dispose();
   }
 
@@ -99,11 +104,38 @@ class _EditTradePageState extends State<EditTradePage> {
     _mistakesController = TextEditingController();
     _transferAmountController = TextEditingController();
     _transferScreenshotController = TextEditingController();
+    _datetimeController = TextEditingController();
+    _exitDatetimeController = TextEditingController();
   }
 
   void _initializeFormWithTradeData() {
     final addTradeProvider = context.read<AddTradeProvider>();
     final trade = widget.trade;
+
+    // Set controller values first
+    _tagController.text = trade.tag ?? '';
+    _symbolController.text = trade.symbol;
+    _entryPriceController.text = trade.entryPrice > 0 ? trade.entryPrice.toString() : '';
+    _positionMarginController.text = trade.positionMargin?.toString() ?? '';
+    _leverageController.text = trade.leverage?.toString() ?? '';
+    _entryFeeRateController.text = trade.entryFeeRate?.toString() ?? '';
+    _entryMentalStatesController.text = trade.entryMentalStates ?? '';
+    _entryScreenshotController.text = trade.entryScreenshot ?? '';
+    _checklistController.text = trade.checklist?.join('\n') ?? '';
+    _stopLossController.text = trade.stopLossPrice?.toString() ?? '';
+    _takeProfitController.text = trade.takeProfitPrice?.toString() ?? '';
+    _actualExitPriceController.text = trade.actualExitPrice?.toString() ?? '';
+    _marginClosedPercentController.text = trade.marginClosedPercent?.toString() ?? '';
+    _exitFeeRateController.text = trade.exitFeeRate?.toString() ?? '';
+    _exitMentalStatesController.text = trade.exitMentalStates ?? '';
+    _exitScreenshotController.text = trade.exitScreenshot ?? '';
+    _memoController.text = trade.memo ?? '';
+    _trackingsController.text = trade.trackings ?? '';
+    _mistakesController.text = trade.mistakes ?? '';
+    _transferAmountController.text = trade.transferAmount?.toString() ?? '';
+    _transferScreenshotController.text = trade.transferScreenshot ?? '';
+    _datetimeController.text = trade.datetime.toString().substring(0, 16);
+    _exitDatetimeController.text = trade.exitDatetime?.toString().substring(0, 16) ?? 'Select exit datetime';
 
     // Initialize form fields with existing trade data
     addTradeProvider.updateTag(trade.tag ?? '');
@@ -137,29 +169,12 @@ class _EditTradePageState extends State<EditTradePage> {
     addTradeProvider.updateMistakes(trade.mistakes);
     addTradeProvider.updateTransferAmount(trade.transferAmount);
     addTradeProvider.updateTransferScreenshot(trade.transferScreenshot ?? '');
-
-    // Set controller values
-    _tagController.text = trade.tag ?? '';
-    _symbolController.text = trade.symbol;
-    _entryPriceController.text = trade.entryPrice > 0 ? trade.entryPrice.toString() : '';
-    _positionMarginController.text = trade.positionMargin?.toString() ?? '';
-    _leverageController.text = trade.leverage?.toString() ?? '';
-    _entryFeeRateController.text = trade.entryFeeRate?.toString() ?? '';
-    _entryMentalStatesController.text = trade.entryMentalStates ?? '';
-    _entryScreenshotController.text = trade.entryScreenshot ?? '';
-    _checklistController.text = trade.checklist?.join('\n') ?? '';
-    _stopLossController.text = trade.stopLossPrice?.toString() ?? '';
-    _takeProfitController.text = trade.takeProfitPrice?.toString() ?? '';
-    _actualExitPriceController.text = trade.actualExitPrice?.toString() ?? '';
-    _marginClosedPercentController.text = trade.marginClosedPercent?.toString() ?? '';
-    _exitFeeRateController.text = trade.exitFeeRate?.toString() ?? '';
-    _exitMentalStatesController.text = trade.exitMentalStates ?? '';
-    _exitScreenshotController.text = trade.exitScreenshot ?? '';
-    _memoController.text = trade.memo ?? '';
-    _trackingsController.text = trade.trackings ?? '';
-    _mistakesController.text = trade.mistakes ?? '';
-    _transferAmountController.text = trade.transferAmount?.toString() ?? '';
-    _transferScreenshotController.text = trade.transferScreenshot ?? '';
+    
+    // Set legacy fields that are required for validation
+    addTradeProvider.updateQuantity(trade.quantity);
+    addTradeProvider.updateType(trade.type);
+    addTradeProvider.updateNotes(trade.notes ?? '');
+    addTradeProvider.updateAccountBalance(trade.accountBalance);
   }
 
   @override
@@ -315,9 +330,7 @@ class _EditTradePageState extends State<EditTradePage> {
                 labelText: 'Trade Date & Time',
                 prefixIcon: Icons.schedule,
               ),
-              controller: TextEditingController(
-                text: provider.datetime?.toString().substring(0, 16) ?? 'Select datetime',
-              ),
+              controller: _datetimeController,
               readOnly: true,
               onTap: () => _selectDateTime(context, provider),
             ),
@@ -355,19 +368,16 @@ class _EditTradePageState extends State<EditTradePage> {
             const SizedBox(height: 16),
             
             // Side
-            DropdownButtonFormField<Side>(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Side',
-                prefixIcon: Icons.trending_up,
-              ),
-              value: provider.side,
-              items: Side.values
-                  .map((side) => DropdownMenuItem(
-                        value: side,
-                        child: Text(side.name.toUpperCase()),
-                      ))
-                  .toList(),
-              onChanged: provider.updateSide,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Position Side',
+                  style: AppTheme.bodyStyle,
+                ),
+                const SizedBox(height: 8),
+                _buildPositionSideSwitch(provider),
+              ],
             ),
             
             const SizedBox(height: 16),
@@ -685,9 +695,7 @@ class _EditTradePageState extends State<EditTradePage> {
                 labelText: 'Exit Date & Time',
                 prefixIcon: Icons.schedule,
               ),
-              controller: TextEditingController(
-                text: provider.exitDatetime?.toString().substring(0, 16) ?? 'Select exit datetime',
-              ),
+              controller: _exitDatetimeController,
               readOnly: true,
               onTap: () => _selectExitDateTime(context, provider),
             ),
@@ -786,7 +794,7 @@ class _EditTradePageState extends State<EditTradePage> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -4),
           ),
@@ -820,7 +828,9 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   void _updateTrade(AddTradeProvider addTradeProvider, EditTradeProvider editTradeProvider) async {
-    final trade = addTradeProvider.buildTrade();
+    // Build the trade with the original ID preserved
+    final trade = addTradeProvider.buildTrade().copyWith(id: widget.trade.id);
+    
     await editTradeProvider.updateTrade(trade);
     
     // If successful, navigate back
@@ -838,20 +848,23 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Future<void> _selectDateTime(BuildContext context, AddTradeProvider provider) async {
+    // Capture context before any async operations
+    final navigatorContext = context;
+    
     final DateTime? picked = await showDatePicker(
-      context: context,
+      context: navigatorContext,
       initialDate: provider.datetime ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null) {
+    if (picked != null && mounted) {
       final TimeOfDay? time = await showTimePicker(
-        context: context,
+        context: navigatorContext,
         initialTime: TimeOfDay.fromDateTime(provider.datetime ?? DateTime.now()),
       );
       
-      if (time != null) {
+      if (time != null && mounted) {
         final DateTime selectedDateTime = DateTime(
           picked.year,
           picked.month,
@@ -862,27 +875,30 @@ class _EditTradePageState extends State<EditTradePage> {
         provider.updateDatetime(selectedDateTime);
         // Update the datetime field in the form
         setState(() {
-          // The datetime field will be updated in the next build
+          _datetimeController.text = selectedDateTime.toString().substring(0, 16);
         });
       }
     }
   }
 
   Future<void> _selectExitDateTime(BuildContext context, AddTradeProvider provider) async {
+    // Capture context before any async operations
+    final navigatorContext = context;
+    
     final DateTime? picked = await showDatePicker(
-      context: context,
+      context: navigatorContext,
       initialDate: provider.exitDatetime ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null) {
+    if (picked != null && mounted) {
       final TimeOfDay? time = await showTimePicker(
-        context: context,
+        context: navigatorContext,
         initialTime: TimeOfDay.fromDateTime(provider.exitDatetime ?? DateTime.now()),
       );
       
-      if (time != null) {
+      if (time != null && mounted) {
         final DateTime selectedDateTime = DateTime(
           picked.year,
           picked.month,
@@ -893,7 +909,7 @@ class _EditTradePageState extends State<EditTradePage> {
         provider.updateExitDatetime(selectedDateTime);
         // Update the exit datetime field in the form
         setState(() {
-          // The exit datetime field will be updated in the next build
+          _exitDatetimeController.text = selectedDateTime.toString().substring(0, 16);
         });
       }
     }
@@ -1077,6 +1093,141 @@ class _EditTradePageState extends State<EditTradePage> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildPositionSideSwitch(AddTradeProvider provider) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.borderColor),
+      ),
+      child: Stack(
+        children: [
+          // Animated sliding background
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            left: provider.side == Side.long ? 0 : null,
+            right: provider.side == Side.short ? 0 : null,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
+              decoration: BoxDecoration(
+                color: provider.side == Side.long 
+                    ? AppTheme.successColor 
+                    : AppTheme.errorColor,
+                borderRadius: BorderRadius.circular(7),
+              ),
+            ),
+          ),
+          // Content
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => provider.updateSide(Side.long),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(7),
+                        bottomLeft: Radius.circular(7),
+                      ),
+                      onTap: () => provider.updateSide(Side.long),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(
+                                Icons.trending_up,
+                                key: ValueKey(provider.side == Side.long),
+                                color: provider.side == Side.long 
+                                    ? Colors.white 
+                                    : AppTheme.textSecondaryColor,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Text(
+                                'LONG',
+                                key: ValueKey(provider.side == Side.long),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: provider.side == Side.long 
+                                      ? Colors.white 
+                                      : AppTheme.textSecondaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => provider.updateSide(Side.short),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(7),
+                        bottomRight: Radius.circular(7),
+                      ),
+                      onTap: () => provider.updateSide(Side.short),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(
+                                Icons.trending_down,
+                                key: ValueKey(provider.side == Side.short),
+                                color: provider.side == Side.short 
+                                    ? Colors.white 
+                                    : AppTheme.textSecondaryColor,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Text(
+                                'SHORT',
+                                key: ValueKey(provider.side == Side.short),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: provider.side == Side.short 
+                                      ? Colors.white 
+                                      : AppTheme.textSecondaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

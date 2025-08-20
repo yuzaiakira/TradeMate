@@ -359,7 +359,7 @@ class _AddTradePageState extends State<AddTradePage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -679,20 +679,7 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Position Side',
           hint: 'Are you going long or short?',
           icon: Icons.trending_up,
-          child: DropdownButtonFormField<Side>(
-            decoration: AppTheme.inputDecoration(
-              labelText: 'Side',
-              prefixIcon: Icons.trending_up,
-            ),
-            value: addTradeProvider.side,
-            items: Side.values
-                .map((side) => DropdownMenuItem(
-                      value: side,
-                      child: Text(side.name.toUpperCase()),
-                    ))
-                .toList(),
-            onChanged: addTradeProvider.updateSide,
-          ),
+          child: _buildPositionSideSwitch(addTradeProvider),
         ),
         
         const SizedBox(height: 16),
@@ -1393,21 +1380,159 @@ class _AddTradePageState extends State<AddTradePage> {
     );
   }
 
+  Widget _buildPositionSideSwitch(AddTradeProvider provider) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.borderColor),
+      ),
+      child: Stack(
+        children: [
+          // Animated sliding background
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            left: provider.side == Side.long ? 0 : null,
+            right: provider.side == Side.short ? 0 : null,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
+              decoration: BoxDecoration(
+                color: provider.side == Side.long 
+                    ? AppTheme.successColor 
+                    : AppTheme.errorColor,
+                borderRadius: BorderRadius.circular(7),
+              ),
+            ),
+          ),
+          // Content
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => provider.updateSide(Side.long),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(7),
+                        bottomLeft: Radius.circular(7),
+                      ),
+                      onTap: () => provider.updateSide(Side.long),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(
+                                Icons.trending_up,
+                                key: ValueKey(provider.side == Side.long),
+                                color: provider.side == Side.long 
+                                    ? Colors.white 
+                                    : AppTheme.textSecondaryColor,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Text(
+                                'LONG',
+                                key: ValueKey(provider.side == Side.long),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: provider.side == Side.long 
+                                      ? Colors.white 
+                                      : AppTheme.textSecondaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => provider.updateSide(Side.short),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(7),
+                        bottomRight: Radius.circular(7),
+                      ),
+                      onTap: () => provider.updateSide(Side.short),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(
+                                Icons.trending_down,
+                                key: ValueKey(provider.side == Side.short),
+                                color: provider.side == Side.short 
+                                    ? Colors.white 
+                                    : AppTheme.textSecondaryColor,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Text(
+                                'SHORT',
+                                key: ValueKey(provider.side == Side.short),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: provider.side == Side.short 
+                                      ? Colors.white 
+                                      : AppTheme.textSecondaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _selectDateTime(BuildContext context, AddTradeProvider provider) async {
+    // Capture context before any async operations
+    final navigatorContext = context;
+    
     final DateTime? picked = await showDatePicker(
-      context: context,
+      context: navigatorContext,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null) {
+    if (picked != null && mounted) {
       final TimeOfDay? time = await showTimePicker(
-        context: context,
+        context: navigatorContext,
         initialTime: TimeOfDay.now(),
       );
       
-      if (time != null) {
+      if (time != null && mounted) {
         final DateTime selectedDateTime = DateTime(
           picked.year,
           picked.month,
@@ -1421,20 +1546,23 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   Future<void> _selectExitDateTime(BuildContext context, AddTradeProvider provider) async {
+    // Capture context before any async operations
+    final navigatorContext = context;
+    
     final DateTime? picked = await showDatePicker(
-      context: context,
+      context: navigatorContext,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
     
-    if (picked != null) {
+    if (picked != null && mounted) {
       final TimeOfDay? time = await showTimePicker(
-        context: context,
+        context: navigatorContext,
         initialTime: TimeOfDay.now(),
       );
       
-      if (time != null) {
+      if (time != null && mounted) {
         final DateTime selectedDateTime = DateTime(
           picked.year,
           picked.month,

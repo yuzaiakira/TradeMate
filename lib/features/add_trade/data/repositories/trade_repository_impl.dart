@@ -152,7 +152,9 @@ class TradeRepositoryImpl implements TradeRepository {
       tradeDuration: trade.tradeDuration,
     );
     
-    return await database.updateTrade(tradeModel.toDatabaseCompanion());
+    final result = await database.updateTrade(tradeModel.toDatabaseCompanion());
+    
+    return result;
   }
 
   @override

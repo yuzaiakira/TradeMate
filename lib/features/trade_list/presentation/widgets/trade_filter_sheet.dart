@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
-import '../../../../core/widgets/multi_select_dropdown.dart';
-import '../../../../core/providers/user_defined_values_provider.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 import '../provider/trade_list_provider.dart';
 import '../models/trade_filters.dart';
@@ -362,10 +360,6 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
   }
 
   Widget _buildPnLRangeFilter() {
-    final provider = context.read<TradeListProvider>();
-    final minPnL = provider.getMinPnL();
-    final maxPnL = provider.getMaxPnL();
-    
     return Row(
       children: [
         Expanded(

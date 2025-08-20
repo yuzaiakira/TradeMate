@@ -94,19 +94,9 @@ class _HomePageState extends State<HomePage> {
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Account Growth',
-                      style: AppTheme.subheadingStyle,
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      height: 200,
-                      child: AccountGrowthChart(statistics: statistics),
-                    ),
-                  ],
+                child: SizedBox(
+                  height: 250,
+                  child: AccountGrowthChart(statistics: statistics),
                 ),
               ),
             ),

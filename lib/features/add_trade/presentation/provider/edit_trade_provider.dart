@@ -40,15 +40,10 @@ class EditTradeProvider extends ChangeNotifier {
     _setLoading();
 
     try {
-      // Ensure the trade has the correct ID
-      final tradeWithId = updatedTrade.copyWith(id: _tradeToEdit!.id);
-      
-      final success = await updateTradeUseCase(tradeWithId);
+      final success = await updateTradeUseCase(updatedTrade);
       
       if (success) {
         _setSuccess();
-        // Refresh the trades list
-        await getTradesUseCase();
       } else {
         _setError('Failed to update trade');
       }
