@@ -65,9 +65,7 @@ class _AddTradePageState extends State<AddTradePage> {
             icon: const Icon(Icons.settings, size: 20),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const ManageValuesPage(),
-              ),
+              MaterialPageRoute(builder: (context) => const ManageValuesPage()),
             ),
             tooltip: 'Manage Values',
           ),
@@ -528,10 +526,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('exchanges'),
             builder: (context, snapshot) {
               final exchanges = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(exchanges);
+              if (addTradeProvider.exchanges != null &&
+                  !allOptions.contains(addTradeProvider.exchanges!)) {
+                allOptions.add(addTradeProvider.exchanges!);
+              }
               return MultiSelectDropdown(
                 label: 'Exchanges',
                 prefixIcon: Icons.swap_horiz,
-                options: exchanges,
+                options: allOptions,
                 selectedValues: addTradeProvider.exchanges != null
                     ? [addTradeProvider.exchanges!]
                     : [],
@@ -590,10 +594,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('symbols'),
             builder: (context, snapshot) {
               final symbols = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(symbols);
+              if (addTradeProvider.symbol.isNotEmpty &&
+                  !allOptions.contains(addTradeProvider.symbol)) {
+                allOptions.add(addTradeProvider.symbol);
+              }
               return MultiSelectDropdown(
                 label: 'Symbol',
                 prefixIcon: Icons.currency_exchange,
-                options: symbols,
+                options: allOptions,
                 selectedValues: addTradeProvider.symbol.isNotEmpty
                     ? [addTradeProvider.symbol]
                     : [],
@@ -626,10 +636,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('strategies'),
             builder: (context, snapshot) {
               final strategies = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(strategies);
+              if (addTradeProvider.strategies != null &&
+                  !allOptions.contains(addTradeProvider.strategies!)) {
+                allOptions.add(addTradeProvider.strategies!);
+              }
               return MultiSelectDropdown(
                 label: 'Strategies',
                 prefixIcon: Icons.trending_up,
-                options: strategies,
+                options: allOptions,
                 selectedValues: addTradeProvider.strategies != null
                     ? [addTradeProvider.strategies!]
                     : [],
@@ -787,10 +803,18 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('entryFeeRates'),
             builder: (context, snapshot) {
               final feeRates = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(feeRates);
+              if (addTradeProvider.entryFeeRate != null) {
+                final currentValue = addTradeProvider.entryFeeRate.toString();
+                if (!allOptions.contains(currentValue)) {
+                  allOptions.add(currentValue);
+                }
+              }
               return MultiSelectDropdown(
                 label: 'Entry Fee Rate',
                 prefixIcon: Icons.percent,
-                options: feeRates,
+                options: allOptions,
                 selectedValues: addTradeProvider.entryFeeRate != null
                     ? [addTradeProvider.entryFeeRate.toString()]
                     : [],
@@ -825,10 +849,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('entryMentalStates'),
             builder: (context, snapshot) {
               final mentalStates = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(mentalStates);
+              if (addTradeProvider.entryMentalStates != null &&
+                  !allOptions.contains(addTradeProvider.entryMentalStates!)) {
+                allOptions.add(addTradeProvider.entryMentalStates!);
+              }
               return MultiSelectDropdown(
                 label: 'Entry Mental States',
                 prefixIcon: Icons.psychology,
-                options: mentalStates,
+                options: allOptions,
                 selectedValues: addTradeProvider.entryMentalStates != null
                     ? [addTradeProvider.entryMentalStates!]
                     : [],
@@ -1095,10 +1125,18 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('exitFeeRates'),
             builder: (context, snapshot) {
               final feeRates = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(feeRates);
+              if (addTradeProvider.exitFeeRate != null) {
+                final currentValue = addTradeProvider.exitFeeRate.toString();
+                if (!allOptions.contains(currentValue)) {
+                  allOptions.add(currentValue);
+                }
+              }
               return MultiSelectDropdown(
                 label: 'Exit Fee Rate',
                 prefixIcon: Icons.percent,
-                options: feeRates,
+                options: allOptions,
                 selectedValues: addTradeProvider.exitFeeRate != null
                     ? [addTradeProvider.exitFeeRate.toString()]
                     : [],
@@ -1154,10 +1192,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('exitMentalStates'),
             builder: (context, snapshot) {
               final mentalStates = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(mentalStates);
+              if (addTradeProvider.exitMentalStates != null &&
+                  !allOptions.contains(addTradeProvider.exitMentalStates!)) {
+                allOptions.add(addTradeProvider.exitMentalStates!);
+              }
               return MultiSelectDropdown(
                 label: 'Exit Mental States',
                 prefixIcon: Icons.psychology,
-                options: mentalStates,
+                options: allOptions,
                 selectedValues: addTradeProvider.exitMentalStates != null
                     ? [addTradeProvider.exitMentalStates!]
                     : [],
@@ -1284,10 +1328,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('trackings'),
             builder: (context, snapshot) {
               final trackings = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(trackings);
+              if (addTradeProvider.trackings != null &&
+                  !allOptions.contains(addTradeProvider.trackings!)) {
+                allOptions.add(addTradeProvider.trackings!);
+              }
               return MultiSelectDropdown(
                 label: 'Trackings',
                 prefixIcon: Icons.track_changes,
-                options: trackings,
+                options: allOptions,
                 selectedValues: addTradeProvider.trackings != null
                     ? [addTradeProvider.trackings!]
                     : [],
@@ -1319,10 +1369,16 @@ class _AddTradePageState extends State<AddTradePage> {
             future: userValuesProvider.getValues('mistakes'),
             builder: (context, snapshot) {
               final mistakes = snapshot.data ?? [];
+              // Include currently selected value in options if it's not already there
+              final allOptions = List<String>.from(mistakes);
+              if (addTradeProvider.mistakes != null &&
+                  !allOptions.contains(addTradeProvider.mistakes!)) {
+                allOptions.add(addTradeProvider.mistakes!);
+              }
               return MultiSelectDropdown(
                 label: 'Mistakes',
                 prefixIcon: Icons.error,
-                options: mistakes,
+                options: allOptions,
                 selectedValues: addTradeProvider.mistakes != null
                     ? [addTradeProvider.mistakes!]
                     : [],
