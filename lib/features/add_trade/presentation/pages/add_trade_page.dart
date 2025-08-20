@@ -1562,37 +1562,129 @@ class _AddTradePageState extends State<AddTradePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('How to Add a Trade'),
-        content: const SingleChildScrollView(
+        title: Row(
+          children: [
+            Icon(Icons.help_outline, color: AppTheme.primaryColor, size: 24),
+            const SizedBox(width: 8),
+            const Text('How to Add a Trade'),
+          ],
+        ),
+        content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Required Fields:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              // Welcome section
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.lightbulb_outline, color: AppTheme.primaryColor, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Welcome to TradeMate! Follow this guide to add your first trade.',
+                        style: AppTheme.bodyStyle.copyWith(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 8),
-              Text('• Symbol (trading pair)'),
-              Text('• Entry Price'),
-              Text('• Trade Date & Time'),
-              Text('• Position Size (quantity or margin)'),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              
+              // Required Fields section
               Text(
-                'Optional Fields:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                '📋 Required Fields',
+                style: AppTheme.subheadingStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
               ),
-              SizedBox(height: 8),
-              Text('• All other fields are optional but recommended for better analysis'),
-              SizedBox(height: 16),
+              const SizedBox(height: 8),
+              _buildHelpItem('Symbol (Trading Pair)', 'The asset you\'re trading (e.g., BTC/USDT, ETH/USD)'),
+              _buildHelpItem('Entry Price', 'The price at which you entered the trade'),
+              _buildHelpItem('Trade Date & Time', 'When you opened the position'),
+              _buildHelpItem('Position Size', 'How much you invested (quantity or margin amount)'),
+              const SizedBox(height: 16),
+              
+              // Optional Fields section
               Text(
-                'Tips:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                '📝 Optional Fields',
+                style: AppTheme.subheadingStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
               ),
-              SizedBox(height: 8),
-              Text('• You can expand/collapse sections by tapping the headers'),
-              Text('• Add new values to dropdowns by typing and pressing "Add"'),
-              Text('• Your custom values will be saved for future use'),
+              const SizedBox(height: 8),
+              _buildHelpItem('Exchange', 'Which platform you used (e.g., Binance, Coinbase)'),
+              _buildHelpItem('Strategy', 'Your trading strategy (e.g., Swing, Scalping, DCA)'),
+              _buildHelpItem('Stop Loss & Take Profit', 'Risk management levels'),
+              _buildHelpItem('Mental State', 'How you felt during the trade'),
+              _buildHelpItem('Memo & Rating', 'Notes and trade evaluation'),
+              const SizedBox(height: 16),
+              
+              // Tips section
+              Text(
+                '💡 Pro Tips',
+                style: AppTheme.subheadingStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildHelpItem('Expand/Collapse Sections', 'Tap section headers to show/hide fields'),
+              _buildHelpItem('Custom Values', 'Type and press "Add" to save new dropdown options'),
+              _buildHelpItem('Auto-Save', 'Your custom values are saved for future trades'),
+              _buildHelpItem('Progress Tracking', 'Watch the progress bar to see completion status'),
+              const SizedBox(height: 16),
+              
+              // Best Practices section
+              Text(
+                '🎯 Best Practices',
+                style: AppTheme.subheadingStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildHelpItem('Be Consistent', 'Use the same naming for similar trades'),
+              _buildHelpItem('Add Screenshots', 'Capture entry/exit points for analysis'),
+              _buildHelpItem('Rate Your Trades', 'Evaluate performance to improve'),
+              _buildHelpItem('Track Emotions', 'Monitor mental state for better decision making'),
+              const SizedBox(height: 16),
+              
+              // Note section
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.warningColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppTheme.warningColor.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: AppTheme.warningColor, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'The more data you record, the better your trading analysis will be!',
+                        style: AppTheme.captionStyle.copyWith(
+                          color: AppTheme.warningColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -1600,6 +1692,47 @@ class _AddTradePageState extends State<AddTradePage> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Got it!'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHelpItem(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            margin: const EdgeInsets.only(top: 6, right: 8),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryColor,
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTheme.bodyStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimaryColor,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  style: AppTheme.captionStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
