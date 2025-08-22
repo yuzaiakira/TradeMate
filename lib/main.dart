@@ -171,17 +171,43 @@ class MainNavigationPage extends StatefulWidget {
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int currentIndex = 0;
+  late List<Widget> _pages;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const AddTradePage(),
-    const TradeListPage(),
-    const ToolsPage(),
-  ];
+  // Navigation callback function
+  void navigateToTab(int index) {
+    if (index >= 0 && index < _pages.length) {
+      setState(() {
+        currentIndex = index;
+      });
+      
+      // Refresh trade list when navigating to it
+      if (index == 2) { // Trade List tab
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.read<TradeListProvider>().loadTrades();
+        });
+      }
+      
+      // Refresh home statistics when navigating to home
+      if (index == 0) { // Home tab
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.read<HomeProvider>().loadStatistics();
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    
+    // Initialize pages with navigation callback
+    _pages = [
+      const HomePage(),
+      const AddTradePage(),
+      TradeListPage(onNavigateToTab: navigateToTab),
+      const ToolsPage(),
+    ];
+    
     // Load statistics when app starts
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeProvider>().loadStatistics();

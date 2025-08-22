@@ -9,7 +9,9 @@ import '../widgets/trade_card.dart';
 import '../widgets/trade_filter_sheet.dart';
 
 class TradeListPage extends StatefulWidget {
-  const TradeListPage({super.key});
+  final Function(int)? onNavigateToTab;
+  
+  const TradeListPage({super.key, this.onNavigateToTab});
 
   @override
   State<TradeListPage> createState() => _TradeListPageState();
@@ -686,7 +688,19 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
   }
 
   void _navigateToAddTrade(BuildContext context) {
-    Navigator.of(context).pushNamed('/add-trade');
+    // Navigate to Add Trade tab (index 1) using the callback
+    if (widget.onNavigateToTab != null) {
+      widget.onNavigateToTab!(1); // Add Trade tab
+    } else {
+      // Fallback: show a message if callback is not available
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please use the bottom navigation to go to Add Trade'),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   void _handleMenuAction(String action) {
