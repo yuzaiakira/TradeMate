@@ -27,41 +27,88 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      height: MediaQuery.of(context).size.height * 0.85,
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          // Handle bar
+          // Enhanced Handle bar
           Container(
-            margin: const EdgeInsets.only(top: 8),
-            width: 40,
-            height: 4,
+            margin: const EdgeInsets.only(top: 12, bottom: 8),
+            width: 48,
+            height: 6,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+              color: AppTheme.textSecondaryColor.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(3),
             ),
           ),
           
-          // Header
-          Padding(
-            padding: const EdgeInsets.all(16),
+          // Enhanced Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceColor,
+              border: Border(
+                bottom: BorderSide(
+                  color: AppTheme.borderColor.withValues(alpha: 0.5),
+                  width: 1,
+                ),
+              ),
+            ),
             child: Row(
               children: [
                 Text(
                   'Filter & Sort',
-                  style: AppTheme.headingStyle,
+                  style: AppTheme.headingStyle.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textPrimaryColor,
+                  ),
                 ),
                 const Spacer(),
                 TextButton(
                   onPressed: _clearAllFilters,
-                  child: const Text('Clear All'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.primaryColor,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Clear All',
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.backgroundColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: AppTheme.textSecondaryColor,
+                      size: 20,
+                    ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(8),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -70,99 +117,121 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
           // Content
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Sort Options
-                  _buildSectionTitle('Sort By'),
-                  const SizedBox(height: 8),
-                  _buildSortOptions(),
+                  // Sort Options - Enhanced with modern cards
+                  _buildModernSectionTitle('Sort By', Icons.sort_rounded),
+                  const SizedBox(height: 16),
+                  _buildModernSortOptions(),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Symbol Filter - Enhanced
+                  _buildModernSectionTitle('Symbol', Icons.currency_exchange_rounded),
+                  const SizedBox(height: 16),
+                  _buildModernSymbolFilter(),
                   
                   const SizedBox(height: 24),
                   
-                  // Symbol Filter
-                  _buildSectionTitle('Symbol'),
-                  const SizedBox(height: 8),
-                  _buildSymbolFilter(),
-                  
+                  // Status Filter - Enhanced
+                  _buildModernSectionTitle('Status', Icons.info_outline_rounded),
                   const SizedBox(height: 16),
+                  _buildModernStatusFilter(),
                   
-                  // Status Filter
-                  _buildSectionTitle('Status'),
-                  const SizedBox(height: 8),
-                  _buildStatusFilter(),
+                  const SizedBox(height: 24),
                   
+                  // Date Range Filter - Enhanced
+                  _buildModernSectionTitle('Date Range', Icons.calendar_today_rounded),
                   const SizedBox(height: 16),
+                  _buildModernDateRangeFilter(),
                   
-                  // Date Range Filter
-                  _buildSectionTitle('Date Range'),
-                  const SizedBox(height: 8),
-                  _buildDateRangeFilter(),
+                  const SizedBox(height: 24),
                   
+                  // Exchange Filter - Enhanced
+                  _buildModernSectionTitle('Exchange', Icons.swap_horiz_rounded),
                   const SizedBox(height: 16),
+                  _buildModernExchangeFilter(),
                   
-                  // Exchange Filter
-                  _buildSectionTitle('Exchange'),
-                  const SizedBox(height: 8),
-                  _buildExchangeFilter(),
+                  const SizedBox(height: 24),
                   
+                  // Side Filter - Enhanced
+                  _buildModernSectionTitle('Side', Icons.trending_up_rounded),
                   const SizedBox(height: 16),
+                  _buildModernSideFilter(),
                   
-                  // Side Filter
-                  _buildSectionTitle('Side'),
-                  const SizedBox(height: 8),
-                  _buildSideFilter(),
+                  const SizedBox(height: 24),
                   
+                  // PnL Range Filter - Enhanced
+                  _buildModernSectionTitle('PnL Range', Icons.attach_money_rounded),
                   const SizedBox(height: 16),
+                  _buildModernPnLRangeFilter(),
                   
-                  // PnL Range Filter
-                  _buildSectionTitle('PnL Range'),
-                  const SizedBox(height: 8),
-                  _buildPnLRangeFilter(),
+                  const SizedBox(height: 24),
                   
+                  // Rating Filter - Enhanced
+                  _buildModernSectionTitle('Minimum Rating', Icons.star_rounded),
                   const SizedBox(height: 16),
+                  _buildModernRatingFilter(),
                   
-                  // Rating Filter
-                  _buildSectionTitle('Minimum Rating'),
-                  const SizedBox(height: 8),
-                  _buildRatingFilter(),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
           ),
           
-          // Apply Button
+          // Enhanced Apply Button
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppTheme.surfaceColor,
+              border: Border(
+                top: BorderSide(
+                  color: AppTheme.borderColor.withValues(alpha: 0.5),
+                  width: 1,
+                ),
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 4,
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
               ],
             ),
             child: SizedBox(
               width: double.infinity,
+              height: 56,
               child: ElevatedButton(
                 onPressed: _applyFilters,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
-                  'Apply Filters',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.filter_alt_rounded,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Apply Filters',
+                      style: AppTheme.bodyStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -172,267 +241,722 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: AppTheme.subheadingStyle.copyWith(
-        fontWeight: FontWeight.w600,
-        color: AppTheme.textPrimaryColor,
-      ),
+  Widget _buildModernSectionTitle(String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            icon,
+            size: 18,
+            color: AppTheme.primaryColor,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: AppTheme.subheadingStyle.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textPrimaryColor,
+            fontSize: 16,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildSortOptions() {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: TradeSortOption.values.map((option) {
-        final isSelected = _sortOption == option;
-        return ChoiceChip(
-          label: Text(option.displayName),
-          selected: isSelected,
-          onSelected: (selected) {
-            if (selected) {
+  Widget _buildModernSortOptions() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: TradeSortOption.values.map((option) {
+          final isSelected = _sortOption == option;
+          return GestureDetector(
+            onTap: () {
               setState(() {
                 _sortOption = option;
               });
-            }
-          },
-          selectedColor: AppTheme.primaryColor,
-          labelStyle: TextStyle(
-            color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
-          ),
-        );
-      }).toList(),
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: isSelected 
+                    ? AppTheme.primaryColor 
+                    : AppTheme.surfaceColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected 
+                      ? AppTheme.primaryColor 
+                      : AppTheme.borderColor.withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+                boxShadow: isSelected ? [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ] : null,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    option.displayName,
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
+                    ),
+                  ),
+                  if (isSelected) ...[
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.check_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  Widget _buildSymbolFilter() {
+  Widget _buildModernSymbolFilter() {
     final provider = context.read<TradeListProvider>();
     final symbols = provider.getUniqueSymbols();
     
-    return DropdownButtonFormField<String>(
-      decoration: AppTheme.inputDecoration(
-        labelText: 'Symbol',
-        hintText: 'Select symbol',
-        prefixIcon: Icons.currency_exchange,
-      ),
-      value: _filters.symbol.isNotEmpty ? _filters.symbol : null,
-      items: [
-        const DropdownMenuItem<String>(
-          value: null,
-          child: Text('All Symbols'),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
         ),
-        ...symbols.map((symbol) => DropdownMenuItem<String>(
-          value: symbol,
-          child: Text(symbol),
-        )),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _filters = _filters.copyWith(symbol: value ?? '');
-        });
-      },
-    );
-  }
-
-  Widget _buildStatusFilter() {
-    return DropdownButtonFormField<TradeStatus>(
-      decoration: AppTheme.inputDecoration(
-        labelText: 'Status',
-        hintText: 'Select status',
-        prefixIcon: Icons.info,
       ),
-      value: _filters.status,
-      items: [
-        const DropdownMenuItem<TradeStatus>(
-          value: null,
-          child: Text('All Statuses'),
-        ),
-        ...TradeStatus.values.map((status) => DropdownMenuItem<TradeStatus>(
-          value: status,
-          child: Text(status.name.toUpperCase()),
-        )),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _filters = _filters.copyWith(status: value);
-        });
-      },
-    );
-  }
-
-  Widget _buildDateRangeFilter() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            decoration: AppTheme.inputDecoration(
-              labelText: 'Start Date',
-              hintText: 'Select start date',
-              prefixIcon: Icons.calendar_today,
-            ),
-            readOnly: true,
-            onTap: () => _selectStartDate(),
-            controller: TextEditingController(
-              text: _filters.dateRange?.start != null 
-                  ? '${_filters.dateRange!.start.day}/${_filters.dateRange!.start.month}/${_filters.dateRange!.start.year}'
-                  : '',
-            ),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: 'Select Symbol',
+          hintText: 'All Symbols',
+          prefixIcon: Icon(
+            Icons.currency_exchange_rounded,
+            color: AppTheme.textSecondaryColor,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle: TextStyle(
+            color: AppTheme.textSecondaryColor,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: TextFormField(
-            decoration: AppTheme.inputDecoration(
-              labelText: 'End Date',
-              hintText: 'Select end date',
-              prefixIcon: Icons.calendar_today,
-            ),
-            readOnly: true,
-            onTap: () => _selectEndDate(),
-            controller: TextEditingController(
-              text: _filters.dateRange?.end != null 
-                  ? '${_filters.dateRange!.end.day}/${_filters.dateRange!.end.month}/${_filters.dateRange!.end.year}'
-                  : '',
+        value: _filters.symbol.isNotEmpty ? _filters.symbol : null,
+        items: [
+          DropdownMenuItem<String>(
+            value: null,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.all_inclusive_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'All Symbols',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
             ),
           ),
+          ...symbols.map((symbol) => DropdownMenuItem<String>(
+            value: symbol,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.currency_bitcoin_rounded,
+                  color: AppTheme.primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  symbol,
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
+        onChanged: (value) {
+          setState(() {
+            _filters = _filters.copyWith(symbol: value ?? '');
+          });
+        },
+        dropdownColor: AppTheme.backgroundColor,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppTheme.textSecondaryColor,
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildExchangeFilter() {
+  Widget _buildModernStatusFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: DropdownButtonFormField<TradeStatus>(
+        decoration: InputDecoration(
+          labelText: 'Select Status',
+          hintText: 'All Statuses',
+          prefixIcon: Icon(
+            Icons.info_outline_rounded,
+            color: AppTheme.textSecondaryColor,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle: TextStyle(
+            color: AppTheme.textSecondaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        value: _filters.status,
+        items: [
+          DropdownMenuItem<TradeStatus>(
+            value: null,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.all_inclusive_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'All Statuses',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...TradeStatus.values.map((status) => DropdownMenuItem<TradeStatus>(
+            value: status,
+            child: Row(
+              children: [
+                Icon(
+                  status == TradeStatus.open 
+                      ? Icons.radio_button_unchecked_rounded
+                      : Icons.check_circle_rounded,
+                  color: status == TradeStatus.open 
+                      ? AppTheme.bearishColor 
+                      : AppTheme.bullishColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  status.name.toUpperCase(),
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
+        onChanged: (value) {
+          setState(() {
+            _filters = _filters.copyWith(status: value);
+          });
+        },
+        dropdownColor: AppTheme.backgroundColor,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppTheme.textSecondaryColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernDateRangeFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _buildDateField(
+                  'Start Date',
+                  _filters.dateRange?.start,
+                  () => _selectStartDate(),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12),
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+              ),
+              Expanded(
+                child: _buildDateField(
+                  'End Date',
+                  _filters.dateRange?.end,
+                  () => _selectEndDate(),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateField(String label, DateTime? date, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppTheme.borderColor.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today_rounded,
+              color: AppTheme.textSecondaryColor,
+              size: 18,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: AppTheme.captionStyle.copyWith(
+                      color: AppTheme.textSecondaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    date != null 
+                        ? '${date.day}/${date.month}/${date.year}'
+                        : 'Select date',
+                    style: AppTheme.bodyStyle.copyWith(
+                      color: date != null 
+                          ? AppTheme.textPrimaryColor 
+                          : AppTheme.textSecondaryColor,
+                      fontWeight: date != null ? FontWeight.w500 : FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernExchangeFilter() {
     final provider = context.read<TradeListProvider>();
     final exchanges = provider.getUniqueExchanges();
     
-    return DropdownButtonFormField<String>(
-      decoration: AppTheme.inputDecoration(
-        labelText: 'Exchange',
-        hintText: 'Select exchange',
-        prefixIcon: Icons.swap_horiz,
-      ),
-      value: _filters.exchanges.isNotEmpty ? _filters.exchanges.first : null,
-      items: [
-        const DropdownMenuItem<String>(
-          value: null,
-          child: Text('All Exchanges'),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
         ),
-        ...exchanges.map((exchange) => DropdownMenuItem<String>(
-          value: exchange,
-          child: Text(exchange),
-        )),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _filters = _filters.copyWith(
-            exchanges: value != null ? [value] : [],
-          );
-        });
-      },
-    );
-  }
-
-  Widget _buildSideFilter() {
-    return DropdownButtonFormField<Side>(
-      decoration: AppTheme.inputDecoration(
-        labelText: 'Side',
-        hintText: 'Select side',
-        prefixIcon: Icons.trending_up,
       ),
-      value: _filters.side,
-      items: [
-        const DropdownMenuItem<Side>(
-          value: null,
-          child: Text('All Sides'),
-        ),
-        ...Side.values.map((side) => DropdownMenuItem<Side>(
-          value: side,
-          child: Text(side.name.toUpperCase()),
-        )),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _filters = _filters.copyWith(side: value);
-        });
-      },
-    );
-  }
-
-  Widget _buildPnLRangeFilter() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            decoration: AppTheme.inputDecoration(
-              labelText: 'Min PnL',
-              hintText: 'Min PnL',
-              prefixIcon: Icons.trending_down,
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              final minValue = double.tryParse(value);
-              setState(() {
-                _filters = _filters.copyWith(minPnL: minValue);
-              });
-            },
-            controller: TextEditingController(
-              text: _filters.minPnL?.toString() ?? '',
-            ),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: 'Select Exchange',
+          hintText: 'All Exchanges',
+          prefixIcon: Icon(
+            Icons.swap_horiz_rounded,
+            color: AppTheme.textSecondaryColor,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle: TextStyle(
+            color: AppTheme.textSecondaryColor,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: TextFormField(
-            decoration: AppTheme.inputDecoration(
-              labelText: 'Max PnL',
-              hintText: 'Max PnL',
-              prefixIcon: Icons.trending_up,
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              final maxValue = double.tryParse(value);
-              setState(() {
-                _filters = _filters.copyWith(maxPnL: maxValue);
-              });
-            },
-            controller: TextEditingController(
-              text: _filters.maxPnL?.toString() ?? '',
+        value: _filters.exchanges.isNotEmpty ? _filters.exchanges.first : null,
+        items: [
+          DropdownMenuItem<String>(
+            value: null,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.all_inclusive_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'All Exchanges',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
             ),
           ),
+          ...exchanges.map((exchange) => DropdownMenuItem<String>(
+            value: exchange,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.account_balance_rounded,
+                  color: AppTheme.primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  exchange,
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
+        onChanged: (value) {
+          setState(() {
+            _filters = _filters.copyWith(
+              exchanges: value != null ? [value] : [],
+            );
+          });
+        },
+        dropdownColor: AppTheme.backgroundColor,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppTheme.textSecondaryColor,
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildRatingFilter() {
-    return DropdownButtonFormField<int>(
-      decoration: AppTheme.inputDecoration(
-        labelText: 'Minimum Rating',
-        hintText: 'Select minimum rating',
-        prefixIcon: Icons.star,
-      ),
-      value: _filters.minRating,
-      items: [
-        const DropdownMenuItem<int>(
-          value: null,
-          child: Text('Any Rating'),
+  Widget _buildModernSideFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
         ),
-        ...List.generate(5, (index) => index + 1).map((rating) => DropdownMenuItem<int>(
-          value: rating,
-          child: Row(
+      ),
+      child: DropdownButtonFormField<Side>(
+        decoration: InputDecoration(
+          labelText: 'Select Side',
+          hintText: 'All Sides',
+          prefixIcon: Icon(
+            Icons.trending_up_rounded,
+            color: AppTheme.textSecondaryColor,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle: TextStyle(
+            color: AppTheme.textSecondaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        value: _filters.side,
+        items: [
+          DropdownMenuItem<Side>(
+            value: null,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.all_inclusive_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'All Sides',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...Side.values.map((side) => DropdownMenuItem<Side>(
+            value: side,
+            child: Row(
+              children: [
+                Icon(
+                  side == Side.long 
+                      ? Icons.trending_up_rounded
+                      : Icons.trending_down_rounded,
+                  color: side == Side.long 
+                      ? AppTheme.bullishColor 
+                      : AppTheme.bearishColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  side.name.toUpperCase(),
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
+        onChanged: (value) {
+          setState(() {
+            _filters = _filters.copyWith(side: value);
+          });
+        },
+        dropdownColor: AppTheme.backgroundColor,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppTheme.textSecondaryColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernPnLRangeFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildNumberField(
+              'Min PnL',
+              _filters.minPnL?.toString() ?? '',
+              Icons.trending_down_rounded,
+              (value) {
+                final minValue = double.tryParse(value);
+                setState(() {
+                  _filters = _filters.copyWith(minPnL: minValue);
+                });
+              },
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+            child: Icon(
+              Icons.arrow_forward_rounded,
+              color: AppTheme.textSecondaryColor,
+              size: 20,
+            ),
+          ),
+          Expanded(
+            child: _buildNumberField(
+              'Max PnL',
+              _filters.maxPnL?.toString() ?? '',
+              Icons.trending_up_rounded,
+              (value) {
+                final maxValue = double.tryParse(value);
+                setState(() {
+                  _filters = _filters.copyWith(maxPnL: maxValue);
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNumberField(String label, String value, IconData icon, Function(String) onChanged) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Text('$rating '),
-              ...List.generate(rating, (index) => const Icon(Icons.star, size: 16)),
+              Icon(
+                icon,
+                color: AppTheme.textSecondaryColor,
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: AppTheme.captionStyle.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ),
             ],
           ),
-        )),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _filters = _filters.copyWith(minRating: value);
-        });
-      },
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: value,
+            onChanged: onChanged,
+            keyboardType: TextInputType.number,
+            style: AppTheme.bodyStyle.copyWith(
+              color: AppTheme.textPrimaryColor,
+              fontWeight: FontWeight.w500,
+            ),
+            decoration: InputDecoration(
+              hintText: '0.00',
+              hintStyle: TextStyle(
+                color: AppTheme.textSecondaryColor.withValues(alpha: 0.5),
+              ),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernRatingFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: DropdownButtonFormField<int>(
+        decoration: InputDecoration(
+          labelText: 'Select Minimum Rating',
+          hintText: 'Any Rating',
+          prefixIcon: Icon(
+            Icons.star_rounded,
+            color: AppTheme.textSecondaryColor,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle: TextStyle(
+            color: AppTheme.textSecondaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        value: _filters.minRating,
+        items: [
+          DropdownMenuItem<int>(
+            value: null,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.all_inclusive_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Any Rating',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...List.generate(5, (index) => index + 1).map((rating) => DropdownMenuItem<int>(
+            value: rating,
+            child: Row(
+              children: [
+                Text(
+                  '$rating ',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                ...List.generate(rating, (index) => Icon(
+                  Icons.star_rounded,
+                  size: 16,
+                  color: AppTheme.primaryColor,
+                )),
+              ],
+            ),
+          )),
+        ],
+        onChanged: (value) {
+          setState(() {
+            _filters = _filters.copyWith(minRating: value);
+          });
+        },
+        dropdownColor: AppTheme.backgroundColor,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppTheme.textSecondaryColor,
+        ),
+      ),
     );
   }
 
@@ -442,6 +966,19 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
       initialDate: _filters.dateRange?.start ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppTheme.primaryColor,
+              onPrimary: Colors.white,
+              surface: AppTheme.surfaceColor,
+              onSurface: AppTheme.textPrimaryColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     
     if (picked != null) {
@@ -460,6 +997,19 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
       initialDate: _filters.dateRange?.end ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppTheme.primaryColor,
+              onPrimary: Colors.white,
+              surface: AppTheme.surfaceColor,
+              onSurface: AppTheme.textPrimaryColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     
     if (picked != null) {
