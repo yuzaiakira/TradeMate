@@ -83,15 +83,39 @@ class TradeMateApp extends StatelessWidget {
         
         // Providers
         ChangeNotifierProvider<AddTradeProvider>(
-          create: (context) => AddTradeProvider(
-            context.read<AddTradeUseCase>(),
-          ),
+          create: (context) {
+            final provider = AddTradeProvider(
+              context.read<AddTradeUseCase>(),
+            );
+            // Set up callback to refresh trade list when a trade is added
+            provider.setOnTradeAddedCallback(() {
+              // Use a post-frame callback to ensure the provider is available
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  context.read<TradeListProvider>().refreshSilently();
+                }
+              });
+            });
+            return provider;
+          },
         ),
         ChangeNotifierProvider<EditTradeProvider>(
-          create: (context) => EditTradeProvider(
-            updateTradeUseCase: context.read<UpdateTradeUseCase>(),
-            getTradesUseCase: context.read<GetTradesUseCase>(),
-          ),
+          create: (context) {
+            final provider = EditTradeProvider(
+              updateTradeUseCase: context.read<UpdateTradeUseCase>(),
+              getTradesUseCase: context.read<GetTradesUseCase>(),
+            );
+            // Set up callback to refresh trade list when a trade is updated
+            provider.setOnTradeUpdatedCallback(() {
+              // Use a post-frame callback to ensure the provider is available
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  context.read<TradeListProvider>().refreshSilently();
+                }
+              });
+            });
+            return provider;
+          },
         ),
         ChangeNotifierProvider<HomeProvider>(
           create: (context) => HomeProvider(
@@ -104,10 +128,28 @@ class TradeMateApp extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<TradeListProvider>(
-          create: (context) => TradeListProvider(
-            getTradesUseCase: context.read<GetTradesUseCase>(),
-            deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
-          ),
+          create: (context) {
+            final provider = TradeListProvider(
+              getTradesUseCase: context.read<GetTradesUseCase>(),
+              deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
+            );
+            // Set up callback to show feedback when trades are refreshed
+            provider.setOnTradesRefreshedCallback(() {
+              // Use a post-frame callback to ensure the context is available
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Trade list updated'),
+                      duration: Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              });
+            });
+            return provider;
+          },
         ),
       ],
       child: MaterialApp(
@@ -128,7 +170,7 @@ class MainNavigationPage extends StatefulWidget {
 }
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
-  int _currentIndex = 0;
+  int currentIndex = 0;
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -150,15 +192,29 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            currentIndex = index;
           });
+          
+          // Refresh trade list when navigating to it
+          if (index == 2) { // Trade List tab
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<TradeListProvider>().loadTrades();
+            });
+          }
+          
+          // Refresh home statistics when navigating to home
+          if (index == 0) { // Home tab
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<HomeProvider>().loadStatistics();
+            });
+          }
         },
         type: BottomNavigationBarType.fixed,
         items: const [

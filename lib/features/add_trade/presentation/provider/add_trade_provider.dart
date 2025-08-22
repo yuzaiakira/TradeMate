@@ -6,8 +6,14 @@ enum AddTradeStatus { initial, loading, success, error }
 
 class AddTradeProvider with ChangeNotifier {
   final AddTradeUseCase addTradeUseCase;
+  VoidCallback? _onTradeAdded;
 
   AddTradeProvider(this.addTradeUseCase);
+
+  // Set callback to be called when a trade is successfully added
+  void setOnTradeAddedCallback(VoidCallback callback) {
+    _onTradeAdded = callback;
+  }
 
   AddTradeStatus _status = AddTradeStatus.initial;
   String _errorMessage = '';
@@ -455,6 +461,7 @@ class AddTradeProvider with ChangeNotifier {
       // _resetForm();
       
       notifyListeners();
+      _onTradeAdded?.call(); // Notify the callback
     } catch (e) {
       print('Error adding trade: $e');
       _status = AddTradeStatus.error;

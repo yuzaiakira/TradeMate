@@ -10,11 +10,17 @@ enum TradeListStatus { initial, loading, success, error }
 class TradeListProvider with ChangeNotifier {
   final GetTradesUseCase getTradesUseCase;
   final DeleteTradeUseCase deleteTradeUseCase;
+  VoidCallback? _onTradesRefreshed;
 
   TradeListProvider({
     required this.getTradesUseCase,
     required this.deleteTradeUseCase,
   });
+
+  // Set callback to be called when trades are refreshed
+  void setOnTradesRefreshedCallback(VoidCallback callback) {
+    _onTradesRefreshed = callback;
+  }
 
   TradeListStatus _status = TradeListStatus.initial;
   String _errorMessage = '';
@@ -48,11 +54,35 @@ class TradeListProvider with ChangeNotifier {
       
       _status = TradeListStatus.success;
       _errorMessage = '';
+      _onTradesRefreshed?.call(); // Notify callback
     } catch (e) {
       _status = TradeListStatus.error;
       _errorMessage = e.toString();
     }
     notifyListeners();
+  }
+
+  // Convenience method for refreshing trades
+  Future<void> refresh() async {
+    await loadTrades();
+  }
+
+  // Method to refresh trades without showing loading state (for background refreshes)
+  Future<void> refreshSilently() async {
+    try {
+      final newTrades = await getTradesUseCase();
+      if (newTrades.length != _allTrades.length) {
+        // Only update if the number of trades has changed
+        _allTrades = newTrades;
+        _applyFiltersAndSort();
+        _calculateStatistics();
+        // Don't call callback for silent refresh to avoid too many notifications
+        notifyListeners();
+      }
+    } catch (e) {
+      // Silently fail for background refreshes
+      print('Silent refresh failed: $e');
+    }
   }
 
   Future<void> deleteTrade(int tradeId) async {

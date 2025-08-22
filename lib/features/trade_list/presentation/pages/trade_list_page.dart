@@ -15,13 +15,14 @@ class TradeListPage extends StatefulWidget {
   State<TradeListPage> createState() => _TradeListPageState();
 }
 
-class _TradeListPageState extends State<TradeListPage> {
+class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Load trades when page initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TradeListProvider>().loadTrades();
@@ -30,9 +31,23 @@ class _TradeListPageState extends State<TradeListPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Refresh trades when app becomes visible
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<TradeListProvider>().loadTrades();
+        }
+      });
+    }
   }
 
   @override
@@ -46,6 +61,13 @@ class _TradeListPageState extends State<TradeListPage> {
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh_rounded, size: 20),
+            onPressed: () {
+              context.read<TradeListProvider>().loadTrades();
+            },
+            tooltip: 'Refresh',
+          ),
           IconButton(
             icon: const Icon(Icons.search_rounded, size: 20),
             onPressed: () => _showSearchDialog(context),
@@ -282,22 +304,47 @@ class _TradeListPageState extends State<TradeListPage> {
     return RefreshIndicator(
       onRefresh: () => provider.loadTrades(),
       color: AppTheme.primaryColor,
-      child: ListView.builder(
-        controller: _scrollController,
-        padding: const EdgeInsets.all(12),
-        itemCount: provider.trades.length,
-        itemBuilder: (context, index) {
-          final trade = provider.trades[index];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: TradeCard(
-              trade: trade,
-              onTap: () => _showTradeDetails(context, trade),
-              onEdit: () => _editTrade(context, trade),
-              onDelete: () => _deleteTrade(context, trade),
+      child: Stack(
+        children: [
+          ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(12),
+            itemCount: provider.trades.length,
+            itemBuilder: (context, index) {
+              final trade = provider.trades[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: TradeCard(
+                  trade: trade,
+                  onTap: () => _showTradeDetails(context, trade),
+                  onEdit: () => _editTrade(context, trade),
+                  onDelete: () => _deleteTrade(context, trade),
+                ),
+              );
+            },
+          ),
+          // Show a small indicator when silently refreshing
+          if (provider.status == TradeListStatus.loading)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.9),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              ),
             ),
-          );
-        },
+        ],
       ),
     );
   }

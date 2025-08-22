@@ -8,15 +8,21 @@ enum EditTradeStatus { initial, loading, success, error }
 class EditTradeProvider extends ChangeNotifier {
   final UpdateTradeUseCase updateTradeUseCase;
   final GetTradesUseCase getTradesUseCase;
+  VoidCallback? _onTradeUpdated;
   
-  EditTradeStatus _status = EditTradeStatus.initial;
-  String _errorMessage = '';
-  Trade? _tradeToEdit;
-
   EditTradeProvider({
     required this.updateTradeUseCase,
     required this.getTradesUseCase,
   });
+
+  // Set callback to be called when a trade is successfully updated
+  void setOnTradeUpdatedCallback(VoidCallback callback) {
+    _onTradeUpdated = callback;
+  }
+
+  EditTradeStatus _status = EditTradeStatus.initial;
+  String _errorMessage = '';
+  Trade? _tradeToEdit;
 
   EditTradeStatus get status => _status;
   String get errorMessage => _errorMessage;
@@ -44,6 +50,7 @@ class EditTradeProvider extends ChangeNotifier {
       
       if (success) {
         _setSuccess();
+        _onTradeUpdated?.call(); // Notify the callback if it's set
       } else {
         _setError('Failed to update trade');
       }
