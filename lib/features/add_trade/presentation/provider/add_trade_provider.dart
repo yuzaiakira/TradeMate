@@ -430,18 +430,33 @@ class AddTradeProvider with ChangeNotifier {
       notifyListeners();
 
       final trade = buildTrade();
+      
+      // Debug: Print trade data
+      print('Building trade with symbol: ${trade.symbol}, entryPrice: ${trade.entryPrice}, datetime: ${trade.datetime}');
 
-      final tradeId = await addTradeUseCase(trade);
+      // Simulate a small delay to show loading state
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      // Add timeout to prevent hanging
+      final tradeId = await addTradeUseCase(trade).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('Database operation timed out. Please try again.');
+        },
+      );
+      
+      print('Trade saved successfully with ID: $tradeId');
       
       _currentTrade = trade.copyWith(id: tradeId);
       _status = AddTradeStatus.success;
       _errorMessage = '';
       
-      // Reset form
-      _resetForm();
+      // Don't reset form immediately - let the UI show success state first
+      // _resetForm();
       
       notifyListeners();
     } catch (e) {
+      print('Error adding trade: $e');
       _status = AddTradeStatus.error;
       _errorMessage = e.toString();
       notifyListeners();
@@ -515,6 +530,14 @@ class AddTradeProvider with ChangeNotifier {
   }
 
   void reset() {
+    _status = AddTradeStatus.initial;
+    _errorMessage = '';
+    _currentTrade = null;
+    _resetForm();
+    notifyListeners();
+  }
+
+  void resetAfterSuccess() {
     _status = AddTradeStatus.initial;
     _errorMessage = '';
     _currentTrade = null;

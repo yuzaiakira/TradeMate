@@ -4,6 +4,7 @@ import '../../domain/entities/trade.dart';
 import '../provider/add_trade_provider.dart';
 import '../provider/edit_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
+import '../../../../core/widgets/custom_time_picker.dart';
 
 class EditTradePage extends StatefulWidget {
   final Trade trade;
@@ -851,7 +852,7 @@ class _EditTradePageState extends State<EditTradePage> {
     
     if (!mounted || picked == null) return;
     
-    final TimeOfDay? time = await showTimePicker(
+    final TimeOfDay? time = await showCustomTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(provider.datetime ?? DateTime.now()),
     );
@@ -883,7 +884,7 @@ class _EditTradePageState extends State<EditTradePage> {
     
     if (!mounted || picked == null) return;
     
-    final TimeOfDay? time = await showTimePicker(
+    final TimeOfDay? time = await showCustomTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(provider.exitDatetime ?? DateTime.now()),
     );
