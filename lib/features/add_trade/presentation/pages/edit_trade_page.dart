@@ -852,7 +852,9 @@ class _EditTradePageState extends State<EditTradePage> {
     
     if (!mounted || picked == null) return;
     
+    if (!mounted) return;
     final TimeOfDay? time = await showCustomTimePicker(
+      // ignore: use_build_context_synchronously
       context: context,
       initialTime: TimeOfDay.fromDateTime(provider.datetime ?? DateTime.now()),
     );
@@ -884,7 +886,9 @@ class _EditTradePageState extends State<EditTradePage> {
     
     if (!mounted || picked == null) return;
     
+    if (!mounted) return;
     final TimeOfDay? time = await showCustomTimePicker(
+      // ignore: use_build_context_synchronously
       context: context,
       initialTime: TimeOfDay.fromDateTime(provider.exitDatetime ?? DateTime.now()),
     );

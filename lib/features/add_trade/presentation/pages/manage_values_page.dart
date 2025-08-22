@@ -494,8 +494,10 @@ class _ManageValuesPageState extends State<ManageValuesPage> {
           TextButton(
             onPressed: () async {
               await provider.removeValue(_selectedCategory!, value);
-              Navigator.of(context).pop();
-              setState(() {}); // Refresh the list
+              if (mounted && context.mounted) {
+                Navigator.of(context).pop();
+                setState(() {}); // Refresh the list
+              }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('Delete'),

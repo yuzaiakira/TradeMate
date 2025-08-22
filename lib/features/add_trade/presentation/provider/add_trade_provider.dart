@@ -438,7 +438,7 @@ class AddTradeProvider with ChangeNotifier {
       final trade = buildTrade();
       
       // Debug: Print trade data
-      print('Building trade with symbol: ${trade.symbol}, entryPrice: ${trade.entryPrice}, datetime: ${trade.datetime}');
+      debugPrint('Building trade with symbol: ${trade.symbol}, entryPrice: ${trade.entryPrice}, datetime: ${trade.datetime}');
 
       // Simulate a small delay to show loading state
       await Future.delayed(const Duration(milliseconds: 800));
@@ -451,7 +451,7 @@ class AddTradeProvider with ChangeNotifier {
         },
       );
       
-      print('Trade saved successfully with ID: $tradeId');
+              debugPrint('Trade saved successfully with ID: $tradeId');
       
       _currentTrade = trade.copyWith(id: tradeId);
       _status = AddTradeStatus.success;
@@ -463,7 +463,7 @@ class AddTradeProvider with ChangeNotifier {
       notifyListeners();
       _onTradeAdded?.call(); // Notify the callback
     } catch (e) {
-      print('Error adding trade: $e');
+              debugPrint('Error adding trade: $e');
       _status = AddTradeStatus.error;
       _errorMessage = e.toString();
       notifyListeners();

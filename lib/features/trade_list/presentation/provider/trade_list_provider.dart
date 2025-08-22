@@ -81,7 +81,7 @@ class TradeListProvider with ChangeNotifier {
       }
     } catch (e) {
       // Silently fail for background refreshes
-      print('Silent refresh failed: $e');
+      debugPrint('Silent refresh failed: $e');
     }
   }
 

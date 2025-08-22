@@ -593,7 +593,7 @@ class _AddTradePageState extends State<AddTradePage> {
                           }
                         }
                       } catch (e) {
-                        print('Error in submit button: $e');
+                        debugPrint('Error in submit button: $e');
                         if (mounted) {
                           showToast(
                             context,
@@ -2004,7 +2004,10 @@ class _AddTradePageState extends State<AddTradePage> {
 
       if (!mounted || picked == null) return;
 
+      if (!mounted) return;
+      // ignore: use_build_context_synchronously
       final TimeOfDay? time = await showCustomTimePicker(
+        // ignore: use_build_context_synchronously
         context: context,
         initialTime: TimeOfDay.now(),
       );
@@ -2023,7 +2026,7 @@ class _AddTradePageState extends State<AddTradePage> {
         provider.updateDatetime(selectedDateTime);
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error selecting date/time: $e'),
@@ -2049,7 +2052,10 @@ class _AddTradePageState extends State<AddTradePage> {
 
       if (!mounted || picked == null) return;
 
+      if (!mounted) return;
+      // ignore: use_build_context_synchronously
       final TimeOfDay? time = await showCustomTimePicker(
+        // ignore: use_build_context_synchronously
         context: context,
         initialTime: TimeOfDay.now(),
       );
@@ -2068,7 +2074,7 @@ class _AddTradePageState extends State<AddTradePage> {
         provider.updateExitDatetime(selectedDateTime);
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error selecting exit date/time: $e'),
@@ -2319,29 +2325,6 @@ class _AddTradePageState extends State<AddTradePage> {
 
 
 
-  Widget _buildSummaryRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: AppTheme.captionStyle.copyWith(
-              color: AppTheme.textSecondaryColor,
-            ),
-          ),
-          Text(
-            value,
-            style: AppTheme.captionStyle.copyWith(
-              color: AppTheme.textPrimaryColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   String _getEntryTypeDisplayName(EntryType type) {
     switch (type) {
