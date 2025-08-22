@@ -337,7 +337,7 @@ class AddTradeProvider with ChangeNotifier {
   // Validate form
   bool get isFormValid {
     // Check if we have the basic required fields
-    if (_symbol.isEmpty || _entryPrice <= 0 || _datetime == null) {
+    if (_symbol.isEmpty || _entryPrice <= 0 || _datetime == null || _side == null) {
       return false;
     }
     
@@ -471,8 +471,8 @@ class AddTradeProvider with ChangeNotifier {
     _entryType = null;
     _symbol = '';
     _strategies = null;
-    _side = Side.long;
-    _entryPrice = 0.0;
+    _side = null; // Reset to null instead of Side.long
+    _entryPrice = 0.0; // Keep as 0.0 for numeric field
     _positionMargin = null;
     _leverage = null;
     _orderType = null;
@@ -510,16 +510,16 @@ class AddTradeProvider with ChangeNotifier {
     _transferScreenshot = null;
     
     // Legacy fields
-    _type = TradeType.buy;
-    _tradeStatus = TradeStatus.open;
+    _type = TradeType.buy; // Keep default for legacy compatibility
+    _tradeStatus = TradeStatus.open; // Keep default for legacy compatibility
     _exitPrice = null;
-    _quantity = 0.0;
+    _quantity = 0.0; // Keep as 0.0 for numeric field
     _stopLoss = null;
     _takeProfit = null;
     _pnl = null;
     _pnlPercent = null;
     _riskRewardRatio = null;
-    _entryDate = DateTime.now();
+    _entryDate = DateTime.now(); // Keep current date for legacy compatibility
     _exitDate = null;
     _notes = '';
     _screenshotPath = null;

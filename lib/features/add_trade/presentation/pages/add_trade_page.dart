@@ -18,6 +18,14 @@ class AddTradePage extends StatefulWidget {
 
 class _AddTradePageState extends State<AddTradePage> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _entryPriceController = TextEditingController();
+  final TextEditingController _positionMarginController = TextEditingController();
+  final TextEditingController _leverageController = TextEditingController();
+  final TextEditingController _stopLossController = TextEditingController();
+  final TextEditingController _takeProfitController = TextEditingController();
+  final TextEditingController _exitPriceController = TextEditingController();
+  final TextEditingController _memoController = TextEditingController();
+  
   final Map<String, bool> _expandedSections = {
     'trade_transfers': true,
     'checklist': false,
@@ -59,6 +67,13 @@ class _AddTradePageState extends State<AddTradePage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _entryPriceController.dispose();
+    _positionMarginController.dispose();
+    _leverageController.dispose();
+    _stopLossController.dispose();
+    _takeProfitController.dispose();
+    _exitPriceController.dispose();
+    _memoController.dispose();
     super.dispose();
   }
 
@@ -66,6 +81,16 @@ class _AddTradePageState extends State<AddTradePage> {
     setState(() {
       _expandedSections[sectionKey] = !(_expandedSections[sectionKey] ?? false);
     });
+  }
+
+  void _clearTextControllers() {
+    _entryPriceController.clear();
+    _positionMarginController.clear();
+    _leverageController.clear();
+    _stopLossController.clear();
+    _takeProfitController.clear();
+    _exitPriceController.clear();
+    _memoController.clear();
   }
 
   @override
@@ -629,6 +654,7 @@ class _AddTradePageState extends State<AddTradePage> {
                     child: ElevatedButton(
                       onPressed: () {
                         provider.resetAfterSuccess();
+                        _clearTextControllers();
                         // Scroll to top
                         _scrollController.animateTo(
                           0,
@@ -1023,6 +1049,7 @@ class _AddTradePageState extends State<AddTradePage> {
           icon: Icons.attach_money,
           isRequired: true,
           child: TextFormField(
+            controller: _entryPriceController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Entry Price',
               hintText: '0.00',
@@ -1045,6 +1072,7 @@ class _AddTradePageState extends State<AddTradePage> {
           icon: Icons.account_balance_wallet,
           isRequired: true,
           child: TextFormField(
+            controller: _positionMarginController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Position Margin',
               hintText: '0.00',
@@ -1066,6 +1094,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'What leverage are you using?',
           icon: Icons.trending_up,
           child: TextFormField(
+            controller: _leverageController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Leverage',
               hintText: '1x',
@@ -1628,6 +1657,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'Add your thoughts and lessons learned',
           icon: Icons.note,
           child: TextFormField(
+            controller: _memoController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Memo',
               hintText: 'Enter trade memo...',
