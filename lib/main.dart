@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/utils/app_theme.dart';
+import 'core/utils/navigation_service.dart';
 import 'core/data/database.dart';
 import 'core/data/repositories/user_defined_values_repository.dart';
 import 'core/providers/user_defined_values_provider.dart';
@@ -199,6 +200,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   @override
   void initState() {
     super.initState();
+    
+    // Set up navigation service callback
+    NavigationService().setNavigateToTabCallback(navigateToTab);
     
     // Initialize pages with navigation callback
     _pages = [

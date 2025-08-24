@@ -478,7 +478,7 @@ class AddTradeProvider with ChangeNotifier {
     _entryType = null;
     _symbol = '';
     _strategies = null;
-    _side = null; // Reset to null instead of Side.long
+    _side = Side.long; // Reset to default side instead of null
     _entryPrice = 0.0; // Keep as 0.0 for numeric field
     _positionMargin = null;
     _leverage = null;

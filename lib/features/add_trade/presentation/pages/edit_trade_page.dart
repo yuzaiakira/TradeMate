@@ -1106,14 +1106,14 @@ class _EditTradePageState extends State<EditTradePage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            left: provider.side == Side.long ? 0 : null,
-            right: provider.side == Side.short ? 0 : null,
+            left: (provider.side ?? Side.long) == Side.long ? 0 : null,
+            right: (provider.side ?? Side.long) == Side.short ? 0 : null,
             top: 0,
             bottom: 0,
             child: Container(
               width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
               decoration: BoxDecoration(
-                color: provider.side == Side.long 
+                color: (provider.side ?? Side.long) == Side.long 
                     ? AppTheme.bullishColor 
                     : AppTheme.bearishColor,
                 borderRadius: BorderRadius.circular(5),
@@ -1143,8 +1143,8 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Icon(
                                 Icons.trending_up,
-                                key: ValueKey(provider.side == Side.long),
-                                color: provider.side == Side.long 
+                                key: ValueKey((provider.side ?? Side.long) == Side.long),
+                                color: (provider.side ?? Side.long) == Side.long 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
                                 size: 20,
@@ -1155,11 +1155,11 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Text(
                                 'LONG',
-                                key: ValueKey(provider.side == Side.long),
+                                key: ValueKey((provider.side ?? Side.long) == Side.long),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
-                                  color: provider.side == Side.long 
+                                  color: (provider.side ?? Side.long) == Side.long 
                                       ? Colors.white 
                                       : AppTheme.textSecondaryColor,
                                 ),
@@ -1192,8 +1192,8 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Icon(
                                 Icons.trending_down,
-                                key: ValueKey(provider.side == Side.short),
-                                color: provider.side == Side.short 
+                                key: ValueKey((provider.side ?? Side.long) == Side.short),
+                                color: (provider.side ?? Side.long) == Side.short 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
                                 size: 20,
@@ -1204,11 +1204,11 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Text(
                                 'SHORT',
-                                key: ValueKey(provider.side == Side.short),
+                                key: ValueKey((provider.side ?? Side.long) == Side.short),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
-                                  color: provider.side == Side.short 
+                                  color: (provider.side ?? Side.long) == Side.short 
                                       ? Colors.white 
                                       : AppTheme.textSecondaryColor,
                                 ),

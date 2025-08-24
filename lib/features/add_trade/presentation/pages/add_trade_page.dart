@@ -8,6 +8,7 @@ import '../../../../core/widgets/custom_time_picker.dart';
 import '../../../../core/widgets/toast_message.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
 import 'manage_values_page.dart';
+import '../../../../core/utils/navigation_service.dart';
 
 class AddTradePage extends StatefulWidget {
   const AddTradePage({super.key});
@@ -566,7 +567,7 @@ class _AddTradePageState extends State<AddTradePage> {
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: (provider.isFormValid && provider.status != AddTradeStatus.loading) 
+              onPressed: (provider.isFormValid && provider.status != AddTradeStatus.loading && provider.status != AddTradeStatus.success) 
                   ? () async {
                       try {
                         // Simple save without confirmation dialog
@@ -604,7 +605,7 @@ class _AddTradePageState extends State<AddTradePage> {
                       }
                     }
                   : null,
-              style: (provider.isFormValid && provider.status != AddTradeStatus.loading)
+              style: (provider.isFormValid && provider.status != AddTradeStatus.loading && provider.status != AddTradeStatus.success)
                   ? AppTheme.primaryButtonStyle.copyWith(
                       backgroundColor: WidgetStateProperty.all(AppTheme.primaryColor),
                       foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -648,75 +649,75 @@ class _AddTradePageState extends State<AddTradePage> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            provider.resetAfterSuccess();
-                            _clearTextControllers();
-                            // Scroll to top
-                            _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          style: AppTheme.primaryButtonStyle.copyWith(
-                            backgroundColor: WidgetStateProperty.all(AppTheme.successColor),
-                            foregroundColor: WidgetStateProperty.all(Colors.white),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add, size: 18, color: Colors.white),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Add Another Trade',
-                                style: AppTheme.bodyStyle.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  // Add Another Trade Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        provider.resetAfterSuccess();
+                        _clearTextControllers();
+                        // Scroll to top
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      style: AppTheme.primaryButtonStyle.copyWith(
+                        backgroundColor: WidgetStateProperty.all(AppTheme.successColor),
+                        foregroundColor: WidgetStateProperty.all(Colors.white),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Navigate to trade list (index 2 in bottom navigation)
-                            if (context.mounted) {
-                              // Use a simpler approach - just show a message and let user navigate manually
-                              showToast(
-                                context,
-                                message: 'Trade added! Navigate to Trade List to see it.',
-                                type: ToastType.success,
-                              );
-                            }
-                          },
-                          style: AppTheme.secondaryButtonStyle.copyWith(
-                            backgroundColor: WidgetStateProperty.all(AppTheme.primaryColor),
-                            foregroundColor: WidgetStateProperty.all(Colors.white),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add, size: 18, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Add Another Trade',
+                            style: AppTheme.bodyStyle.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.list, size: 18, color: Colors.white),
-                              const SizedBox(width: 8),
-                              Text(
-                                'View Trades',
-                                style: AppTheme.bodyStyle.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // View Trades Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate to trade list using navigation service
+                        if (context.mounted) {
+                          NavigationService().navigateToTradeList();
+                          showToast(
+                            context,
+                            message: 'Navigating to Trade List...',
+                            type: ToastType.success,
+                          );
+                        }
+                      },
+                      style: AppTheme.secondaryButtonStyle.copyWith(
+                        backgroundColor: WidgetStateProperty.all(AppTheme.primaryColor),
+                        foregroundColor: WidgetStateProperty.all(Colors.white),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.list, size: 18, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            'View Trades',
+                            style: AppTheme.bodyStyle.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -793,77 +794,7 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
           ),
 
-        // Success Message
-        if (provider.status == AddTradeStatus.success)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppTheme.successColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.successColor),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle_outline,
-                      color: AppTheme.successColor,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Trade Saved Successfully!',
-                        style: AppTheme.subheadingStyle.copyWith(
-                          color: AppTheme.successColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Your trade has been saved to the database.',
-                      style: AppTheme.bodyStyle.copyWith(
-                        color: AppTheme.successColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    if (provider.currentTrade != null) ...[
-                      Text(
-                        'Trade Details:',
-                        style: AppTheme.captionStyle.copyWith(
-                          color: AppTheme.successColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${provider.currentTrade!.symbol} - ${provider.currentTrade!.side?.name.toUpperCase() ?? 'N/A'}',
-                        style: AppTheme.captionStyle.copyWith(
-                          color: AppTheme.successColor,
-                        ),
-                      ),
-                      Text(
-                        'Entry Price: \$${provider.currentTrade!.entryPrice.toStringAsFixed(2)}',
-                        style: AppTheme.captionStyle.copyWith(
-                          color: AppTheme.successColor,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          ),
+        // Success Message - Removed duplicate message since it's already shown in submit section
       ],
     );
   }
@@ -1869,8 +1800,8 @@ class _AddTradePageState extends State<AddTradePage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            left: provider.side == Side.long ? 0 : null,
-            right: provider.side == Side.short ? 0 : null,
+            left: (provider.side ?? Side.long) == Side.long ? 0 : null,
+            right: (provider.side ?? Side.long) == Side.short ? 0 : null,
             top: 0,
             bottom: 0,
             child: Container(
@@ -1878,7 +1809,7 @@ class _AddTradePageState extends State<AddTradePage> {
                   MediaQuery.of(context).size.width *
                   0.4, // Half width minus padding
               decoration: BoxDecoration(
-                color: provider.side == Side.long
+                color: (provider.side ?? Side.long) == Side.long
                     ? AppTheme.bullishColor
                     : AppTheme.bearishColor,
                 borderRadius: BorderRadius.circular(5),
@@ -1907,8 +1838,8 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Icon(
                               Icons.trending_up,
-                              key: ValueKey(provider.side == Side.long),
-                              color: provider.side == Side.long
+                              key: ValueKey((provider.side ?? Side.long) == Side.long),
+                              color: (provider.side ?? Side.long) == Side.long
                                   ? Colors.white
                                   : AppTheme.textSecondaryColor,
                               size: 20,
@@ -1919,11 +1850,11 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Text(
                               'LONG',
-                              key: ValueKey(provider.side == Side.long),
+                              key: ValueKey((provider.side ?? Side.long) == Side.long),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: provider.side == Side.long
+                                color: (provider.side ?? Side.long) == Side.long
                                     ? Colors.white
                                     : AppTheme.textSecondaryColor,
                               ),
@@ -1954,8 +1885,8 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Icon(
                               Icons.trending_down,
-                              key: ValueKey(provider.side == Side.short),
-                              color: provider.side == Side.short
+                              key: ValueKey((provider.side ?? Side.long) == Side.short),
+                              color: (provider.side ?? Side.long) == Side.short
                                   ? Colors.white
                                   : AppTheme.textSecondaryColor,
                               size: 20,
@@ -1966,11 +1897,11 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Text(
                               'SHORT',
-                              key: ValueKey(provider.side == Side.short),
+                              key: ValueKey((provider.side ?? Side.long) == Side.short),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: provider.side == Side.short
+                                color: (provider.side ?? Side.long) == Side.short
                                     ? Colors.white
                                     : AppTheme.textSecondaryColor,
                               ),
@@ -2372,7 +2303,7 @@ class _AddTradePageState extends State<AddTradePage> {
             Icon(Icons.check_circle, color: Colors.white, size: 20),
             const SizedBox(width: 8),
             Text(
-              'Trade Saved!',
+              'Trade Saved Successfully!',
               style: AppTheme.bodyStyle.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
