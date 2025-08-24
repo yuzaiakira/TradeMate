@@ -448,7 +448,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
 
   Widget _buildTradeDetailsSheet(Trade trade) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.9,
       decoration: BoxDecoration(
         color: AppTheme.surfaceColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -506,36 +506,121 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDetailSection('Trade Information', [
+                  // Trade Transfers Section
+                  _buildDetailSection('Trade Transfers', [
+                    if (trade.tag?.isNotEmpty == true)
+                      _buildDetailRow('Tag', trade.tag!),
+                    _buildDetailRow('Datetime', _formatDateTime(trade.datetime)),
+                    if (trade.exchanges?.isNotEmpty == true)
+                      _buildDetailRow('Exchanges', trade.exchanges!),
+                    if (trade.entryType != null)
+                      _buildDetailRow('Entry Type', _getEntryTypeDisplayName(trade.entryType!)),
                     _buildDetailRow('Symbol', trade.symbol),
+                    if (trade.side != null)
+                      _buildDetailRow('Side', trade.side!.name.toUpperCase()),
+                    if (trade.strategies?.isNotEmpty == true)
+                      _buildDetailRow('Strategies', trade.strategies!),
                     _buildDetailRow('Entry Price', '\$${trade.entryPrice.toStringAsFixed(2)}'),
-                    _buildDetailRow('Quantity', trade.quantity.toStringAsFixed(4)),
-                    _buildDetailRow('Side', trade.side?.name.toUpperCase() ?? 'N/A'),
+                    if (trade.quantity > 0)
+                      _buildDetailRow('Quantity', trade.quantity.toStringAsFixed(4)),
                     _buildDetailRow('Status', trade.status.name.toUpperCase()),
-                    _buildDetailRow('Entry Date', _formatDateTime(trade.datetime)),
+                    if (trade.positionMargin != null)
+                      _buildDetailRow('Position Margin', '\$${trade.positionMargin!.toStringAsFixed(2)}'),
+                    if (trade.leverage != null)
+                      _buildDetailRow('Leverage', '${trade.leverage!}x'),
+                    if (trade.orderType != null)
+                      _buildDetailRow('Order Type', trade.orderType!.name.toUpperCase()),
+                    if (trade.timeFrame?.isNotEmpty == true)
+                      _buildDetailRow('Time Frame', trade.timeFrame!),
+                    if (trade.entryFeeRate != null)
+                      _buildDetailRow('Entry Fee Rate', '${trade.entryFeeRate!}%'),
+                    if (trade.entryMentalStates?.isNotEmpty == true)
+                      _buildDetailRow('Entry Mental States', trade.entryMentalStates!),
+                    if (trade.entryScreenshot?.isNotEmpty == true)
+                      _buildDetailRow('Entry Screenshot', trade.entryScreenshot!),
                   ]),
                   
-                  if (trade.exitPrice != null) ...[
+                  // Checklist Section
+                  if (trade.checklist?.isNotEmpty == true) ...[
                     const SizedBox(height: 20),
-                    _buildDetailSection('Exit Information', [
-                      _buildDetailRow('Exit Price', '\$${trade.exitPrice!.toStringAsFixed(2)}'),
-                      _buildDetailRow('Exit Date', _formatDateTime(trade.exitDate)),
-                      _buildDetailRowWithColor('PnL', '\$${trade.pnl?.toStringAsFixed(2) ?? '0.00'}', trade.pnl ?? 0),
-                      _buildDetailRowWithColor('PnL %', '${trade.pnlPercent?.toStringAsFixed(2) ?? '0.00'}%', trade.pnlPercent ?? 0),
+                    _buildDetailSection('Checklist', [
+                      ...trade.checklist!.map((item) => _buildDetailRow('•', item)),
                     ]),
                   ],
                   
-                  if (trade.memo?.isNotEmpty == true) ...[
+                  // Trade Management Section
+                  if (trade.stopLossPrice != null || trade.takeProfitPrice != null) ...[
+                    const SizedBox(height: 20),
+                    _buildDetailSection('Trade Management', [
+                      if (trade.stopLossPrice != null)
+                        _buildDetailRow('Stop Loss Price', '\$${trade.stopLossPrice!.toStringAsFixed(2)}'),
+                      if (trade.takeProfitPrice != null)
+                        _buildDetailRow('Take Profit Price', '\$${trade.takeProfitPrice!.toStringAsFixed(2)}'),
+                    ]),
+                  ],
+                  
+                  // Trade Exit Section
+                  if (trade.actualExitPrice != null || trade.exitDatetime != null) ...[
+                    const SizedBox(height: 20),
+                    _buildDetailSection('Trade Exit', [
+                      if (trade.actualExitPrice != null)
+                        _buildDetailRow('Actual Exit Price', '\$${trade.actualExitPrice!.toStringAsFixed(2)}'),
+                      if (trade.marginClosedPercent != null)
+                        _buildDetailRow('% of Margin Closed', '${trade.marginClosedPercent!}%'),
+                      if (trade.exitType != null)
+                        _buildDetailRow('Exit Type', trade.exitType!.name.toUpperCase()),
+                      if (trade.exitFeeRate != null)
+                        _buildDetailRow('Exit Fee Rate', '${trade.exitFeeRate!}%'),
+                      if (trade.exitDatetime != null)
+                        _buildDetailRow('Exit Datetime', _formatDateTime(trade.exitDatetime!)),
+                      if (trade.exitMentalStates?.isNotEmpty == true)
+                        _buildDetailRow('Exit Mental States', trade.exitMentalStates!),
+                      if (trade.exitScreenshot?.isNotEmpty == true)
+                        _buildDetailRow('Exit Screenshot', trade.exitScreenshot!),
+                    ]),
+                  ],
+                  
+                  // Memo Section
+                  if (trade.memo?.isNotEmpty == true || trade.rating != null) ...[
                     const SizedBox(height: 20),
                     _buildDetailSection('Memo', [
-                      _buildDetailRow('Notes', trade.memo!),
+                      if (trade.rating != null)
+                        _buildDetailRow('Rating', '${trade.rating}/5 ${'⭐' * trade.rating!}'),
+                      if (trade.memo?.isNotEmpty == true)
+                        _buildDetailRow('Memo', trade.memo!),
                     ]),
                   ],
                   
-                  if (trade.rating != null) ...[
+                  // Trackings Section
+                  if (trade.trackings?.isNotEmpty == true || trade.mistakes?.isNotEmpty == true) ...[
                     const SizedBox(height: 20),
-                    _buildDetailSection('Rating', [
-                      _buildDetailRow('Rating', '${trade.rating}/5 ${'⭐' * trade.rating!}'),
+                    _buildDetailSection('Trackings', [
+                      if (trade.trackings?.isNotEmpty == true)
+                        _buildDetailRow('Trackings', trade.trackings!),
+                      if (trade.mistakes?.isNotEmpty == true)
+                        _buildDetailRow('Mistakes', trade.mistakes!),
+                    ]),
+                  ],
+                  
+                  // Transfers Section
+                  if (trade.transferAmount != null || trade.transferScreenshot?.isNotEmpty == true) ...[
+                    const SizedBox(height: 20),
+                    _buildDetailSection('Transfers', [
+                      if (trade.transferAmount != null)
+                        _buildDetailRow('Amount', '\$${trade.transferAmount!.toStringAsFixed(2)}'),
+                      if (trade.transferScreenshot?.isNotEmpty == true)
+                        _buildDetailRow('Transfer Screenshot', trade.transferScreenshot!),
+                    ]),
+                  ],
+                  
+                  // Legacy PnL Information (if available)
+                  if (trade.pnl != null || trade.pnlPercent != null) ...[
+                    const SizedBox(height: 20),
+                    _buildDetailSection('Performance', [
+                      if (trade.pnl != null)
+                        _buildDetailRowWithColor('PnL', '\$${trade.pnl!.toStringAsFixed(2)}', trade.pnl!),
+                      if (trade.pnlPercent != null)
+                        _buildDetailRowWithColor('PnL %', '${trade.pnlPercent!.toStringAsFixed(2)}%', trade.pnlPercent!),
                     ]),
                   ],
                 ],
@@ -647,6 +732,21 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
   String _formatDateTime(DateTime? dateTime) {
     if (dateTime == null) return 'N/A';
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  String _getEntryTypeDisplayName(EntryType type) {
+    switch (type) {
+      case EntryType.trade:
+        return 'Trade';
+      case EntryType.marginInOut:
+        return 'Margin In/Out';
+      case EntryType.deposit:
+        return 'Deposit';
+      case EntryType.withdrawal:
+        return 'Withdrawal';
+      case EntryType.ignore:
+        return 'Ignore';
+    }
   }
 
   void _editTrade(BuildContext context, Trade trade) async {

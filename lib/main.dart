@@ -220,8 +220,12 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: currentIndex == 0,
+      // ignore: deprecated_member_use
+      onPopInvoked: (didPop) {
+        if (didPop) return; // App is already popping
+        
         // If not on home tab, navigate to home instead of exiting
         if (currentIndex != 0) {
           setState(() {
@@ -241,10 +245,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.read<HomeProvider>().loadStatistics();
           });
-          
-          return false; // Don't exit the app
         }
-        return true; // Allow exit only when on home tab
       },
       child: Scaffold(
         body: IndexedStack(
