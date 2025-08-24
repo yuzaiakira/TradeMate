@@ -220,12 +220,38 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
+    return WillPopScope(
+      onWillPop: () async {
+        // If not on home tab, navigate to home instead of exiting
+        if (currentIndex != 0) {
+          setState(() {
+            currentIndex = 0;
+          });
+          
+          // Show feedback to user
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Navigated to Home'),
+              duration: Duration(seconds: 1),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          
+          // Refresh home statistics when navigating to home
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<HomeProvider>().loadStatistics();
+          });
+          
+          return false; // Don't exit the app
+        }
+        return true; // Allow exit only when on home tab
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: currentIndex,
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (index) {
           setState(() {
@@ -265,6 +291,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             label: 'Tools',
           ),
         ],
+      ),
       ),
     );
   }
