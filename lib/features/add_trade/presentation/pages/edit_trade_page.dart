@@ -5,6 +5,8 @@ import '../provider/add_trade_provider.dart';
 import '../provider/edit_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../../../core/widgets/custom_time_picker.dart';
+import '../../../../core/widgets/multi_select_dropdown.dart';
+import '../../../../core/providers/user_defined_values_provider.dart';
 
 class EditTradePage extends StatefulWidget {
   final Trade trade;
@@ -357,6 +359,88 @@ class _EditTradePageState extends State<EditTradePage> {
               ),
               controller: _symbolController,
               onChanged: provider.updateSymbol,
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Exchanges
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('exchanges'),
+                  builder: (context, snapshot) {
+                    final exchanges = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(exchanges);
+                    if (provider.exchanges != null &&
+                        !allOptions.contains(provider.exchanges!)) {
+                      allOptions.add(provider.exchanges!);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Exchanges',
+                      prefixIcon: Icons.swap_horiz,
+                      options: allOptions,
+                      selectedValues: provider.exchanges != null
+                          ? [provider.exchanges!]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateExchanges(values.first);
+                        } else {
+                          provider.updateExchanges(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('exchanges', value);
+                        provider.updateExchanges(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select exchange',
+                    );
+                  },
+                );
+              },
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Strategies
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('strategies'),
+                  builder: (context, snapshot) {
+                    final strategies = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(strategies);
+                    if (provider.strategies != null &&
+                        !allOptions.contains(provider.strategies!)) {
+                      allOptions.add(provider.strategies!);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Strategies',
+                      prefixIcon: Icons.trending_up,
+                      options: allOptions,
+                      selectedValues: provider.strategies != null
+                          ? [provider.strategies!]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateStrategies(values.first);
+                        } else {
+                          provider.updateStrategies(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('strategies', value);
+                        provider.updateStrategies(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select strategy',
+                    );
+                  },
+                );
+              },
             ),
             
             const SizedBox(height: 16),
