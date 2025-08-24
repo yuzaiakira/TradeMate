@@ -100,8 +100,11 @@ class _AddTradePageState extends State<AddTradePage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, size: 20),
-          onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Back',
+          onPressed: () {
+            // Navigate to home instead of popping
+            NavigationService().navigateToHome();
+          },
+          tooltip: 'Back to Home',
         ),
         title: Text(
           'Add Trade',
