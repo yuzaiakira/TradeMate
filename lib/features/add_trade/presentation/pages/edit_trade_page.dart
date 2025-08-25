@@ -352,13 +352,42 @@ class _EditTradePageState extends State<EditTradePage> {
             const SizedBox(height: 16),
             
             // Symbol
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Symbol',
-                prefixIcon: Icons.currency_exchange,
-              ),
-              controller: _symbolController,
-              onChanged: provider.updateSymbol,
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('symbols'),
+                  builder: (context, snapshot) {
+                    final symbols = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(symbols);
+                    if (provider.symbol.isNotEmpty &&
+                        !allOptions.contains(provider.symbol)) {
+                      allOptions.add(provider.symbol);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Symbol',
+                      prefixIcon: Icons.currency_exchange,
+                      options: allOptions,
+                      selectedValues: provider.symbol.isNotEmpty
+                          ? [provider.symbol]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateSymbol(values.first);
+                        } else {
+                          provider.updateSymbol('');
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('symbols', value);
+                        provider.updateSymbol(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select symbol',
+                    );
+                  },
+                );
+              },
             ),
             
             const SizedBox(height: 16),
@@ -563,29 +592,85 @@ class _EditTradePageState extends State<EditTradePage> {
             const SizedBox(height: 16),
             
             // Entry Fee Rate
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Entry Fee Rate',
-                prefixIcon: Icons.percent,
-              ),
-              controller: _entryFeeRateController,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final rate = double.tryParse(value);
-                provider.updateEntryFeeRate(rate);
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('entryFeeRates'),
+                  builder: (context, snapshot) {
+                    final feeRates = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(feeRates);
+                    if (provider.entryFeeRate != null &&
+                        !allOptions.contains(provider.entryFeeRate.toString())) {
+                      allOptions.add(provider.entryFeeRate.toString());
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Entry Fee Rate',
+                      prefixIcon: Icons.percent,
+                      options: allOptions,
+                      selectedValues: provider.entryFeeRate != null
+                          ? [provider.entryFeeRate.toString()]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          final rate = double.tryParse(values.first);
+                          provider.updateEntryFeeRate(rate);
+                        } else {
+                          provider.updateEntryFeeRate(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('entryFeeRates', value);
+                        final rate = double.tryParse(value);
+                        provider.updateEntryFeeRate(rate);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select entry fee rate',
+                    );
+                  },
+                );
               },
             ),
             
             const SizedBox(height: 16),
             
             // Entry Mental States
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Entry Mental States',
-                prefixIcon: Icons.psychology,
-              ),
-              controller: _entryMentalStatesController,
-              onChanged: provider.updateEntryMentalStates,
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('entryMentalStates'),
+                  builder: (context, snapshot) {
+                    final mentalStates = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(mentalStates);
+                    if (provider.entryMentalStates != null &&
+                        !allOptions.contains(provider.entryMentalStates!)) {
+                      allOptions.add(provider.entryMentalStates!);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Entry Mental States',
+                      prefixIcon: Icons.psychology,
+                      options: allOptions,
+                      selectedValues: provider.entryMentalStates != null
+                          ? [provider.entryMentalStates!]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateEntryMentalStates(values.first);
+                        } else {
+                          provider.updateEntryMentalStates(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('entryMentalStates', value);
+                        provider.updateEntryMentalStates(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select entry mental state',
+                    );
+                  },
+                );
+              },
             ),
             
             const SizedBox(height: 16),
@@ -774,16 +859,43 @@ class _EditTradePageState extends State<EditTradePage> {
             
             const SizedBox(height: 16),
             
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Exit Fee Rate',
-                prefixIcon: Icons.percent,
-              ),
-              controller: _exitFeeRateController,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final rate = double.tryParse(value);
-                provider.updateExitFeeRate(rate);
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('exitFeeRates'),
+                  builder: (context, snapshot) {
+                    final feeRates = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(feeRates);
+                    if (provider.exitFeeRate != null &&
+                        !allOptions.contains(provider.exitFeeRate.toString())) {
+                      allOptions.add(provider.exitFeeRate.toString());
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Exit Fee Rate',
+                      prefixIcon: Icons.percent,
+                      options: allOptions,
+                      selectedValues: provider.exitFeeRate != null
+                          ? [provider.exitFeeRate.toString()]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          final rate = double.tryParse(values.first);
+                          provider.updateExitFeeRate(rate);
+                        } else {
+                          provider.updateExitFeeRate(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('exitFeeRates', value);
+                        final rate = double.tryParse(value);
+                        provider.updateExitFeeRate(rate);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select exit fee rate',
+                    );
+                  },
+                );
               },
             ),
             
@@ -801,13 +913,42 @@ class _EditTradePageState extends State<EditTradePage> {
             
             const SizedBox(height: 16),
             
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Exit Mental State',
-                prefixIcon: Icons.psychology,
-              ),
-              controller: _exitMentalStatesController,
-              onChanged: provider.updateExitMentalStates,
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('exitMentalStates'),
+                  builder: (context, snapshot) {
+                    final mentalStates = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(mentalStates);
+                    if (provider.exitMentalStates != null &&
+                        !allOptions.contains(provider.exitMentalStates!)) {
+                      allOptions.add(provider.exitMentalStates!);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Exit Mental State',
+                      prefixIcon: Icons.psychology,
+                      options: allOptions,
+                      selectedValues: provider.exitMentalStates != null
+                          ? [provider.exitMentalStates!]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateExitMentalStates(values.first);
+                        } else {
+                          provider.updateExitMentalStates(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('exitMentalStates', value);
+                        provider.updateExitMentalStates(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select exit mental state',
+                    );
+                  },
+                );
+              },
             ),
             
             const SizedBox(height: 16),
@@ -1061,24 +1202,82 @@ class _EditTradePageState extends State<EditTradePage> {
             ),
             const SizedBox(height: 16),
             
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Analysis Method',
-                prefixIcon: Icons.track_changes,
-              ),
-              controller: _trackingsController,
-              onChanged: provider.updateTrackings,
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('trackings'),
+                  builder: (context, snapshot) {
+                    final trackings = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(trackings);
+                    if (provider.trackings != null &&
+                        !allOptions.contains(provider.trackings!)) {
+                      allOptions.add(provider.trackings!);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Analysis Method',
+                      prefixIcon: Icons.track_changes,
+                      options: allOptions,
+                      selectedValues: provider.trackings != null
+                          ? [provider.trackings!]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateTrackings(values.first);
+                        } else {
+                          provider.updateTrackings(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('trackings', value);
+                        provider.updateTrackings(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select analysis method',
+                    );
+                  },
+                );
+              },
             ),
             
             const SizedBox(height: 16),
             
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Mistakes Made',
-                prefixIcon: Icons.psychology,
-              ),
-              controller: _mistakesController,
-              onChanged: provider.updateMistakes,
+            Consumer<UserDefinedValuesProvider>(
+              builder: (context, userValuesProvider, child) {
+                return FutureBuilder<List<String>>(
+                  future: userValuesProvider.getValues('mistakes'),
+                  builder: (context, snapshot) {
+                    final mistakes = snapshot.data ?? [];
+                    // Include currently selected value in options if it's not already there
+                    final allOptions = List<String>.from(mistakes);
+                    if (provider.mistakes != null &&
+                        !allOptions.contains(provider.mistakes!)) {
+                      allOptions.add(provider.mistakes!);
+                    }
+                    return MultiSelectDropdown(
+                      label: 'Mistakes Made',
+                      prefixIcon: Icons.psychology,
+                      options: allOptions,
+                      selectedValues: provider.mistakes != null
+                          ? [provider.mistakes!]
+                          : [],
+                      onChanged: (values) {
+                        if (values.isNotEmpty) {
+                          provider.updateMistakes(values.first);
+                        } else {
+                          provider.updateMistakes(null);
+                        }
+                      },
+                      onAddNewValue: (value) async {
+                        await userValuesProvider.addValue('mistakes', value);
+                        provider.updateMistakes(value);
+                      },
+                      allowMultiple: false,
+                      hintText: 'Select mistake type',
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
