@@ -259,6 +259,13 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             currentIndex = index;
           });
           
+          // Reset add trade provider when navigating to add trade tab
+          if (index == 1) { // Add Trade tab
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<AddTradeProvider>().reset();
+            });
+          }
+          
           // Refresh trade list when navigating to it
           if (index == 2) { // Trade List tab
             WidgetsBinding.instance.addPostFrameCallback((_) {

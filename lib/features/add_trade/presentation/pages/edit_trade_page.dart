@@ -183,16 +183,24 @@ class _EditTradePageState extends State<EditTradePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Edit Trade - ${widget.trade.symbol}',
-          style: AppTheme.subheadingStyle.copyWith(
-            fontWeight: FontWeight.w600,
+    return PopScope(
+      // ignore: deprecated_member_use
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          // Reset the AddTradeProvider when the page is popped
+          context.read<AddTradeProvider>().reset();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Edit Trade - ${widget.trade.symbol}',
+            style: AppTheme.subheadingStyle.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-      ),
-      body: Consumer2<AddTradeProvider, EditTradeProvider>(
+        body: Consumer2<AddTradeProvider, EditTradeProvider>(
         builder: (context, addTradeProvider, editTradeProvider, child) {
           return Column(
             children: [
@@ -206,6 +214,7 @@ class _EditTradePageState extends State<EditTradePage> {
             ],
           );
         },
+      ),
       ),
     );
   }
@@ -1064,6 +1073,8 @@ class _EditTradePageState extends State<EditTradePage> {
     // If successful, navigate back
     if (editTradeProvider.status == EditTradeStatus.success) {
       if (mounted) {
+        // Reset the AddTradeProvider before navigating back
+        addTradeProvider.reset();
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
