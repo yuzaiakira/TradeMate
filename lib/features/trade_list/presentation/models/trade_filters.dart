@@ -58,7 +58,7 @@ class TradeFilters {
       minPnL: minPnL ?? this.minPnL,
       maxPnL: maxPnL ?? this.maxPnL,
       minRating: minRating ?? this.minRating,
-      profitLossFilter: profitLossFilter,
+      profitLossFilter: profitLossFilter ?? this.profitLossFilter,
     );
   }
 

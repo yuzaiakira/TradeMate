@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
-import '../../../../core/providers/user_defined_values_provider.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 import '../../../add_trade/presentation/pages/edit_trade_page.dart';
 import '../provider/trade_list_provider.dart';
@@ -109,8 +108,8 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
           ),
         ],
       ),
-      body: Consumer2<TradeListProvider, UserDefinedValuesProvider>(
-        builder: (context, tradeListProvider, userValuesProvider, child) {
+      body: Consumer<TradeListProvider>(
+        builder: (context, tradeListProvider, child) {
           return Column(
             children: [
               // Statistics Summary
@@ -316,11 +315,31 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                   Icons.swap_horiz_rounded,
                   () => provider.clearExchangeFilter(),
                 ),
+              if (provider.filters.side != null)
+                _buildFilterChip(
+                  'Side: ${provider.filters.side!.name.toUpperCase()}',
+                  provider.filters.side == Side.long 
+                      ? Icons.trending_up_rounded 
+                      : Icons.trending_down_rounded,
+                  () => provider.clearSideFilter(),
+                ),
+              if (provider.filters.minPnL != null || provider.filters.maxPnL != null)
+                _buildFilterChip(
+                  'PnL Range',
+                  Icons.attach_money_rounded,
+                  () => provider.clearPnLRangeFilter(),
+                ),
+              if (provider.filters.minRating != null)
+                _buildFilterChip(
+                  'Rating: ${provider.filters.minRating}+',
+                  Icons.star_rounded,
+                  () => provider.clearRatingFilter(),
+                ),
               if (provider.filters.profitLossFilter != ProfitLossFilter.all)
                 _buildFilterChip(
                   _getProfitLossFilterDisplayName(provider.filters.profitLossFilter),
                   _getProfitLossFilterIcon(provider.filters.profitLossFilter),
-                  () => provider.setFilters(provider.filters.copyWith(profitLossFilter: ProfitLossFilter.all)),
+                  () => provider.clearProfitLossFilter(),
                 ),
             ],
           ),
@@ -330,47 +349,43 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
   }
 
   Widget _buildFilterChip(String label, IconData icon, VoidCallback onRemove) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppTheme.borderColor.withValues(alpha: 0.6),
-          width: 1,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+    return GestureDetector(
+      onTap: onRemove,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundColor,
           borderRadius: BorderRadius.circular(20),
-          onTap: onRemove,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  size: 14,
-                  color: AppTheme.textSecondaryColor,
+          border: Border.all(
+            color: AppTheme.borderColor.withValues(alpha: 0.6),
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 14,
+                color: AppTheme.textSecondaryColor,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: AppTheme.captionStyle.copyWith(
+                  color: AppTheme.textPrimaryColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
                 ),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: AppTheme.captionStyle.copyWith(
-                    color: AppTheme.textPrimaryColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.close_rounded,
-                  size: 14,
-                  color: AppTheme.textSecondaryColor,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.close_rounded,
+                size: 14,
+                color: AppTheme.textSecondaryColor,
+              ),
+            ],
           ),
         ),
       ),

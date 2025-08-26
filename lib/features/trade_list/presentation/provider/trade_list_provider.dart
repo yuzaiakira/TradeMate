@@ -165,6 +165,30 @@ class TradeListProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearProfitLossFilter() {
+    _filters = _filters.copyWith(profitLossFilter: ProfitLossFilter.all);
+    _applyFiltersAndSort();
+    notifyListeners();
+  }
+
+  void clearSideFilter() {
+    _filters = _filters.copyWith(side: null);
+    _applyFiltersAndSort();
+    notifyListeners();
+  }
+
+  void clearPnLRangeFilter() {
+    _filters = _filters.copyWith(minPnL: null, maxPnL: null);
+    _applyFiltersAndSort();
+    notifyListeners();
+  }
+
+  void clearRatingFilter() {
+    _filters = _filters.copyWith(minRating: null);
+    _applyFiltersAndSort();
+    notifyListeners();
+  }
+
   void _applyFiltersAndSort() {
     List<Trade> filtered = List.from(_allTrades);
 
