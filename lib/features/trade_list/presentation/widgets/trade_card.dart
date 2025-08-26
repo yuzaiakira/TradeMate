@@ -188,9 +188,30 @@ class TradeCard extends StatelessWidget {
         text = 'OPEN';
         break;
       case TradeStatus.closed:
-        backgroundColor = AppTheme.bullishColor;
-        textColor = Colors.white;
-        text = 'CLOSED';
+        // Determine color based on PnL for closed trades
+        if (trade.pnl != null) {
+          if (trade.pnl! > 0) {
+            // Profitable trade
+            backgroundColor = AppTheme.bullishColor;
+            textColor = Colors.white;
+            text = 'PROFIT';
+          } else if (trade.pnl! < 0) {
+            // Losing trade
+            backgroundColor = AppTheme.bearishColor;
+            textColor = Colors.white;
+            text = 'LOSS';
+          } else {
+            // Breakeven trade
+            backgroundColor = Colors.grey;
+            textColor = Colors.white;
+            text = 'BREAKEVEN';
+          }
+        } else {
+          // Closed trade without PnL data
+          backgroundColor = AppTheme.bullishColor;
+          textColor = Colors.white;
+          text = 'CLOSED';
+        }
         break;
     }
 

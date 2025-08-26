@@ -58,7 +58,7 @@ class UpdateTradeUseCase {
     // Calculate PnL if exit price is provided
     double? pnl;
     double? pnlPercent;
-    if (trade.actualExitPrice != null && trade.status == TradeStatus.closed) {
+    if (trade.actualExitPrice != null) {
       final priceDifference = trade.actualExitPrice! - trade.entryPrice;
       final multiplier = trade.type == TradeType.buy ? 1 : -1;
       pnl = priceDifference * trade.quantity * multiplier;
@@ -86,6 +86,11 @@ class UpdateTradeUseCase {
       pnlPercent: pnlPercent,
       achievedR: achievedR,
       tradeDuration: tradeDuration,
+      // Update legacy fields for consistency
+      exitPrice: trade.actualExitPrice,
+      exitDate: trade.exitDatetime,
+      stopLoss: trade.stopLossPrice,
+      takeProfit: trade.takeProfitPrice,
     );
   }
 }

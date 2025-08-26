@@ -50,9 +50,42 @@ class AddTradeUseCase {
       }
     }
 
+    // Calculate PnL if exit price is provided
+    double? pnl;
+    double? pnlPercent;
+    if (trade.actualExitPrice != null) {
+      final priceDifference = trade.actualExitPrice! - trade.entryPrice;
+      final multiplier = trade.type == TradeType.buy ? 1 : -1;
+      pnl = priceDifference * trade.quantity * multiplier;
+      
+      final positionValue = trade.entryPrice * trade.quantity;
+      pnlPercent = (pnl / positionValue) * 100;
+    }
+
+    // Calculate achieved R
+    double? achievedR;
+    if (riskAmount != null && pnl != null && riskAmount > 0) {
+      achievedR = pnl / riskAmount;
+    }
+
+    // Calculate trade duration
+    int? tradeDuration;
+    if (trade.exitDatetime != null) {
+      tradeDuration = trade.exitDatetime!.difference(trade.datetime).inMinutes;
+    }
+
     return trade.copyWith(
       riskAmount: riskAmount,
       riskRewardRatio: riskRewardRatio,
+      pnl: pnl,
+      pnlPercent: pnlPercent,
+      achievedR: achievedR,
+      tradeDuration: tradeDuration,
+      // Update legacy fields for consistency
+      exitPrice: trade.actualExitPrice,
+      exitDate: trade.exitDatetime,
+      stopLoss: trade.stopLossPrice,
+      takeProfit: trade.takeProfitPrice,
     );
   }
 }

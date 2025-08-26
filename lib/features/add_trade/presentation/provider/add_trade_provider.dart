@@ -363,6 +363,12 @@ class AddTradeProvider with ChangeNotifier {
       calculatedQuantity = _positionMargin! / _entryPrice;
     }
 
+    // Determine trade status based on exit information
+    TradeStatus determinedStatus = _tradeStatus;
+    if (_actualExitPrice != null || _exitDatetime != null) {
+      determinedStatus = TradeStatus.closed;
+    }
+
     return Trade(
       // Trade Transfers
       tag: _tag.isEmpty ? null : _tag,
@@ -404,16 +410,16 @@ class AddTradeProvider with ChangeNotifier {
       transferScreenshot: _transferScreenshot,
       // Legacy fields
       type: _type,
-      status: _tradeStatus,
-      exitPrice: _exitPrice,
+      status: determinedStatus,
+      exitPrice: _actualExitPrice,
       quantity: calculatedQuantity,
-      stopLoss: _stopLoss,
-      takeProfit: _takeProfit,
+      stopLoss: _stopLossPrice,
+      takeProfit: _takeProfitPrice,
       pnl: _pnl,
       pnlPercent: _pnlPercent,
       riskRewardRatio: _riskRewardRatio,
       entryDate: _entryDate,
-      exitDate: _exitDate,
+      exitDate: _exitDatetime,
       notes: _notes.isEmpty ? null : _notes,
       screenshotPath: _screenshotPath,
       accountBalance: _accountBalance,
