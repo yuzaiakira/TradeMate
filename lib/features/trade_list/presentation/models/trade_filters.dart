@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 
+enum ProfitLossFilter { all, profitable, losing, breakeven }
+
 class TradeFilters {
   final String symbol;
   final TradeStatus? status;
@@ -10,6 +12,7 @@ class TradeFilters {
   final double? minPnL;
   final double? maxPnL;
   final int? minRating;
+  final ProfitLossFilter profitLossFilter;
 
   const TradeFilters({
     this.symbol = '',
@@ -20,7 +23,8 @@ class TradeFilters {
     this.minPnL,
     this.maxPnL,
     this.minRating,
-  });
+    ProfitLossFilter? profitLossFilter,
+  }) : profitLossFilter = profitLossFilter ?? ProfitLossFilter.all;
 
   bool get hasActiveFilters {
     return symbol.isNotEmpty ||
@@ -30,7 +34,8 @@ class TradeFilters {
            side != null ||
            minPnL != null ||
            maxPnL != null ||
-           minRating != null;
+           minRating != null ||
+           profitLossFilter != ProfitLossFilter.all;
   }
 
   TradeFilters copyWith({
@@ -42,6 +47,7 @@ class TradeFilters {
     double? minPnL,
     double? maxPnL,
     int? minRating,
+    ProfitLossFilter? profitLossFilter,
   }) {
     return TradeFilters(
       symbol: symbol ?? this.symbol,
@@ -52,6 +58,7 @@ class TradeFilters {
       minPnL: minPnL ?? this.minPnL,
       maxPnL: maxPnL ?? this.maxPnL,
       minRating: minRating ?? this.minRating,
+      profitLossFilter: profitLossFilter,
     );
   }
 
@@ -67,7 +74,8 @@ class TradeFilters {
         other.side == side &&
         other.minPnL == minPnL &&
         other.maxPnL == maxPnL &&
-        other.minRating == minRating;
+        other.minRating == minRating &&
+        other.profitLossFilter == profitLossFilter;
   }
 
   @override
@@ -79,11 +87,12 @@ class TradeFilters {
         side.hashCode ^
         minPnL.hashCode ^
         maxPnL.hashCode ^
-        minRating.hashCode;
+        minRating.hashCode ^
+        profitLossFilter.hashCode;
   }
 
   @override
   String toString() {
-    return 'TradeFilters(symbol: $symbol, status: $status, dateRange: $dateRange, exchanges: $exchanges, side: $side, minPnL: $minPnL, maxPnL: $maxPnL, minRating: $minRating)';
+    return 'TradeFilters(symbol: $symbol, status: $status, dateRange: $dateRange, exchanges: $exchanges, side: $side, minPnL: $minPnL, maxPnL: $maxPnL, minRating: $minRating, profitLossFilter: $profitLossFilter)';
   }
 }

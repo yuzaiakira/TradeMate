@@ -163,6 +163,13 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
                   
                   const SizedBox(height: 24),
                   
+                  // Profit/Loss Filter - Enhanced
+                  _buildModernSectionTitle('Profit/Loss', Icons.trending_up_rounded),
+                  const SizedBox(height: 16),
+                  _buildModernProfitLossFilter(),
+                  
+                  const SizedBox(height: 24),
+                  
                   // PnL Range Filter - Enhanced
                   _buildModernSectionTitle('PnL Range', Icons.attach_money_rounded),
                   const SizedBox(height: 16),
@@ -775,6 +782,127 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
     );
   }
 
+  Widget _buildModernProfitLossFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: DropdownButtonFormField<ProfitLossFilter>(
+        decoration: InputDecoration(
+          labelText: 'Select Profit/Loss',
+          hintText: 'All Trades',
+          prefixIcon: Icon(
+            Icons.trending_up_rounded,
+            color: AppTheme.textSecondaryColor,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle: TextStyle(
+            color: AppTheme.textSecondaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        value: _filters.profitLossFilter,
+        items: [
+          DropdownMenuItem<ProfitLossFilter>(
+            value: ProfitLossFilter.all,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.all_inclusive_rounded,
+                  color: AppTheme.textSecondaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'All Trades',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          DropdownMenuItem<ProfitLossFilter>(
+            value: ProfitLossFilter.profitable,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.trending_up_rounded,
+                  color: AppTheme.bullishColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Profitable',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          DropdownMenuItem<ProfitLossFilter>(
+            value: ProfitLossFilter.losing,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.trending_down_rounded,
+                  color: AppTheme.bearishColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Losing',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          DropdownMenuItem<ProfitLossFilter>(
+            value: ProfitLossFilter.breakeven,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.remove_rounded,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Breakeven',
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        onChanged: (value) {
+          setState(() {
+            _filters = _filters.copyWith(profitLossFilter: value ?? ProfitLossFilter.all);
+          });
+        },
+        dropdownColor: AppTheme.backgroundColor,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppTheme.textSecondaryColor,
+        ),
+      ),
+    );
+  }
+
   Widget _buildModernPnLRangeFilter() {
     return Container(
       decoration: BoxDecoration(
@@ -1024,7 +1152,7 @@ class _TradeFilterSheetState extends State<TradeFilterSheet> {
 
   void _clearAllFilters() {
     setState(() {
-      _filters = TradeFilters();
+      _filters = const TradeFilters();
       _sortOption = TradeSortOption.dateDesc;
     });
   }

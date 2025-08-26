@@ -26,7 +26,7 @@ class TradeListProvider with ChangeNotifier {
   String _errorMessage = '';
   List<Trade> _allTrades = [];
   List<Trade> _filteredTrades = [];
-  TradeFilters _filters = TradeFilters();
+  TradeFilters _filters = const TradeFilters();
   String _searchQuery = '';
   TradeSortOption _sortOption = TradeSortOption.dateDesc;
   TradeStatistics _statistics = TradeStatistics();
@@ -128,7 +128,7 @@ class TradeListProvider with ChangeNotifier {
   }
 
   void clearAllFilters() {
-    _filters = TradeFilters();
+    _filters = const TradeFilters();
     _searchQuery = '';
     _applyFiltersAndSort();
     notifyListeners();
@@ -227,6 +227,23 @@ class TradeListProvider with ChangeNotifier {
       filtered = filtered.where((trade) => 
         trade.rating != null && trade.rating! >= _filters.minRating!
       ).toList();
+    }
+
+    // Apply profit/loss filter
+    if (_filters.profitLossFilter != ProfitLossFilter.all) {
+      filtered = filtered.where((trade) {
+        final pnl = trade.pnl ?? 0.0;
+        switch (_filters.profitLossFilter) {
+          case ProfitLossFilter.profitable:
+            return pnl > 0;
+          case ProfitLossFilter.losing:
+            return pnl < 0;
+          case ProfitLossFilter.breakeven:
+            return pnl == 0;
+          case ProfitLossFilter.all:
+            return true;
+        }
+      }).toList();
     }
 
     // Sort trades

@@ -7,6 +7,7 @@ import '../../../add_trade/presentation/pages/edit_trade_page.dart';
 import '../provider/trade_list_provider.dart';
 import '../widgets/trade_card.dart';
 import '../widgets/trade_filter_sheet.dart';
+import '../models/trade_filters.dart';
 
 class TradeListPage extends StatefulWidget {
   final Function(int)? onNavigateToTab;
@@ -253,6 +254,10 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
           if (provider.filters.exchanges.isNotEmpty)
             _buildFilterChip('Exchange: ${provider.filters.exchanges.first}', () {
               provider.clearExchangeFilter();
+            }),
+          if (provider.filters.profitLossFilter != ProfitLossFilter.all)
+            _buildFilterChip(_getProfitLossFilterDisplayName(provider.filters.profitLossFilter), () {
+              provider.setFilters(provider.filters.copyWith(profitLossFilter: ProfitLossFilter.all));
             }),
           _buildFilterChip('Clear All', () {
             provider.clearAllFilters();
@@ -746,6 +751,19 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
         return 'Withdrawal';
       case EntryType.ignore:
         return 'Ignore';
+    }
+  }
+
+  String _getProfitLossFilterDisplayName(ProfitLossFilter filter) {
+    switch (filter) {
+      case ProfitLossFilter.all:
+        return 'All Trades';
+      case ProfitLossFilter.profitable:
+        return 'Profitable';
+      case ProfitLossFilter.losing:
+        return 'Losing';
+      case ProfitLossFilter.breakeven:
+        return 'Breakeven';
     }
   }
 
