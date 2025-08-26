@@ -6,6 +6,7 @@ import '../provider/edit_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../../../core/widgets/custom_time_picker.dart';
 import '../../../../core/widgets/multi_select_dropdown.dart';
+import '../../../../core/widgets/checklist_widget.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
 
 class EditTradePage extends StatefulWidget {
@@ -691,43 +692,51 @@ class _EditTradePageState extends State<EditTradePage> {
   }
 
   Widget _buildChecklistSection(AddTradeProvider provider) {
-    return Container(
-      decoration: AppTheme.cardDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Pre-Trade Checklist',
-              style: AppTheme.subheadingStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppTheme.primaryColor,
+    return Consumer<UserDefinedValuesProvider>(
+      builder: (context, userValuesProvider, child) {
+        return FutureBuilder<List<String>>(
+          future: userValuesProvider.getValues('checklist'),
+          builder: (context, snapshot) {
+            final availableItems = snapshot.data ?? [];
+            
+            return Container(
+              decoration: AppTheme.cardDecoration,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Pre-Trade Checklist',
+                      style: AppTheme.subheadingStyle.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Pre-trade checklist helps ensure you\'re following your trading plan.',
+                      style: AppTheme.captionStyle.copyWith(
+                        color: AppTheme.textSecondaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ChecklistWidget(
+                      selectedItems: provider.checklist ?? [],
+                      availableItems: availableItems,
+                      onSelectionChanged: (selectedItems) {
+                        provider.updateChecklist(selectedItems);
+                      },
+                      label: 'Select checklist items',
+                      hint: 'Search and select items from your checklist',
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Pre-trade checklist helps ensure you\'re following your trading plan.',
-              style: AppTheme.captionStyle.copyWith(
-                color: AppTheme.textSecondaryColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              decoration: AppTheme.inputDecoration(
-                labelText: 'Checklist Items',
-                prefixIcon: Icons.checklist,
-              ),
-              controller: _checklistController,
-              maxLines: 5,
-              onChanged: (value) {
-                final items = value.split('\n').where((item) => item.trim().isNotEmpty).toList();
-                provider.updateChecklist(items);
-              },
-            ),
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 

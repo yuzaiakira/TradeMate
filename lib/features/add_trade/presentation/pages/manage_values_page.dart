@@ -74,6 +74,13 @@ class _ManageValuesPageState extends State<ManageValuesPage> {
           'Manage your mistake categories (e.g., FOMO, Over-leveraged)',
       'hint': 'Add new mistake type...',
     },
+    'checklist': {
+      'title': 'Pre-Trade Checklist',
+      'icon': Icons.checklist,
+      'description':
+          'Manage your pre-trade checklist items (e.g., Check market trend, Set stop loss)',
+      'hint': 'Add new checklist item...',
+    },
   };
 
   @override

@@ -6,6 +6,7 @@ import '../../../../core/utils/app_theme.dart';
 import '../../../../core/widgets/multi_select_dropdown.dart';
 import '../../../../core/widgets/custom_time_picker.dart';
 import '../../../../core/widgets/toast_message.dart';
+import '../../../../core/widgets/checklist_widget.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
 import 'manage_values_page.dart';
 import '../../../../core/utils/navigation_service.dart';
@@ -1291,32 +1292,37 @@ class _AddTradePageState extends State<AddTradePage> {
   }
 
   Widget _buildChecklistSection(AddTradeProvider provider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Pre-trade checklist helps ensure you\'re following your trading plan.',
-          style: AppTheme.captionStyle.copyWith(
-            color: AppTheme.textSecondaryColor,
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextFormField(
-          decoration: AppTheme.inputDecoration(
-            labelText: 'Checklist Items',
-            hintText: 'Enter checklist items (one per line)',
-            prefixIcon: Icons.checklist,
-          ),
-          maxLines: 5,
-          onChanged: (value) {
-            final items = value
-                .split('\n')
-                .where((item) => item.trim().isNotEmpty)
-                .toList();
-            provider.updateChecklist(items);
+    return Consumer<UserDefinedValuesProvider>(
+      builder: (context, userValuesProvider, child) {
+        return FutureBuilder<List<String>>(
+          future: userValuesProvider.getValues('checklist'),
+          builder: (context, snapshot) {
+            final availableItems = snapshot.data ?? [];
+            
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pre-trade checklist helps ensure you\'re following your trading plan.',
+                  style: AppTheme.captionStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ChecklistWidget(
+                  selectedItems: provider.checklist ?? [],
+                  availableItems: availableItems,
+                  onSelectionChanged: (selectedItems) {
+                    provider.updateChecklist(selectedItems);
+                  },
+                  label: 'Select checklist items',
+                  hint: 'Search and select items from your checklist',
+                ),
+              ],
+            );
           },
-        ),
-      ],
+        );
+      },
     );
   }
 

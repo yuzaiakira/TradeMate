@@ -104,6 +104,7 @@ class UserDefinedValuesProvider with ChangeNotifier {
       'exitMentalStates',
       'trackings',
       'mistakes',
+      'checklist',
     ];
     
     for (final category in categories) {

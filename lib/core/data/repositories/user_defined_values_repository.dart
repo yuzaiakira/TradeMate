@@ -172,6 +172,24 @@ class UserDefinedValuesRepositoryImpl implements UserDefinedValuesRepository {
       'Not Following Plan',
       'None',
     ]);
+
+    await _initializeCategory('checklist', [
+      'Check market trend',
+      'Set stop loss',
+      'Set take profit',
+      'Check risk/reward ratio',
+      'Verify position size',
+      'Check news/events',
+      'Review trading plan',
+      'Check market volatility',
+      'Verify entry price',
+      'Check trading volume',
+      'Review technical indicators',
+      'Check support/resistance levels',
+      'Verify leverage settings',
+      'Check account balance',
+      'Review previous trades',
+    ]);
   }
 
   Future<void> _initializeCategory(String category, List<String> defaultValues) async {
