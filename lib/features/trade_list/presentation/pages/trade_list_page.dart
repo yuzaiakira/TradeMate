@@ -418,16 +418,36 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
           ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.all(12),
-            itemCount: provider.trades.length,
+            itemCount: provider.trades.length + (provider.hasMoreTrades ? 1 : 0),
             itemBuilder: (context, index) {
+              // Show loading indicator at the end for pagination
+              if (index == provider.trades.length) {
+                if (provider.hasMoreTrades) {
+                  // Trigger loading next page
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    provider.loadNextPage();
+                  });
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }
+              
               final trade = provider.trades[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: TradeCard(
-                  trade: trade,
-                  onTap: () => _showTradeDetails(context, trade),
-                  onEdit: () => _editTrade(context, trade),
-                  onDelete: () => _deleteTrade(context, trade),
+                child: RepaintBoundary(
+                  child: TradeCard(
+                    trade: trade,
+                    onTap: () => _showTradeDetails(context, trade),
+                    onEdit: () => _editTrade(context, trade),
+                    onDelete: () => _deleteTrade(context, trade),
+                  ),
                 ),
               );
             },

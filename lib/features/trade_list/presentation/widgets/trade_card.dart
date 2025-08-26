@@ -18,158 +18,160 @@ class TradeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppTheme.cardDecoration,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header row with symbol, status, and actions
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              trade.symbol,
-                              style: AppTheme.bodyStyle.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.textPrimaryColor,
+    return RepaintBoundary(
+      child: Container(
+        decoration: AppTheme.cardDecoration,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header row with symbol, status, and actions
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                trade.symbol,
+                                style: AppTheme.bodyStyle.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.textPrimaryColor,
+                                ),
                               ),
+                              const SizedBox(width: 8),
+                              _buildStatusChip(trade.status),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _formatDateTime(trade.datetime),
+                            style: AppTheme.captionStyle.copyWith(
+                              color: AppTheme.textSecondaryColor,
                             ),
-                            const SizedBox(width: 8),
-                            _buildStatusChip(trade.status),
-                          ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Action buttons
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert),
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'edit':
+                            onEdit();
+                            break;
+                          case 'delete':
+                            onDelete();
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, size: 16),
+                              SizedBox(width: 8),
+                              Text('Edit'),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 4),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, size: 16, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text('Delete', style: TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 12),
+                
+                // Trade details
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDetailColumn('Entry', '\$${trade.entryPrice.toStringAsFixed(2)}'),
+                    ),
+                    if (trade.side != null) ...[
+                      Expanded(
+                        child: _buildDetailColumn('Side', trade.side!.name.toUpperCase()),
+                      ),
+                    ],
+                    if (trade.quantity > 0) ...[
+                      Expanded(
+                        child: _buildDetailColumn('Quantity', trade.quantity.toStringAsFixed(4)),
+                      ),
+                    ],
+                  ],
+                ),
+                
+                // PnL and rating row
+                if (trade.pnl != null || trade.rating != null) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      if (trade.pnl != null) ...[
+                        Expanded(
+                          child: _buildPnLIndicator(trade.pnl!),
+                        ),
+                      ],
+                      if (trade.rating != null) ...[
+                        const SizedBox(width: 12),
+                        _buildRatingIndicator(trade.rating!),
+                      ],
+                    ],
+                  ),
+                ],
+                
+                // Additional info
+                if (trade.memo?.isNotEmpty == true || trade.exchanges?.isNotEmpty == true) ...[
+                  const SizedBox(height: 12),
+                  if (trade.exchanges?.isNotEmpty == true) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.swap_horiz,
+                          size: 14,
+                          color: AppTheme.textSecondaryColor,
+                        ),
+                        const SizedBox(width: 4),
                         Text(
-                          _formatDateTime(trade.datetime),
+                          trade.exchanges!,
                           style: AppTheme.captionStyle.copyWith(
                             color: AppTheme.textSecondaryColor,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  // Action buttons
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          onEdit();
-                          break;
-                        case 'delete':
-                          onDelete();
-                          break;
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit, size: 16),
-                            SizedBox(width: 8),
-                            Text('Edit'),
-                          ],
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            Icon(Icons.delete, size: 16, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('Delete', style: TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 12),
-              
-              // Trade details
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildDetailColumn('Entry', '\$${trade.entryPrice.toStringAsFixed(2)}'),
-                  ),
-                  if (trade.side != null) ...[
-                    Expanded(
-                      child: _buildDetailColumn('Side', trade.side!.name.toUpperCase()),
-                    ),
                   ],
-                  if (trade.quantity > 0) ...[
-                    Expanded(
-                      child: _buildDetailColumn('Quantity', trade.quantity.toStringAsFixed(4)),
-                    ),
-                  ],
-                ],
-              ),
-              
-              // PnL and rating row
-              if (trade.pnl != null || trade.rating != null) ...[
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    if (trade.pnl != null) ...[
-                      Expanded(
-                        child: _buildPnLIndicator(trade.pnl!),
-                      ),
-                    ],
-                    if (trade.rating != null) ...[
-                      const SizedBox(width: 12),
-                      _buildRatingIndicator(trade.rating!),
-                    ],
-                  ],
-                ),
-              ],
-              
-              // Additional info
-              if (trade.memo?.isNotEmpty == true || trade.exchanges?.isNotEmpty == true) ...[
-                const SizedBox(height: 12),
-                if (trade.exchanges?.isNotEmpty == true) ...[
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.swap_horiz,
-                        size: 14,
+                  if (trade.memo?.isNotEmpty == true) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      trade.memo!,
+                      style: AppTheme.captionStyle.copyWith(
                         color: AppTheme.textSecondaryColor,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        trade.exchanges!,
-                        style: AppTheme.captionStyle.copyWith(
-                          color: AppTheme.textSecondaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-                if (trade.memo?.isNotEmpty == true) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    trade.memo!,
-                    style: AppTheme.captionStyle.copyWith(
-                      color: AppTheme.textSecondaryColor,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ],
               ],
-            ],
+            ),
           ),
         ),
       ),

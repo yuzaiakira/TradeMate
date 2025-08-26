@@ -168,4 +168,101 @@ class TradeRepositoryImpl implements TradeRepository {
     final trades = await database.getTradesInDateRange(start, end);
     return trades.map((trade) => TradeModel.fromDatabase(trade).toDomain()).toList();
   }
+  
+  // New optimized methods for pagination and filtering
+  @override
+  Future<List<domain.Trade>> getTradesPaginated({
+    int limit = 20,
+    int offset = 0,
+    String? searchQuery,
+    String? symbolFilter,
+    String? statusFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? exchangesFilter,
+    String? sideFilter,
+    double? minPnL,
+    double? maxPnL,
+    int? minRating,
+    String? profitLossFilter,
+    String sortBy = 'datetime',
+    bool sortDesc = true,
+  }) async {
+    final trades = await database.getTradesPaginated(
+      limit: limit,
+      offset: offset,
+      searchQuery: searchQuery,
+      symbolFilter: symbolFilter,
+      statusFilter: statusFilter,
+      startDate: startDate,
+      endDate: endDate,
+      exchangesFilter: exchangesFilter,
+      sideFilter: sideFilter,
+      minPnL: minPnL,
+      maxPnL: maxPnL,
+      minRating: minRating,
+      profitLossFilter: profitLossFilter,
+      sortBy: sortBy,
+      sortDesc: sortDesc,
+    );
+    return trades.map((trade) => TradeModel.fromDatabase(trade).toDomain()).toList();
+  }
+  
+  @override
+  Future<int> getTradesCount({
+    String? searchQuery,
+    String? symbolFilter,
+    String? statusFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? exchangesFilter,
+    String? sideFilter,
+    double? minPnL,
+    double? maxPnL,
+    int? minRating,
+    String? profitLossFilter,
+  }) async {
+    return await database.getTradesCount(
+      searchQuery: searchQuery,
+      symbolFilter: symbolFilter,
+      statusFilter: statusFilter,
+      startDate: startDate,
+      endDate: endDate,
+      exchangesFilter: exchangesFilter,
+      sideFilter: sideFilter,
+      minPnL: minPnL,
+      maxPnL: maxPnL,
+      minRating: minRating,
+      profitLossFilter: profitLossFilter,
+    );
+  }
+  
+  @override
+  Future<Map<String, dynamic>> getTradeStatisticsOptimized({
+    String? searchQuery,
+    String? symbolFilter,
+    String? statusFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? exchangesFilter,
+    String? sideFilter,
+    double? minPnL,
+    double? maxPnL,
+    int? minRating,
+    String? profitLossFilter,
+  }) async {
+    return await database.getTradeStatisticsOptimized(
+      searchQuery: searchQuery,
+      symbolFilter: symbolFilter,
+      statusFilter: statusFilter,
+      startDate: startDate,
+      endDate: endDate,
+      exchangesFilter: exchangesFilter,
+      sideFilter: sideFilter,
+      minPnL: minPnL,
+      maxPnL: maxPnL,
+      minRating: minRating,
+      profitLossFilter: profitLossFilter,
+    );
+  }
 }

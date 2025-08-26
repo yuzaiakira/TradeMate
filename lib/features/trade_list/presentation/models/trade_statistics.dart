@@ -7,6 +7,12 @@ class TradeStatistics {
   final double winRate;
   final double averageR;
   final double totalRiskAmount;
+  final int profitableTrades;
+  final double averagePnL;
+  final int totalRating;
+  final double averageRating;
+  final int uniqueSymbols;
+  final int uniqueExchanges;
 
   const TradeStatistics({
     this.totalTrades = 0,
@@ -17,9 +23,16 @@ class TradeStatistics {
     this.winRate = 0.0,
     this.averageR = 0.0,
     this.totalRiskAmount = 0.0,
+    this.profitableTrades = 0,
+    this.averagePnL = 0.0,
+    this.totalRating = 0,
+    this.averageRating = 0.0,
+    this.uniqueSymbols = 0,
+    this.uniqueExchanges = 0,
   });
 
-  double get averagePnL => totalTrades > 0 ? totalPnL / totalTrades : 0.0;
+  // Legacy getter for backward compatibility
+  double get legacyAveragePnL => totalTrades > 0 ? totalPnL / totalTrades : 0.0;
 
   double get profitFactor {
     if (totalRiskAmount == 0) return 0.0;
@@ -37,7 +50,13 @@ class TradeStatistics {
         other.totalPnL == totalPnL &&
         other.winRate == winRate &&
         other.averageR == averageR &&
-        other.totalRiskAmount == totalRiskAmount;
+        other.totalRiskAmount == totalRiskAmount &&
+        other.profitableTrades == profitableTrades &&
+        other.averagePnL == averagePnL &&
+        other.totalRating == totalRating &&
+        other.averageRating == averageRating &&
+        other.uniqueSymbols == uniqueSymbols &&
+        other.uniqueExchanges == uniqueExchanges;
   }
 
   @override
@@ -49,11 +68,17 @@ class TradeStatistics {
         totalPnL.hashCode ^
         winRate.hashCode ^
         averageR.hashCode ^
-        totalRiskAmount.hashCode;
+        totalRiskAmount.hashCode ^
+        profitableTrades.hashCode ^
+        averagePnL.hashCode ^
+        totalRating.hashCode ^
+        averageRating.hashCode ^
+        uniqueSymbols.hashCode ^
+        uniqueExchanges.hashCode;
   }
 
   @override
   String toString() {
-    return 'TradeStatistics(totalTrades: $totalTrades, winningTrades: $winningTrades, losingTrades: $losingTrades, breakevenTrades: $breakevenTrades, totalPnL: $totalPnL, winRate: $winRate, averageR: $averageR, totalRiskAmount: $totalRiskAmount)';
+    return 'TradeStatistics(totalTrades: $totalTrades, winningTrades: $winningTrades, losingTrades: $losingTrades, breakevenTrades: $breakevenTrades, totalPnL: $totalPnL, winRate: $winRate, averageR: $averageR, totalRiskAmount: $totalRiskAmount, profitableTrades: $profitableTrades, averagePnL: $averagePnL, totalRating: $totalRating, averageRating: $averageRating, uniqueSymbols: $uniqueSymbols, uniqueExchanges: $uniqueExchanges)';
   }
 }

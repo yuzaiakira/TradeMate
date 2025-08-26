@@ -128,12 +128,190 @@ class TradeMateDatabase extends _$TradeMateDatabase {
     );
   }
 
-  // Trade operations
+  // Trade operations with pagination and filtering
   Future<List<Trade>> getAllTrades() async {
     try {
       return await select(trades).get();
     } catch (e) {
       return [];
+    }
+  }
+  
+  Future<List<Trade>> getTradesPaginated({
+    int limit = 20,
+    int offset = 0,
+    String? searchQuery,
+    String? symbolFilter,
+    String? statusFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? exchangesFilter,
+    String? sideFilter,
+    double? minPnL,
+    double? maxPnL,
+    int? minRating,
+    String? profitLossFilter,
+    String sortBy = 'datetime',
+    bool sortDesc = true,
+  }) async {
+    try {
+      // Get all trades first
+      final allTrades = await select(trades).get();
+      
+      // Apply filters in memory
+      var filteredTrades = allTrades;
+      
+      if (searchQuery?.isNotEmpty == true) {
+        final queryLower = searchQuery!.toLowerCase();
+        filteredTrades = filteredTrades.where((t) => 
+          t.symbol.toLowerCase().contains(queryLower) ||
+          (t.memo?.toLowerCase().contains(queryLower) ?? false) ||
+          (t.notes?.toLowerCase().contains(queryLower) ?? false) ||
+          (t.tag?.toLowerCase().contains(queryLower) ?? false)
+        ).toList();
+      }
+      
+      if (symbolFilter?.isNotEmpty == true) {
+        filteredTrades = filteredTrades.where((t) => 
+          t.symbol.toLowerCase().contains(symbolFilter!.toLowerCase())
+        ).toList();
+      }
+      
+      if (statusFilter?.isNotEmpty == true) {
+        filteredTrades = filteredTrades.where((t) => 
+          t.status.toLowerCase() == statusFilter!.toLowerCase()
+        ).toList();
+      }
+      
+      if (startDate != null) {
+        filteredTrades = filteredTrades.where((t) => 
+          t.datetime.isAfter(startDate) || t.datetime.isAtSameMomentAs(startDate)
+        ).toList();
+      }
+      
+      if (endDate != null) {
+        final endDatePlusOne = endDate.add(const Duration(days: 1));
+        filteredTrades = filteredTrades.where((t) => 
+          t.datetime.isBefore(endDatePlusOne)
+        ).toList();
+      }
+      
+      if (exchangesFilter?.isNotEmpty == true) {
+        filteredTrades = filteredTrades.where((t) => 
+          t.exchanges?.contains(exchangesFilter!) ?? false
+        ).toList();
+      }
+      
+      if (sideFilter?.isNotEmpty == true) {
+        filteredTrades = filteredTrades.where((t) => 
+          t.side?.toLowerCase() == sideFilter!.toLowerCase()
+        ).toList();
+      }
+      
+      if (minPnL != null) {
+        filteredTrades = filteredTrades.where((t) => 
+          (t.pnl ?? 0) >= minPnL
+        ).toList();
+      }
+      
+      if (maxPnL != null) {
+        filteredTrades = filteredTrades.where((t) => 
+          (t.pnl ?? 0) <= maxPnL
+        ).toList();
+      }
+      
+      if (minRating != null) {
+        filteredTrades = filteredTrades.where((t) => 
+          t.rating != null && t.rating! >= minRating
+        ).toList();
+      }
+      
+      if (profitLossFilter?.isNotEmpty == true) {
+        switch (profitLossFilter!.toLowerCase()) {
+          case 'profitable':
+            filteredTrades = filteredTrades.where((t) => (t.pnl ?? 0) > 0).toList();
+            break;
+          case 'losing':
+            filteredTrades = filteredTrades.where((t) => (t.pnl ?? 0) < 0).toList();
+            break;
+          case 'breakeven':
+            filteredTrades = filteredTrades.where((t) => (t.pnl ?? 0) == 0).toList();
+            break;
+        }
+      }
+      
+      // Apply sorting
+      switch (sortBy.toLowerCase()) {
+        case 'datetime':
+          filteredTrades.sort((a, b) => sortDesc 
+            ? b.datetime.compareTo(a.datetime) 
+            : a.datetime.compareTo(b.datetime));
+          break;
+        case 'symbol':
+          filteredTrades.sort((a, b) => sortDesc 
+            ? b.symbol.compareTo(a.symbol) 
+            : a.symbol.compareTo(b.symbol));
+          break;
+        case 'pnl':
+          filteredTrades.sort((a, b) => sortDesc 
+            ? (b.pnl ?? 0).compareTo(a.pnl ?? 0) 
+            : (a.pnl ?? 0).compareTo(b.pnl ?? 0));
+          break;
+        case 'rating':
+          filteredTrades.sort((a, b) => sortDesc 
+            ? (b.rating ?? 0).compareTo(a.rating ?? 0) 
+            : (a.rating ?? 0).compareTo(b.rating ?? 0));
+          break;
+      }
+      
+      // Apply pagination
+      final startIndex = offset;
+      final endIndex = offset + limit;
+      if (startIndex < filteredTrades.length) {
+        return filteredTrades.sublist(
+          startIndex, 
+          endIndex > filteredTrades.length ? filteredTrades.length : endIndex
+        );
+      }
+      
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+  
+  Future<int> getTradesCount({
+    String? searchQuery,
+    String? symbolFilter,
+    String? statusFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? exchangesFilter,
+    String? sideFilter,
+    double? minPnL,
+    double? maxPnL,
+    int? minRating,
+    String? profitLossFilter,
+  }) async {
+    try {
+      final trades = await getTradesPaginated(
+        searchQuery: searchQuery,
+        symbolFilter: symbolFilter,
+        statusFilter: statusFilter,
+        startDate: startDate,
+        endDate: endDate,
+        exchangesFilter: exchangesFilter,
+        sideFilter: sideFilter,
+        minPnL: minPnL,
+        maxPnL: maxPnL,
+        minRating: minRating,
+        profitLossFilter: profitLossFilter,
+        limit: 1000000, // Large limit to get all results
+        offset: 0,
+      );
+      return trades.length;
+    } catch (e) {
+      return 0;
     }
   }
   
@@ -145,9 +323,13 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   
   Future<int> insertTrade(TradesCompanion trade) => into(trades).insert(trade);
   
-  Future<bool> updateTrade(TradesCompanion trade) {
-    final result = update(trades).replace(trade);
-    return result;
+  Future<bool> updateTrade(TradesCompanion trade) async {
+    try {
+      await update(trades).replace(trade);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
   
   Future<int> deleteTrade(int id) => 
@@ -163,8 +345,14 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   Future<int> insertUserDefinedValue(UserDefinedValuesCompanion value) =>
       into(userDefinedValues).insert(value);
   
-  Future<bool> updateUserDefinedValue(UserDefinedValuesCompanion value) =>
-      update(userDefinedValues).replace(value);
+  Future<bool> updateUserDefinedValue(UserDefinedValuesCompanion value) async {
+    try {
+      await update(userDefinedValues).replace(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
   
   Future<int> deleteUserDefinedValue(int id) =>
       (delete(userDefinedValues)..where((v) => v.id.equals(id))).go();
@@ -210,12 +398,113 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   Future<int> insertStatistics(TradeStatisticsTableCompanion statistics) => 
       into(tradeStatisticsTable).insert(statistics);
   
-  Future<bool> updateStatistics(TradeStatisticsTableCompanion statistics) => 
-      update(tradeStatisticsTable).replace(statistics);
+  Future<bool> updateStatistics(TradeStatisticsTableCompanion statistics) async {
+    try {
+      await update(tradeStatisticsTable).replace(statistics);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
   
   // Clear old statistics entries to prevent accumulation
   Future<void> clearOldStatistics() => 
       delete(tradeStatisticsTable).go();
+  
+  // Optimized statistics calculation at database level
+  Future<Map<String, dynamic>> getTradeStatisticsOptimized({
+    String? searchQuery,
+    String? symbolFilter,
+    String? statusFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? exchangesFilter,
+    String? sideFilter,
+    double? minPnL,
+    double? maxPnL,
+    int? minRating,
+    String? profitLossFilter,
+  }) async {
+    try {
+      final trades = await getTradesPaginated(
+        searchQuery: searchQuery,
+        symbolFilter: symbolFilter,
+        statusFilter: statusFilter,
+        startDate: startDate,
+        endDate: endDate,
+        exchangesFilter: exchangesFilter,
+        sideFilter: sideFilter,
+        minPnL: minPnL,
+        maxPnL: maxPnL,
+        minRating: minRating,
+        profitLossFilter: profitLossFilter,
+        limit: 1000000, // Large limit to get all results
+        offset: 0,
+      );
+      
+      if (trades.isEmpty) {
+        return {
+          'totalTrades': 0,
+          'profitableTrades': 0,
+          'losingTrades': 0,
+          'breakevenTrades': 0,
+          'totalPnL': 0.0,
+          'averagePnL': 0.0,
+          'winRate': 0.0,
+          'totalRating': 0,
+          'averageRating': 0.0,
+          'uniqueSymbols': 0,
+          'uniqueExchanges': 0,
+        };
+      }
+      
+      final profitableTrades = trades.where((t) => (t.pnl ?? 0) > 0).length;
+      final losingTrades = trades.where((t) => (t.pnl ?? 0) < 0).length;
+      final breakevenTrades = trades.where((t) => (t.pnl ?? 0) == 0).length;
+      final totalPnL = trades.fold(0.0, (sum, t) => sum + (t.pnl ?? 0));
+      final averagePnL = totalPnL / trades.length;
+      final winRate = trades.isNotEmpty ? (profitableTrades / trades.length) * 100 : 0.0;
+      
+      final ratedTrades = trades.where((t) => t.rating != null).toList();
+      final totalRating = ratedTrades.fold(0, (sum, t) => sum + (t.rating ?? 0));
+      final averageRating = ratedTrades.isNotEmpty ? totalRating / ratedTrades.length : 0.0;
+      
+      final uniqueSymbols = trades.map((t) => t.symbol).toSet().length;
+      final uniqueExchanges = trades
+          .where((t) => t.exchanges != null && t.exchanges!.isNotEmpty)
+          .map((t) => t.exchanges!)
+          .toSet()
+          .length;
+      
+      return {
+        'totalTrades': trades.length,
+        'profitableTrades': profitableTrades,
+        'losingTrades': losingTrades,
+        'breakevenTrades': breakevenTrades,
+        'totalPnL': totalPnL,
+        'averagePnL': averagePnL,
+        'winRate': winRate,
+        'totalRating': totalRating,
+        'averageRating': averageRating,
+        'uniqueSymbols': uniqueSymbols,
+        'uniqueExchanges': uniqueExchanges,
+      };
+    } catch (e) {
+      return {
+        'totalTrades': 0,
+        'profitableTrades': 0,
+        'losingTrades': 0,
+        'breakevenTrades': 0,
+        'totalPnL': 0.0,
+        'averagePnL': 0.0,
+        'winRate': 0.0,
+        'totalRating': 0,
+        'averageRating': 0.0,
+        'uniqueSymbols': 0,
+        'uniqueExchanges': 0,
+      };
+    }
+  }
 
   // Complex queries
   Future<List<Trade>> getTradesInDateRange(DateTime start, DateTime end) =>

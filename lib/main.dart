@@ -9,6 +9,9 @@ import 'features/add_trade/data/repositories/trade_repository_impl.dart';
 import 'features/add_trade/domain/repositories/trade_repository.dart';
 import 'features/add_trade/domain/usecases/add_trade_usecase.dart';
 import 'features/add_trade/domain/usecases/get_trades_usecase.dart';
+import 'features/add_trade/domain/usecases/get_trades_paginated_usecase.dart';
+import 'features/add_trade/domain/usecases/get_trades_count_usecase.dart';
+import 'features/add_trade/domain/usecases/get_trade_statistics_optimized_usecase.dart';
 import 'features/add_trade/domain/usecases/delete_trade_usecase.dart';
 import 'features/add_trade/domain/usecases/update_trade_usecase.dart';
 import 'features/add_trade/presentation/provider/add_trade_provider.dart';
@@ -63,6 +66,21 @@ class TradeMateApp extends StatelessWidget {
         ),
         Provider<GetTradesUseCase>(
           create: (context) => GetTradesUseCase(
+            context.read<TradeRepository>(),
+          ),
+        ),
+        Provider<GetTradesPaginatedUseCase>(
+          create: (context) => GetTradesPaginatedUseCase(
+            context.read<TradeRepository>(),
+          ),
+        ),
+        Provider<GetTradesCountUseCase>(
+          create: (context) => GetTradesCountUseCase(
+            context.read<TradeRepository>(),
+          ),
+        ),
+        Provider<GetTradeStatisticsOptimizedUseCase>(
+          create: (context) => GetTradeStatisticsOptimizedUseCase(
             context.read<TradeRepository>(),
           ),
         ),
@@ -132,6 +150,9 @@ class TradeMateApp extends StatelessWidget {
           create: (context) {
             final provider = TradeListProvider(
               getTradesUseCase: context.read<GetTradesUseCase>(),
+              getTradesPaginatedUseCase: context.read<GetTradesPaginatedUseCase>(),
+              getTradesCountUseCase: context.read<GetTradesCountUseCase>(),
+              getTradeStatisticsOptimizedUseCase: context.read<GetTradeStatisticsOptimizedUseCase>(),
               deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
             );
             // Set up callback to show feedback when trades are refreshed

@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 import '../../../add_trade/domain/usecases/get_trades_usecase.dart';
+import '../../../add_trade/domain/usecases/get_trades_paginated_usecase.dart';
+import '../../../add_trade/domain/usecases/get_trades_count_usecase.dart';
+import '../../../add_trade/domain/usecases/get_trade_statistics_optimized_usecase.dart';
 import '../../../add_trade/domain/usecases/delete_trade_usecase.dart';
 import '../models/trade_filters.dart';
 import '../models/trade_statistics.dart';
@@ -9,11 +12,17 @@ enum TradeListStatus { initial, loading, success, error }
 
 class TradeListProvider with ChangeNotifier {
   final GetTradesUseCase getTradesUseCase;
+  final GetTradesPaginatedUseCase getTradesPaginatedUseCase;
+  final GetTradesCountUseCase getTradesCountUseCase;
+  final GetTradeStatisticsOptimizedUseCase getTradeStatisticsOptimizedUseCase;
   final DeleteTradeUseCase deleteTradeUseCase;
   VoidCallback? _onTradesRefreshed;
 
   TradeListProvider({
     required this.getTradesUseCase,
+    required this.getTradesPaginatedUseCase,
+    required this.getTradesCountUseCase,
+    required this.getTradeStatisticsOptimizedUseCase,
     required this.deleteTradeUseCase,
   });
 
@@ -22,35 +31,46 @@ class TradeListProvider with ChangeNotifier {
     _onTradesRefreshed = callback;
   }
 
+  // Pagination state
+  static const int _pageSize = 20;
+  int _currentPage = 0;
+  bool _hasMoreTrades = true;
+  bool _isLoadingMore = false;
+  
+  // Current state
   TradeListStatus _status = TradeListStatus.initial;
   String _errorMessage = '';
-  List<Trade> _allTrades = [];
-  List<Trade> _filteredTrades = [];
+  List<Trade> _currentPageTrades = [];
   TradeFilters _filters = const TradeFilters();
   String _searchQuery = '';
   TradeSortOption _sortOption = TradeSortOption.dateDesc;
   TradeStatistics _statistics = TradeStatistics();
+  int _totalTrades = 0;
 
   // Getters
   TradeListStatus get status => _status;
   String get errorMessage => _errorMessage;
-  List<Trade> get trades => _filteredTrades;
-  List<Trade> get allTrades => _allTrades;
+  List<Trade> get trades => _currentPageTrades;
   TradeFilters get filters => _filters;
   String get searchQuery => _searchQuery;
   TradeSortOption get sortOption => _sortOption;
   TradeStatistics get statistics => _statistics;
   bool get isLoading => _status == TradeListStatus.loading;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasMoreTrades => _hasMoreTrades;
   bool get hasActiveFilters => _filters.hasActiveFilters || _searchQuery.isNotEmpty;
+  int get totalTrades => _totalTrades;
 
   Future<void> loadTrades() async {
     try {
       _status = TradeListStatus.loading;
+      _currentPage = 0;
+      _hasMoreTrades = true;
+      _currentPageTrades.clear();
       notifyListeners();
 
-      _allTrades = await getTradesUseCase();
-      _applyFiltersAndSort();
-      _calculateStatistics();
+      await _loadNextPage();
+      await _loadStatistics();
       
       _status = TradeListStatus.success;
       _errorMessage = '';
@@ -62,6 +82,129 @@ class TradeListProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Load next page of trades
+  Future<void> loadNextPage() async {
+    if (!_hasMoreTrades || _isLoadingMore) return;
+    
+    try {
+      _isLoadingMore = true;
+      notifyListeners();
+      
+      await _loadNextPage();
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
+  }
+
+  // Internal method to load next page
+  Future<void> _loadNextPage() async {
+    final newTrades = await getTradesPaginatedUseCase(
+      limit: _pageSize,
+      offset: _currentPage * _pageSize,
+      searchQuery: _searchQuery,
+      symbolFilter: _filters.symbol,
+      statusFilter: _filters.status?.name,
+      startDate: _filters.dateRange?.start,
+      endDate: _filters.dateRange?.end,
+      exchangesFilter: _filters.exchanges.isNotEmpty ? _filters.exchanges.first : null,
+      sideFilter: _filters.side?.name,
+      minPnL: _filters.minPnL,
+      maxPnL: _filters.maxPnL,
+      minRating: _filters.minRating,
+      profitLossFilter: _filters.profitLossFilter.name,
+      sortBy: _getSortBy(),
+      sortDesc: _getSortDesc(),
+    );
+    
+    _currentPageTrades.addAll(newTrades);
+    _currentPage++;
+    _hasMoreTrades = newTrades.length == _pageSize;
+    
+    // Update total count if this is the first page
+    if (_currentPage == 1) {
+      _totalTrades = await getTradesCountUseCase(
+        searchQuery: _searchQuery,
+        symbolFilter: _filters.symbol,
+        statusFilter: _filters.status?.name,
+        startDate: _filters.dateRange?.start,
+        endDate: _filters.dateRange?.end,
+        exchangesFilter: _filters.exchanges.isNotEmpty ? _filters.exchanges.first : null,
+        sideFilter: _filters.side?.name,
+        minPnL: _filters.minPnL,
+        maxPnL: _filters.maxPnL,
+        minRating: _filters.minRating,
+        profitLossFilter: _filters.profitLossFilter.name,
+      );
+    }
+  }
+
+  // Load statistics
+  Future<void> _loadStatistics() async {
+    final statsData = await getTradeStatisticsOptimizedUseCase(
+      searchQuery: _searchQuery,
+      symbolFilter: _filters.symbol,
+      statusFilter: _filters.status?.name,
+      startDate: _filters.dateRange?.start,
+      endDate: _filters.dateRange?.end,
+      exchangesFilter: _filters.exchanges.isNotEmpty ? _filters.exchanges.first : null,
+      sideFilter: _filters.side?.name,
+      minPnL: _filters.minPnL,
+      maxPnL: _filters.maxPnL,
+      minRating: _filters.minRating,
+      profitLossFilter: _filters.profitLossFilter.name,
+    );
+    
+    _statistics = TradeStatistics(
+      totalTrades: statsData['totalTrades'] ?? 0,
+      profitableTrades: statsData['profitableTrades'] ?? 0,
+      losingTrades: statsData['losingTrades'] ?? 0,
+      breakevenTrades: statsData['breakevenTrades'] ?? 0,
+      totalPnL: statsData['totalPnL'] ?? 0.0,
+      averagePnL: statsData['averagePnL'] ?? 0.0,
+      winRate: statsData['winRate'] ?? 0.0,
+      totalRating: statsData['totalRating'] ?? 0,
+      averageRating: statsData['averageRating'] ?? 0.0,
+      uniqueSymbols: statsData['uniqueSymbols'] ?? 0,
+      uniqueExchanges: statsData['uniqueExchanges'] ?? 0,
+    );
+  }
+
+  // Helper methods for sorting
+  String _getSortBy() {
+    switch (_sortOption) {
+      case TradeSortOption.dateDesc:
+      case TradeSortOption.dateAsc:
+        return 'datetime';
+      case TradeSortOption.symbolAsc:
+      case TradeSortOption.symbolDesc:
+        return 'symbol';
+      case TradeSortOption.pnlDesc:
+      case TradeSortOption.pnlAsc:
+        return 'pnl';
+      case TradeSortOption.ratingDesc:
+      case TradeSortOption.ratingAsc:
+        return 'rating';
+    }
+  }
+
+  bool _getSortDesc() {
+    switch (_sortOption) {
+      case TradeSortOption.dateDesc:
+      case TradeSortOption.symbolDesc:
+      case TradeSortOption.pnlDesc:
+      case TradeSortOption.ratingDesc:
+        return true;
+      case TradeSortOption.dateAsc:
+      case TradeSortOption.symbolAsc:
+      case TradeSortOption.pnlAsc:
+      case TradeSortOption.ratingAsc:
+        return false;
+    }
+  }
+
   // Convenience method for refreshing trades
   Future<void> refresh() async {
     await loadTrades();
@@ -70,12 +213,32 @@ class TradeListProvider with ChangeNotifier {
   // Method to refresh trades without showing loading state (for background refreshes)
   Future<void> refreshSilently() async {
     try {
-      final newTrades = await getTradesUseCase();
-      if (newTrades.length != _allTrades.length) {
-        // Only update if the number of trades has changed
-        _allTrades = newTrades;
-        _applyFiltersAndSort();
-        _calculateStatistics();
+      final newTrades = await getTradesPaginatedUseCase(
+        limit: _pageSize,
+        offset: 0,
+        searchQuery: _searchQuery,
+        symbolFilter: _filters.symbol,
+        statusFilter: _filters.status?.name,
+        startDate: _filters.dateRange?.start,
+        endDate: _filters.dateRange?.end,
+        exchangesFilter: _filters.exchanges.isNotEmpty ? _filters.exchanges.first : null,
+        sideFilter: _filters.side?.name,
+        minPnL: _filters.minPnL,
+        maxPnL: _filters.maxPnL,
+        minRating: _filters.minRating,
+        profitLossFilter: _filters.profitLossFilter.name,
+        sortBy: _getSortBy(),
+        sortDesc: _getSortDesc(),
+      );
+      
+      if (newTrades.length != _currentPageTrades.length || 
+          (newTrades.isNotEmpty && _currentPageTrades.isNotEmpty && 
+           newTrades.first.id != _currentPageTrades.first.id)) {
+        // Only update if the data has changed
+        _currentPageTrades = newTrades;
+        _currentPage = 1;
+        _hasMoreTrades = newTrades.length == _pageSize;
+        await _loadStatistics();
         // Don't call callback for silent refresh to avoid too many notifications
         notifyListeners();
       }
@@ -97,7 +260,9 @@ class TradeListProvider with ChangeNotifier {
 
   Future<void> deleteAllTrades() async {
     try {
-      for (final trade in _allTrades) {
+      // Get all trade IDs first
+      final allTrades = await getTradesUseCase();
+      for (final trade in allTrades) {
         if (trade.id != null) {
           await deleteTradeUseCase(trade.id!);
         }
@@ -111,304 +276,111 @@ class TradeListProvider with ChangeNotifier {
 
   void setSearchQuery(String query) {
     _searchQuery = query;
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearSearch() {
     _searchQuery = '';
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void setFilters(TradeFilters filters) {
     _filters = filters;
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearAllFilters() {
     _filters = const TradeFilters();
     _searchQuery = '';
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void setSortOption(TradeSortOption sortOption) {
     _sortOption = sortOption;
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   // Filter clearing methods
   void clearSymbolFilter() {
     _filters = _filters.copyWith(symbol: '');
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearStatusFilter() {
     _filters = _filters.copyWith(status: null);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearDateRangeFilter() {
     _filters = _filters.copyWith(dateRange: null);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearExchangeFilter() {
     _filters = _filters.copyWith(exchanges: []);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearProfitLossFilter() {
     _filters = _filters.copyWith(profitLossFilter: ProfitLossFilter.all);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearSideFilter() {
     _filters = _filters.copyWith(side: null);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearPnLRangeFilter() {
     _filters = _filters.copyWith(minPnL: null, maxPnL: null);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
   void clearRatingFilter() {
     _filters = _filters.copyWith(minRating: null);
-    _applyFiltersAndSort();
-    notifyListeners();
+    _resetAndReload();
   }
 
-  void _applyFiltersAndSort() {
-    List<Trade> filtered = List.from(_allTrades);
-
-    // Apply search filter
-    if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((trade) {
-        final query = _searchQuery.toLowerCase();
-        return trade.symbol.toLowerCase().contains(query) ||
-               (trade.memo?.toLowerCase().contains(query) ?? false) ||
-               (trade.notes?.toLowerCase().contains(query) ?? false) ||
-               (trade.tag?.toLowerCase().contains(query) ?? false);
-      }).toList();
-    }
-
-    // Apply symbol filter
-    if (_filters.symbol.isNotEmpty) {
-      filtered = filtered.where((trade) => 
-        trade.symbol.toLowerCase().contains(_filters.symbol.toLowerCase())
-      ).toList();
-    }
-
-    // Apply status filter
-    if (_filters.status != null) {
-      filtered = filtered.where((trade) => trade.status == _filters.status).toList();
-    }
-
-    // Apply date range filter
-    if (_filters.dateRange != null) {
-      filtered = filtered.where((trade) {
-        final tradeDate = trade.datetime;
-        return tradeDate.isAfter(_filters.dateRange!.start) &&
-               tradeDate.isBefore(_filters.dateRange!.end.add(const Duration(days: 1)));
-      }).toList();
-    }
-
-    // Apply exchange filter
-    if (_filters.exchanges.isNotEmpty) {
-      filtered = filtered.where((trade) => 
-        trade.exchanges != null && _filters.exchanges.contains(trade.exchanges)
-      ).toList();
-    }
-
-    // Apply side filter
-    if (_filters.side != null) {
-      filtered = filtered.where((trade) => trade.side == _filters.side).toList();
-    }
-
-    // Apply PnL range filter
-    if (_filters.minPnL != null || _filters.maxPnL != null) {
-      filtered = filtered.where((trade) {
-        final pnl = trade.pnl ?? 0.0;
-        if (_filters.minPnL != null && pnl < _filters.minPnL!) return false;
-        if (_filters.maxPnL != null && pnl > _filters.maxPnL!) return false;
-        return true;
-      }).toList();
-    }
-
-    // Apply rating filter
-    if (_filters.minRating != null) {
-      filtered = filtered.where((trade) => 
-        trade.rating != null && trade.rating! >= _filters.minRating!
-      ).toList();
-    }
-
-    // Apply profit/loss filter
-    if (_filters.profitLossFilter != ProfitLossFilter.all) {
-      filtered = filtered.where((trade) {
-        final pnl = trade.pnl ?? 0.0;
-        switch (_filters.profitLossFilter) {
-          case ProfitLossFilter.profitable:
-            return pnl > 0;
-          case ProfitLossFilter.losing:
-            return pnl < 0;
-          case ProfitLossFilter.breakeven:
-            return pnl == 0;
-          case ProfitLossFilter.all:
-            return true;
-        }
-      }).toList();
-    }
-
-    // Sort trades
-    _sortTrades(filtered);
-
-    _filteredTrades = filtered;
+  // Reset pagination and reload data
+  void _resetAndReload() {
+    _currentPage = 0;
+    _hasMoreTrades = true;
+    _currentPageTrades.clear();
+    loadTrades();
   }
 
-  void _sortTrades(List<Trade> trades) {
-    switch (_sortOption) {
-      case TradeSortOption.dateDesc:
-        trades.sort((a, b) => b.datetime.compareTo(a.datetime));
-        break;
-      case TradeSortOption.dateAsc:
-        trades.sort((a, b) => a.datetime.compareTo(b.datetime));
-        break;
-      case TradeSortOption.symbolAsc:
-        trades.sort((a, b) => a.symbol.compareTo(b.symbol));
-        break;
-      case TradeSortOption.symbolDesc:
-        trades.sort((a, b) => b.symbol.compareTo(a.symbol));
-        break;
-      case TradeSortOption.pnlDesc:
-        trades.sort((a, b) => (b.pnl ?? 0.0).compareTo(a.pnl ?? 0.0));
-        break;
-      case TradeSortOption.pnlAsc:
-        trades.sort((a, b) => (a.pnl ?? 0.0).compareTo(b.pnl ?? 0.0));
-        break;
-      case TradeSortOption.ratingDesc:
-        trades.sort((a, b) => (b.rating ?? 0).compareTo(a.rating ?? 0));
-        break;
-      case TradeSortOption.ratingAsc:
-        trades.sort((a, b) => (a.rating ?? 0).compareTo(b.rating ?? 0));
-        break;
-    }
-  }
-
-  void _calculateStatistics() {
-    if (_filteredTrades.isEmpty) {
-      _statistics = TradeStatistics();
-      return;
-    }
-
-    double totalPnL = 0.0;
-    int winningTrades = 0;
-    int losingTrades = 0;
-    int breakevenTrades = 0;
-    double totalRiskAmount = 0.0;
-    double totalAchievedR = 0.0;
-    int tradesWithR = 0;
-
-    for (final trade in _filteredTrades) {
-      final pnl = trade.pnl ?? 0.0;
-      totalPnL += pnl;
-
-      if (pnl > 0) {
-        winningTrades++;
-      } else if (pnl < 0) {
-        losingTrades++;
-      } else {
-        breakevenTrades++;
-      }
-
-      if (trade.riskAmount != null && trade.riskAmount! > 0) {
-        totalRiskAmount += trade.riskAmount!;
-      }
-
-      if (trade.achievedR != null) {
-        totalAchievedR += trade.achievedR!;
-        tradesWithR++;
-      }
-    }
-
-    final totalTrades = _filteredTrades.length;
-    final winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0.0;
-    final averageR = tradesWithR > 0 ? totalAchievedR / tradesWithR : 0.0;
-
-    _statistics = TradeStatistics(
-      totalTrades: totalTrades,
-      winningTrades: winningTrades,
-      losingTrades: losingTrades,
-      breakevenTrades: breakevenTrades,
-      totalPnL: totalPnL,
-      winRate: winRate,
-      averageR: averageR,
-      totalRiskAmount: totalRiskAmount,
-    );
-  }
-
-  // Get unique values for filters
+  // Get unique values for filters - these will need to be loaded separately
+  // For now, we'll return empty lists and these can be loaded when needed
   List<String> getUniqueSymbols() {
-    return _allTrades.map((trade) => trade.symbol).toSet().toList()..sort();
+    return [];
   }
 
   List<String> getUniqueExchanges() {
-    return _allTrades
-        .where((trade) => trade.exchanges != null && trade.exchanges!.isNotEmpty)
-        .map((trade) => trade.exchanges!)
-        .toSet()
-        .toList()
-      ..sort();
+    return [];
   }
 
   List<TradeStatus> getUniqueStatuses() {
-    return _allTrades.map((trade) => trade.status).toSet().toList();
+    return [];
   }
 
   List<Side> getUniqueSides() {
-    return _allTrades
-        .where((trade) => trade.side != null)
-        .map((trade) => trade.side!)
-        .toSet()
-        .toList();
+    return [];
   }
 
   double? getMinPnL() {
-    if (_allTrades.isEmpty) return null;
-    return _allTrades.map((trade) => trade.pnl ?? 0.0).reduce((a, b) => a < b ? a : b);
+    return null;
   }
 
   double? getMaxPnL() {
-    if (_allTrades.isEmpty) return null;
-    return _allTrades.map((trade) => trade.pnl ?? 0.0).reduce((a, b) => a > b ? a : b);
+    return null;
   }
 
   int? getMinRating() {
-    if (_allTrades.isEmpty) return null;
-    final ratings = _allTrades
-        .where((trade) => trade.rating != null)
-        .map((trade) => trade.rating!)
-        .toList();
-    return ratings.isEmpty ? null : ratings.reduce((a, b) => a < b ? a : b);
+    return null;
   }
 
   int? getMaxRating() {
-    if (_allTrades.isEmpty) return null;
-    final ratings = _allTrades
-        .where((trade) => trade.rating != null)
-        .map((trade) => trade.rating!)
-        .toList();
-    return ratings.isEmpty ? null : ratings.reduce((a, b) => a > b ? a : b);
+    return null;
   }
 }
 
