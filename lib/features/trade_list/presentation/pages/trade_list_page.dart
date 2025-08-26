@@ -234,59 +234,146 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
 
   Widget _buildFilterTags(TradeListProvider provider) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 4,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.5),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (provider.filters.symbol.isNotEmpty)
-            _buildFilterChip('Symbol: ${provider.filters.symbol}', () {
-              provider.clearSymbolFilter();
-            }),
-          if (provider.filters.status != null)
-            _buildFilterChip('Status: ${provider.filters.status!.name}', () {
-              provider.clearStatusFilter();
-            }),
-          if (provider.filters.dateRange != null)
-            _buildFilterChip('Date Range', () {
-              provider.clearDateRangeFilter();
-            }),
-          if (provider.filters.exchanges.isNotEmpty)
-            _buildFilterChip('Exchange: ${provider.filters.exchanges.first}', () {
-              provider.clearExchangeFilter();
-            }),
-          if (provider.filters.profitLossFilter != ProfitLossFilter.all)
-            _buildFilterChip(_getProfitLossFilterDisplayName(provider.filters.profitLossFilter), () {
-              provider.setFilters(provider.filters.copyWith(profitLossFilter: ProfitLossFilter.all));
-            }),
-          _buildFilterChip('Clear All', () {
-            provider.clearAllFilters();
-          }, isClearAll: true),
+          Row(
+            children: [
+              Icon(
+                Icons.filter_alt_rounded,
+                size: 16,
+                color: AppTheme.textSecondaryColor,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Active Filters',
+                style: AppTheme.captionStyle.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () => provider.clearAllFilters(),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  'Clear All',
+                  style: AppTheme.captionStyle.copyWith(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              if (provider.filters.symbol.isNotEmpty)
+                _buildFilterChip(
+                  'Symbol: ${provider.filters.symbol}',
+                  Icons.currency_exchange_rounded,
+                  () => provider.clearSymbolFilter(),
+                ),
+              if (provider.filters.status != null)
+                _buildFilterChip(
+                  'Status: ${provider.filters.status!.name.toUpperCase()}',
+                  Icons.info_outline_rounded,
+                  () => provider.clearStatusFilter(),
+                ),
+              if (provider.filters.dateRange != null)
+                _buildFilterChip(
+                  'Date Range',
+                  Icons.calendar_today_rounded,
+                  () => provider.clearDateRangeFilter(),
+                ),
+              if (provider.filters.exchanges.isNotEmpty)
+                _buildFilterChip(
+                  'Exchange: ${provider.filters.exchanges.first}',
+                  Icons.swap_horiz_rounded,
+                  () => provider.clearExchangeFilter(),
+                ),
+              if (provider.filters.profitLossFilter != ProfitLossFilter.all)
+                _buildFilterChip(
+                  _getProfitLossFilterDisplayName(provider.filters.profitLossFilter),
+                  _getProfitLossFilterIcon(provider.filters.profitLossFilter),
+                  () => provider.setFilters(provider.filters.copyWith(profitLossFilter: ProfitLossFilter.all)),
+                ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildFilterChip(String label, VoidCallback onRemove, {bool isClearAll = false}) {
-    return Chip(
-      label: Text(
-        label,
-        style: AppTheme.captionStyle.copyWith(
-          color: isClearAll ? Colors.white : AppTheme.textPrimaryColor,
+  Widget _buildFilterChip(String label, IconData icon, VoidCallback onRemove) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.borderColor.withValues(alpha: 0.6),
+          width: 1,
         ),
       ),
-      backgroundColor: isClearAll 
-          ? AppTheme.primaryColor 
-          : AppTheme.borderColor,
-      deleteIcon: isClearAll 
-          ? null 
-          : Icon(
-              Icons.close,
-              size: 16,
-              color: AppTheme.textSecondaryColor,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: onRemove,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 14,
+                  color: AppTheme.textSecondaryColor,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: AppTheme.captionStyle.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.close_rounded,
+                  size: 14,
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ],
             ),
-      onDeleted: isClearAll ? null : onRemove,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+      ),
     );
   }
 
@@ -764,6 +851,19 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
         return 'Losing';
       case ProfitLossFilter.breakeven:
         return 'Breakeven';
+    }
+  }
+
+  IconData _getProfitLossFilterIcon(ProfitLossFilter filter) {
+    switch (filter) {
+      case ProfitLossFilter.all:
+        return Icons.all_inclusive_rounded;
+      case ProfitLossFilter.profitable:
+        return Icons.trending_up_rounded;
+      case ProfitLossFilter.losing:
+        return Icons.trending_down_rounded;
+      case ProfitLossFilter.breakeven:
+        return Icons.remove_rounded;
     }
   }
 
