@@ -41,12 +41,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     super.dispose();
   }
 
-  void _updateTime() {
-    if (!mounted) return;
-    
-    // Just update the internal state, don't call onTimeChanged
-    // This prevents the dialog from closing when user adjusts time
-  }
+
   
   TimeOfDay _getSelectedTime() {
     int hour = _selectedHour;
