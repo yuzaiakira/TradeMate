@@ -3,12 +3,10 @@ import '../utils/app_theme.dart';
 
 class CustomTimePicker extends StatefulWidget {
   final TimeOfDay initialTime;
-  final Function(TimeOfDay) onTimeChanged;
 
   const CustomTimePicker({
     super.key,
     required this.initialTime,
-    required this.onTimeChanged,
   });
 
   @override
@@ -31,13 +29,18 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
   void _updateTime() {
     if (!mounted) return;
     
+    // Just update the internal state, don't call onTimeChanged
+    // This prevents the dialog from closing when user adjusts time
+  }
+  
+  TimeOfDay _getSelectedTime() {
     int hour = _selectedHour;
     if (!_isAM && hour != 12) {
       hour += 12;
     } else if (_isAM && hour == 12) {
       hour = 0;
     }
-    widget.onTimeChanged(TimeOfDay(hour: hour, minute: _selectedMinute));
+    return TimeOfDay(hour: hour, minute: _selectedMinute);
   }
 
   @override
@@ -187,10 +190,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
               onPressed: () {
                 if (!mounted) return;
                 
-                final selectedTime = TimeOfDay(
-                  hour: _isAM ? (_selectedHour == 12 ? 0 : _selectedHour) : (_selectedHour == 12 ? 12 : _selectedHour + 12),
-                  minute: _selectedMinute,
-                );
+                final selectedTime = _getSelectedTime();
                 Navigator.of(context).pop(selectedTime);
               },
               style: AppTheme.primaryButtonStyle.copyWith(
@@ -389,9 +389,6 @@ Future<TimeOfDay?> showCustomTimePicker({
       backgroundColor: Colors.transparent,
       child: CustomTimePicker(
         initialTime: initialTime,
-        onTimeChanged: (time) {
-          Navigator.of(dialogContext).pop(time);
-        },
       ),
     ),
   );
