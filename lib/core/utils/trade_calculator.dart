@@ -1,14 +1,12 @@
 import '../../../features/add_trade/domain/entities/trade.dart';
 
 class TradeCalculator {
-  /// Calculate Win/Loss based on trade result
+  /// Calculate Win/Loss based on net profit/loss
   static String calculateWL(Trade trade) {
-    if (trade.status != TradeStatus.closed) return 'N/A';
+    final netPnL = calculateNetProfitLoss(trade);
+    if (netPnL == null) return 'N/A';
     
-    final pnl = trade.pnl ?? trade.calculatePnL();
-    if (pnl == null) return 'N/A';
-    
-    return pnl > 0 ? 'W' : pnl < 0 ? 'L' : 'BE';
+    return netPnL > 0 ? 'W' : netPnL < 0 ? 'L' : 'BE';
   }
 
   /// Calculate day of the week for entry
@@ -21,51 +19,68 @@ class TradeCalculator {
   static String calculateEntrySession(Trade trade) {
     final hour = trade.datetime.hour;
     
+    if (hour >= 0 && hour < 8) return 'Asia';
     if (hour >= 8 && hour < 16) return 'London';
     if (hour >= 13 && hour < 21) return 'NY';
-    if (hour >= 0 && hour < 8) return 'Tokyo';
-    if (hour >= 21 || hour < 0) return 'Sydney';
     
     return 'Other';
   }
 
-  /// Calculate order value
+  /// Calculate order value = entry price × QTY
   static double? calculateOrderValue(Trade trade) {
     return trade.entryPrice * trade.quantity;
   }
 
-  /// Calculate position to account percentage
+  /// Calculate QTY = (position margin × leverage) ÷ entry price
+  static double? calculateQty(Trade trade) {
+    if (trade.positionMargin == null || trade.leverage == null || trade.entryPrice <= 0) return null;
+    return (trade.positionMargin! * trade.leverage!) / trade.entryPrice;
+  }
+
+  /// Calculate position to account percentage = (position margin ÷ account_balance) × 100
   static double? calculatePositionToAccPercent(Trade trade) {
-    if (trade.accountBalance <= 0) return null;
-    final positionValue = trade.entryPrice * trade.quantity;
-    return (positionValue / trade.accountBalance) * 100;
+    if (trade.positionMargin == null || trade.accountBalance <= 0) return null;
+    return (trade.positionMargin! / trade.accountBalance) * 100;
   }
 
   /// Calculate planned stop loss percentage
   static double? calculatePlannedSlPercent(Trade trade) {
     if (trade.stopLossPrice == null) return null;
     
-    final priceDifference = (trade.entryPrice - trade.stopLossPrice!).abs();
-    return (priceDifference / trade.entryPrice) * 100;
+    if (trade.side == Side.long) {
+      return ((trade.entryPrice - trade.stopLossPrice!) / trade.entryPrice) * 100;
+    } else if (trade.side == Side.short) {
+      return ((trade.stopLossPrice! - trade.entryPrice) / trade.entryPrice) * 100;
+    }
+    
+    return null;
   }
 
-  /// Calculate percentage of account risked
+  /// Calculate percentage of account risked = ((position margin × |planned SL %|) ÷ 100) ÷ account_balance × 100
   static double? calculateAccRiskedPercent(Trade trade) {
-    if (trade.accountBalance <= 0 || trade.stopLossPrice == null) return null;
+    final plannedSlPercent = calculatePlannedSlPercent(trade);
+    if (trade.positionMargin == null || plannedSlPercent == null || trade.accountBalance <= 0) return null;
     
-    final riskAmount = (trade.entryPrice - trade.stopLossPrice!).abs() * trade.quantity;
-    return (riskAmount / trade.accountBalance) * 100;
+    return ((trade.positionMargin! * plannedSlPercent.abs()) / 100) / trade.accountBalance * 100;
   }
 
   /// Calculate planned return (R)
   static double? calculatePlannedReturn(Trade trade) {
     if (trade.takeProfitPrice == null || trade.stopLossPrice == null) return null;
     
-    final risk = (trade.entryPrice - trade.stopLossPrice!).abs();
-    final reward = (trade.takeProfitPrice! - trade.entryPrice).abs();
+    if (trade.side == Side.long) {
+      final risk = trade.entryPrice - trade.stopLossPrice!;
+      final reward = trade.takeProfitPrice! - trade.entryPrice;
+      if (risk == 0) return null;
+      return reward / risk;
+    } else if (trade.side == Side.short) {
+      final risk = trade.stopLossPrice! - trade.entryPrice;
+      final reward = trade.entryPrice - trade.takeProfitPrice!;
+      if (risk == 0) return null;
+      return reward / risk;
+    }
     
-    if (risk == 0) return null;
-    return reward / risk;
+    return null;
   }
 
   /// Calculate day of the week for exit
@@ -76,53 +91,68 @@ class TradeCalculator {
     return days[trade.exitDatetime!.weekday - 1];
   }
 
-  /// Calculate PS Tag (placeholder for now)
+  /// Calculate PS Tag = Strategies + "-" + session + "-" + rating
   static String? calculatePSTag(Trade trade) {
-    // This would be calculated based on specific business logic
-    // For now, return a placeholder
-    return trade.status == TradeStatus.closed ? 'PS' : null;
-  }
-
-  /// Calculate actual return
-  static double? calculateActualReturn(Trade trade) {
     if (trade.status != TradeStatus.closed) return null;
     
-    final pnl = trade.pnl ?? trade.calculatePnL();
-    if (pnl == null) return null;
+    final strategies = trade.strategies ?? '';
+    final session = calculateEntrySession(trade);
+    final rating = trade.rating?.toString() ?? '0';
     
-    final positionValue = trade.entryPrice * trade.quantity;
-    if (positionValue == 0) return null;
+    return '$strategies-$session-$rating';
+  }
+
+  /// Calculate actual return (R)
+  static double? calculateActualReturn(Trade trade) {
+    if (trade.status != TradeStatus.closed || trade.actualExitPrice == null || trade.stopLossPrice == null) return null;
     
-    return (pnl / positionValue) * 100;
+    if (trade.side == Side.long) {
+      final risk = trade.entryPrice - trade.stopLossPrice!;
+      final reward = trade.actualExitPrice! - trade.entryPrice;
+      if (risk == 0) return null;
+      return reward / risk;
+    } else if (trade.side == Side.short) {
+      final risk = trade.stopLossPrice! - trade.entryPrice;
+      final reward = trade.entryPrice - trade.actualExitPrice!;
+      if (risk == 0) return null;
+      return reward / risk;
+    }
+    
+    return null;
   }
 
   /// Calculate gross profit/loss
   static double? calculateGrossProfitLoss(Trade trade) {
-    if (trade.status != TradeStatus.closed) return null;
+    if (trade.status != TradeStatus.closed || trade.actualExitPrice == null) return null;
     
-    return trade.pnl ?? trade.calculatePnL();
+    if (trade.side == Side.long) {
+      return (trade.actualExitPrice! - trade.entryPrice) * trade.quantity;
+    } else if (trade.side == Side.short) {
+      return (trade.entryPrice - trade.actualExitPrice!) * trade.quantity;
+    }
+    
+    return null;
   }
 
-  /// Calculate position fees
+  /// Calculate position fees = (order value × entry fee rate) + (order value × exit fee rate)
   static double? calculatePositionFees(Trade trade) {
     double totalFees = 0;
+    final orderValue = calculateOrderValue(trade) ?? 0;
     
     // Entry fees
     if (trade.entryFeeRate != null) {
-      final entryValue = trade.entryPrice * trade.quantity;
-      totalFees += (entryValue * trade.entryFeeRate! / 100);
+      totalFees += (orderValue * trade.entryFeeRate! / 100);
     }
     
     // Exit fees
-    if (trade.exitFeeRate != null && trade.actualExitPrice != null) {
-      final exitValue = trade.actualExitPrice! * trade.quantity;
-      totalFees += (exitValue * trade.exitFeeRate! / 100);
+    if (trade.exitFeeRate != null) {
+      totalFees += (orderValue * trade.exitFeeRate! / 100);
     }
     
     return totalFees > 0 ? totalFees : null;
   }
 
-  /// Calculate net profit/loss
+  /// Calculate net profit/loss = Gross profit/loss - position fees
   static double? calculateNetProfitLoss(Trade trade) {
     final grossPnL = calculateGrossProfitLoss(trade);
     final fees = calculatePositionFees(trade);
@@ -132,18 +162,15 @@ class TradeCalculator {
     return grossPnL - (fees ?? 0);
   }
 
-  /// Calculate trade gain percentage
+  /// Calculate trade gain % = (net profit/loss ÷ position margin) × 100
   static double? calculateTradeGainPercent(Trade trade) {
     final netPnL = calculateNetProfitLoss(trade);
-    if (netPnL == null) return null;
+    if (netPnL == null || trade.positionMargin == null || trade.positionMargin == 0) return null;
     
-    final positionValue = trade.entryPrice * trade.quantity;
-    if (positionValue == 0) return null;
-    
-    return (netPnL / positionValue) * 100;
+    return (netPnL / trade.positionMargin!) * 100;
   }
 
-  /// Calculate account change percentage
+  /// Calculate account change % = (net profit/loss ÷ account_balance) × 100
   static double? calculateAccountChangePercent(Trade trade) {
     final netPnL = calculateNetProfitLoss(trade);
     if (netPnL == null || trade.accountBalance <= 0) return null;
@@ -151,7 +178,7 @@ class TradeCalculator {
     return (netPnL / trade.accountBalance) * 100;
   }
 
-  /// Calculate new balance
+  /// Calculate new balance = account_balance + net profit/loss
   static double? calculateNewBalance(Trade trade) {
     final netPnL = calculateNetProfitLoss(trade);
     if (netPnL == null) return null;
@@ -159,7 +186,7 @@ class TradeCalculator {
     return trade.accountBalance + netPnL;
   }
 
-  /// Calculate trade duration in minutes
+  /// Calculate trade duration = datetime(exit) - datetime(entry)
   static int? calculateTradeDuration(Trade trade) {
     if (trade.exitDatetime == null) return null;
     
@@ -174,7 +201,7 @@ class TradeCalculator {
       entryDayOfWeek: calculateEntryDayOfWeek(trade),
       entrySession: calculateEntrySession(trade),
       orderValue: calculateOrderValue(trade),
-      qty: trade.quantity,
+      qty: calculateQty(trade) ?? trade.quantity,
       // Calculated Trade Management Fields
       positionToAccPercent: calculatePositionToAccPercent(trade),
       plannedSlPercent: calculatePlannedSlPercent(trade),

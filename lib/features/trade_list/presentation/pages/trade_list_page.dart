@@ -671,7 +671,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                     _buildDetailRow('Day of Week', TradeCalculator.calculateEntryDayOfWeek(trade)),
                     _buildDetailRow('Session', TradeCalculator.calculateEntrySession(trade)),
                     _buildDetailRow('Order Value', TradeCalculator.calculateOrderValue(trade) != null ? '\$${TradeCalculator.calculateOrderValue(trade)!.toStringAsFixed(2)}' : 'N/A'),
-                    _buildDetailRow('QTY', trade.quantity.toStringAsFixed(4)),
+                    _buildDetailRow('QTY', TradeCalculator.calculateQty(trade)?.toStringAsFixed(4) ?? trade.quantity.toStringAsFixed(4)),
                   ]),
                   
                   // Checklist Section

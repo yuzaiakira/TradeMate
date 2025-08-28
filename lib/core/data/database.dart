@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import '../utils/logger.dart';
 
 part 'database.g.dart';
 
@@ -150,15 +151,15 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   MigrationStrategy get migrations {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
-        print('Creating new database with all tables...');
+        Logger.migration('Creating new database with all tables...');
         await m.createAll();
-        print('Database created successfully');
+        Logger.migration('Database created successfully');
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        print('Upgrading database from version $from to version $to');
+        Logger.migration('Upgrading database from version $from to version $to');
         
         if (from < 2) {
-          print('Adding new calculated fields columns...');
+          Logger.migration('Adding new calculated fields columns...');
           try {
             await m.addColumn(trades, trades.wl);
             await m.addColumn(trades, trades.entryDayOfWeek);
@@ -179,9 +180,9 @@ class TradeMateDatabase extends _$TradeMateDatabase {
             await m.addColumn(trades, trades.accountChangePercent);
             await m.addColumn(trades, trades.newBalance);
             await m.addColumn(trades, trades.calculatedTradeDuration);
-            print('Database migration completed successfully');
+            Logger.migration('Database migration completed successfully');
           } catch (e) {
-            print('Error during migration: $e');
+            Logger.error('Error during migration: $e', e);
             rethrow;
           }
         }
