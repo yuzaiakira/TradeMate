@@ -818,7 +818,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100,
+            width: 140,
             child: Text(
               label,
               style: AppTheme.captionStyle.copyWith(
@@ -829,11 +829,14 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: AppTheme.bodyStyle.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                value,
+                style: AppTheme.bodyStyle.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
               ),
             ),
           ),
@@ -855,7 +858,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100,
+            width: 140,
             child: Text(
               label,
               style: AppTheme.captionStyle.copyWith(
@@ -866,12 +869,15 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: AppTheme.bodyStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: color,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                value,
+                style: AppTheme.bodyStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: color,
+                ),
               ),
             ),
           ),
