@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../utils/app_theme.dart';
 
 class CustomTimePicker extends StatefulWidget {
@@ -17,6 +18,12 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
   late int _selectedHour;
   late int _selectedMinute;
   late bool _isAM;
+  
+  // Hold functionality variables
+  Timer? _incrementTimer;
+  Timer? _decrementTimer;
+  bool _isIncrementing = false;
+  bool _isDecrementing = false;
 
   @override
   void initState() {
@@ -25,6 +32,13 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     // Use exact minute value
     _selectedMinute = widget.initialTime.minute;
     _isAM = widget.initialTime.hour < 12;
+  }
+  
+  @override
+  void dispose() {
+    _incrementTimer?.cancel();
+    _decrementTimer?.cancel();
+    super.dispose();
   }
 
   void _updateTime() {
@@ -42,6 +56,53 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
       hour = 0;
     }
     return TimeOfDay(hour: hour, minute: _selectedMinute);
+  }
+  
+  // Hold functionality methods
+  void _startIncrement(VoidCallback onIncrement) {
+    if (_isIncrementing) return;
+    _isIncrementing = true;
+    
+    // Execute immediately
+    onIncrement();
+    
+    // Start timer for continuous increment
+    _incrementTimer = Timer.periodic(const Duration(milliseconds: 150), (timer) {
+      if (mounted && _isIncrementing) {
+        onIncrement();
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+  
+  void _stopIncrement() {
+    _isIncrementing = false;
+    _incrementTimer?.cancel();
+    _incrementTimer = null;
+  }
+  
+  void _startDecrement(VoidCallback onDecrement) {
+    if (_isDecrementing) return;
+    _isDecrementing = true;
+    
+    // Execute immediately
+    onDecrement();
+    
+    // Start timer for continuous decrement
+    _decrementTimer = Timer.periodic(const Duration(milliseconds: 150), (timer) {
+      if (mounted && _isDecrementing) {
+        onDecrement();
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+  
+  void _stopDecrement() {
+    _isDecrementing = false;
+    _decrementTimer?.cancel();
+    _decrementTimer = null;
   }
 
   @override
@@ -224,9 +285,10 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
           ),
           child: Material(
             color: Colors.transparent,
-            child: InkWell(
-              onTap: onIncrement,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            child: GestureDetector(
+              onTapDown: (_) => _startIncrement(onIncrement),
+              onTapUp: (_) => _stopIncrement(),
+              onTapCancel: () => _stopIncrement(),
               child: Icon(
                 Icons.keyboard_arrow_up,
                 color: AppTheme.primaryColor,
@@ -269,9 +331,10 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
           ),
           child: Material(
             color: Colors.transparent,
-            child: InkWell(
-              onTap: onDecrement,
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(6)),
+            child: GestureDetector(
+              onTapDown: (_) => _startDecrement(onDecrement),
+              onTapUp: (_) => _stopDecrement(),
+              onTapCancel: () => _stopDecrement(),
               child: Icon(
                 Icons.keyboard_arrow_down,
                 color: AppTheme.primaryColor,
