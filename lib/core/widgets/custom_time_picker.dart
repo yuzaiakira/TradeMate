@@ -22,6 +22,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
   void initState() {
     super.initState();
     _selectedHour = widget.initialTime.hour % 12 == 0 ? 12 : widget.initialTime.hour % 12;
+    // Use exact minute value
     _selectedMinute = widget.initialTime.minute;
     _isAM = widget.initialTime.hour < 12;
   }
@@ -98,13 +99,11 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                   onIncrement: () {
                     setState(() {
                       _selectedHour = (_selectedHour % 12) + 1;
-                      _updateTime();
                     });
                   },
                   onDecrement: () {
                     setState(() {
                       _selectedHour = _selectedHour == 1 ? 12 : _selectedHour - 1;
-                      _updateTime();
                     });
                   },
                 ),
@@ -123,14 +122,12 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                   value: _selectedMinute.toString().padLeft(2, '0'),
                   onIncrement: () {
                     setState(() {
-                      _selectedMinute = (_selectedMinute + 15) % 60;
-                      _updateTime();
+                      _selectedMinute = (_selectedMinute + 1) % 60;
                     });
                   },
                   onDecrement: () {
                     setState(() {
-                      _selectedMinute = _selectedMinute == 0 ? 45 : _selectedMinute - 15;
-                      _updateTime();
+                      _selectedMinute = (_selectedMinute - 1 + 60) % 60;
                     });
                   },
                 ),
@@ -154,10 +151,10 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                 final now = TimeOfDay.now();
                 setState(() {
                   _selectedHour = now.hour % 12 == 0 ? 12 : now.hour % 12;
+                  // Use exact minute value
                   _selectedMinute = now.minute;
                   _isAM = now.hour < 12;
                 });
-                _updateTime();
               }),
               _buildQuickTimeButton('9:00 AM', () {
                 if (!mounted) return;
@@ -166,7 +163,6 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                   _selectedMinute = 0;
                   _isAM = true;
                 });
-                _updateTime();
               }),
               _buildQuickTimeButton('12:00 PM', () {
                 if (!mounted) return;
@@ -175,7 +171,6 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                   _selectedMinute = 0;
                   _isAM = false;
                 });
-                _updateTime();
               }),
             ],
           ),
@@ -302,7 +297,6 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
             onTap: () {
               setState(() {
                 _isAM = true;
-                _updateTime();
               });
             },
             child: Container(
@@ -329,7 +323,6 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
             onTap: () {
               setState(() {
                 _isAM = false;
-                _updateTime();
               });
             },
             child: Container(
