@@ -73,6 +73,33 @@ class Trade extends Equatable {
   final double? riskAmount;
   final double? achievedR;
   final int? tradeDuration; // in minutes
+  
+  // Calculated Trade Transfers Fields
+  final String? wl; // Win/Loss
+  final String? entryDayOfWeek; // Day of the week for entry
+  final String? entrySession; // Session (London, NY, Tokyo, etc.)
+  final double? orderValue; // Order value
+  final double? qty; // Quantity (same as quantity but for consistency)
+  
+  // Calculated Trade Management Fields
+  final double? positionToAccPercent; // Position to account percentage
+  final double? plannedSlPercent; // Planned stop loss percentage
+  final double? accRiskedPercent; // Percentage of account risked
+  final double? plannedReturn; // Planned return (R)
+  
+  // Calculated Trade Exit Fields
+  final String? exitDayOfWeek; // Day of the week for exit
+  final String? psTag; // PS Tag
+  
+  // Calculated Trade Results Fields
+  final double? actualReturn; // Actual return
+  final double? grossProfitLoss; // Gross profit/loss
+  final double? positionFees; // Position fees
+  final double? netProfitLoss; // Net profit/loss
+  final double? tradeGainPercent; // Trade gain percentage
+  final double? accountChangePercent; // Account change percentage
+  final double? newBalance; // New balance
+  final int? calculatedTradeDuration; // Trade duration in minutes
 
   const Trade({
     this.id,
@@ -132,6 +159,29 @@ class Trade extends Equatable {
     this.riskAmount,
     this.achievedR,
     this.tradeDuration,
+    // Calculated Trade Transfers Fields
+    this.wl,
+    this.entryDayOfWeek,
+    this.entrySession,
+    this.orderValue,
+    this.qty,
+    // Calculated Trade Management Fields
+    this.positionToAccPercent,
+    this.plannedSlPercent,
+    this.accRiskedPercent,
+    this.plannedReturn,
+    // Calculated Trade Exit Fields
+    this.exitDayOfWeek,
+    this.psTag,
+    // Calculated Trade Results Fields
+    this.actualReturn,
+    this.grossProfitLoss,
+    this.positionFees,
+    this.netProfitLoss,
+    this.tradeGainPercent,
+    this.accountChangePercent,
+    this.newBalance,
+    this.calculatedTradeDuration,
   });
 
   // Calculate PnL
@@ -237,6 +287,29 @@ class Trade extends Equatable {
     double? riskAmount,
     double? achievedR,
     int? tradeDuration,
+    // Calculated Trade Transfers Fields
+    String? wl,
+    String? entryDayOfWeek,
+    String? entrySession,
+    double? orderValue,
+    double? qty,
+    // Calculated Trade Management Fields
+    double? positionToAccPercent,
+    double? plannedSlPercent,
+    double? accRiskedPercent,
+    double? plannedReturn,
+    // Calculated Trade Exit Fields
+    String? exitDayOfWeek,
+    String? psTag,
+    // Calculated Trade Results Fields
+    double? actualReturn,
+    double? grossProfitLoss,
+    double? positionFees,
+    double? netProfitLoss,
+    double? tradeGainPercent,
+    double? accountChangePercent,
+    double? newBalance,
+    int? calculatedTradeDuration,
   }) {
     return Trade(
       id: id ?? this.id,
@@ -288,6 +361,29 @@ class Trade extends Equatable {
       riskAmount: riskAmount ?? this.riskAmount,
       achievedR: achievedR ?? this.achievedR,
       tradeDuration: tradeDuration ?? this.tradeDuration,
+      // Calculated Trade Transfers Fields
+      wl: wl ?? this.wl,
+      entryDayOfWeek: entryDayOfWeek ?? this.entryDayOfWeek,
+      entrySession: entrySession ?? this.entrySession,
+      orderValue: orderValue ?? this.orderValue,
+      qty: qty ?? this.qty,
+      // Calculated Trade Management Fields
+      positionToAccPercent: positionToAccPercent ?? this.positionToAccPercent,
+      plannedSlPercent: plannedSlPercent ?? this.plannedSlPercent,
+      accRiskedPercent: accRiskedPercent ?? this.accRiskedPercent,
+      plannedReturn: plannedReturn ?? this.plannedReturn,
+      // Calculated Trade Exit Fields
+      exitDayOfWeek: exitDayOfWeek ?? this.exitDayOfWeek,
+      psTag: psTag ?? this.psTag,
+      // Calculated Trade Results Fields
+      actualReturn: actualReturn ?? this.actualReturn,
+      grossProfitLoss: grossProfitLoss ?? this.grossProfitLoss,
+      positionFees: positionFees ?? this.positionFees,
+      netProfitLoss: netProfitLoss ?? this.netProfitLoss,
+      tradeGainPercent: tradeGainPercent ?? this.tradeGainPercent,
+      accountChangePercent: accountChangePercent ?? this.accountChangePercent,
+      newBalance: newBalance ?? this.newBalance,
+      calculatedTradeDuration: calculatedTradeDuration ?? this.calculatedTradeDuration,
     );
   }
 
@@ -342,5 +438,28 @@ class Trade extends Equatable {
     riskAmount,
     achievedR,
     tradeDuration,
+    // Calculated Trade Transfers Fields
+    wl,
+    entryDayOfWeek,
+    entrySession,
+    orderValue,
+    qty,
+    // Calculated Trade Management Fields
+    positionToAccPercent,
+    plannedSlPercent,
+    accRiskedPercent,
+    plannedReturn,
+    // Calculated Trade Exit Fields
+    exitDayOfWeek,
+    psTag,
+    // Calculated Trade Results Fields
+    actualReturn,
+    grossProfitLoss,
+    positionFees,
+    netProfitLoss,
+    tradeGainPercent,
+    accountChangePercent,
+    newBalance,
+    calculatedTradeDuration,
   ];
 }

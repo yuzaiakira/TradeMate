@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
+import '../../../../core/utils/trade_calculator.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 import '../../../add_trade/presentation/pages/edit_trade_page.dart';
 import '../provider/trade_list_provider.dart';
@@ -665,6 +666,12 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                       _buildDetailRow('Entry Mental States', trade.entryMentalStates!),
                     if (trade.entryScreenshot?.isNotEmpty == true)
                       _buildDetailRow('Entry Screenshot', trade.entryScreenshot!),
+                    // Calculated Trade Transfers Fields
+                    _buildDetailRow('W/L', TradeCalculator.calculateWL(trade)),
+                    _buildDetailRow('Day of Week', TradeCalculator.calculateEntryDayOfWeek(trade)),
+                    _buildDetailRow('Session', TradeCalculator.calculateEntrySession(trade)),
+                    _buildDetailRow('Order Value', TradeCalculator.calculateOrderValue(trade) != null ? '\$${TradeCalculator.calculateOrderValue(trade)!.toStringAsFixed(2)}' : 'N/A'),
+                    _buildDetailRow('QTY', trade.quantity.toStringAsFixed(4)),
                   ]),
                   
                   // Checklist Section
@@ -676,36 +683,40 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                   ],
                   
                   // Trade Management Section
-                  if (trade.stopLossPrice != null || trade.takeProfitPrice != null) ...[
-                    const SizedBox(height: 20),
-                    _buildDetailSection('Trade Management', [
-                      if (trade.stopLossPrice != null)
-                        _buildDetailRow('Stop Loss Price', '\$${trade.stopLossPrice!.toStringAsFixed(2)}'),
-                      if (trade.takeProfitPrice != null)
-                        _buildDetailRow('Take Profit Price', '\$${trade.takeProfitPrice!.toStringAsFixed(2)}'),
-                    ]),
-                  ],
+                  const SizedBox(height: 20),
+                  _buildDetailSection('Trade Management', [
+                    if (trade.stopLossPrice != null)
+                      _buildDetailRow('Stop Loss Price', '\$${trade.stopLossPrice!.toStringAsFixed(2)}'),
+                    if (trade.takeProfitPrice != null)
+                      _buildDetailRow('Take Profit Price', '\$${trade.takeProfitPrice!.toStringAsFixed(2)}'),
+                    // Calculated Trade Management Fields
+                    _buildDetailRow('Position to ACC %', TradeCalculator.calculatePositionToAccPercent(trade) != null ? '${TradeCalculator.calculatePositionToAccPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                    _buildDetailRow('Planned SL % (Trade)', TradeCalculator.calculatePlannedSlPercent(trade) != null ? '${TradeCalculator.calculatePlannedSlPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                    _buildDetailRow('% of ACC Risked', TradeCalculator.calculateAccRiskedPercent(trade) != null ? '${TradeCalculator.calculateAccRiskedPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                    _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                  ]),
                   
                   // Trade Exit Section
-                  if (trade.actualExitPrice != null || trade.exitDatetime != null) ...[
-                    const SizedBox(height: 20),
-                    _buildDetailSection('Trade Exit', [
-                      if (trade.actualExitPrice != null)
-                        _buildDetailRow('Actual Exit Price', '\$${trade.actualExitPrice!.toStringAsFixed(2)}'),
-                      if (trade.marginClosedPercent != null)
-                        _buildDetailRow('% of Margin Closed', '${trade.marginClosedPercent!}%'),
-                      if (trade.exitType != null)
-                        _buildDetailRow('Exit Type', trade.exitType!.name.toUpperCase()),
-                      if (trade.exitFeeRate != null)
-                        _buildDetailRow('Exit Fee Rate', '${trade.exitFeeRate!}%'),
-                      if (trade.exitDatetime != null)
-                        _buildDetailRow('Exit Datetime', _formatDateTime(trade.exitDatetime!)),
-                      if (trade.exitMentalStates?.isNotEmpty == true)
-                        _buildDetailRow('Exit Mental States', trade.exitMentalStates!),
-                      if (trade.exitScreenshot?.isNotEmpty == true)
-                        _buildDetailRow('Exit Screenshot', trade.exitScreenshot!),
-                    ]),
-                  ],
+                  const SizedBox(height: 20),
+                  _buildDetailSection('Trade Exit', [
+                    if (trade.actualExitPrice != null)
+                      _buildDetailRow('Actual Exit Price', '\$${trade.actualExitPrice!.toStringAsFixed(2)}'),
+                    if (trade.marginClosedPercent != null)
+                      _buildDetailRow('% of Margin Closed', '${trade.marginClosedPercent!}%'),
+                    if (trade.exitType != null)
+                      _buildDetailRow('Exit Type', trade.exitType!.name.toUpperCase()),
+                    if (trade.exitFeeRate != null)
+                      _buildDetailRow('Exit Fee Rate', '${trade.exitFeeRate!}%'),
+                    if (trade.exitDatetime != null)
+                      _buildDetailRow('Exit Datetime', _formatDateTime(trade.exitDatetime!)),
+                    if (trade.exitMentalStates?.isNotEmpty == true)
+                      _buildDetailRow('Exit Mental States', trade.exitMentalStates!),
+                    if (trade.exitScreenshot?.isNotEmpty == true)
+                      _buildDetailRow('Exit Screenshot', trade.exitScreenshot!),
+                    // Calculated Trade Exit Fields
+                    _buildDetailRow('Day of Week', TradeCalculator.calculateExitDayOfWeek(trade) ?? 'N/A'),
+                    _buildDetailRow('PS Tag', TradeCalculator.calculatePSTag(trade) ?? 'N/A'),
+                  ]),
                   
                   // Memo Section
                   if (trade.memo?.isNotEmpty == true || trade.rating != null) ...[
@@ -739,6 +750,19 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                         _buildDetailRow('Transfer Screenshot', trade.transferScreenshot!),
                     ]),
                   ],
+                  
+                  // Trade Results Section
+                  const SizedBox(height: 20),
+                  _buildDetailSection('Trade Results', [
+                    _buildDetailRow('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                    _buildDetailRowWithColor('Gross Profit/Loss', TradeCalculator.calculateGrossProfitLoss(trade) != null ? '\$${TradeCalculator.calculateGrossProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateGrossProfitLoss(trade) ?? 0),
+                    _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(2)}' : 'N/A'),
+                    _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
+                    _buildDetailRow('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                    _buildDetailRow('Account Change %', TradeCalculator.calculateAccountChangePercent(trade) != null ? '${TradeCalculator.calculateAccountChangePercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                    _buildDetailRow('New Balance', TradeCalculator.calculateNewBalance(trade) != null ? '\$${TradeCalculator.calculateNewBalance(trade)!.toStringAsFixed(2)}' : 'N/A'),
+                    _buildDetailRow('Trade Duration', TradeCalculator.calculateTradeDuration(trade) != null ? '${TradeCalculator.calculateTradeDuration(trade)!} min' : 'N/A'),
+                  ]),
                   
                   // Legacy PnL Information (if available)
                   if (trade.pnl != null || trade.pnlPercent != null) ...[

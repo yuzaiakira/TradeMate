@@ -69,6 +69,33 @@ class TradeModel {
   final double? riskAmount;
   final double? achievedR;
   final int? tradeDuration;
+  
+  // Calculated Trade Transfers Fields
+  final String? wl; // Win/Loss
+  final String? entryDayOfWeek; // Day of the week for entry
+  final String? entrySession; // Session (London, NY, Tokyo, etc.)
+  final double? orderValue; // Order value
+  final double? qty; // Quantity (same as quantity but for consistency)
+  
+  // Calculated Trade Management Fields
+  final double? positionToAccPercent; // Position to account percentage
+  final double? plannedSlPercent; // Planned stop loss percentage
+  final double? accRiskedPercent; // Percentage of account risked
+  final double? plannedReturn; // Planned return (R)
+  
+  // Calculated Trade Exit Fields
+  final String? exitDayOfWeek; // Day of the week for exit
+  final String? psTag; // PS Tag
+  
+  // Calculated Trade Results Fields
+  final double? actualReturn; // Actual return
+  final double? grossProfitLoss; // Gross profit/loss
+  final double? positionFees; // Position fees
+  final double? netProfitLoss; // Net profit/loss
+  final double? tradeGainPercent; // Trade gain percentage
+  final double? accountChangePercent; // Account change percentage
+  final double? newBalance; // New balance
+  final int? calculatedTradeDuration; // Trade duration in minutes
 
   const TradeModel({
     this.id,
@@ -128,6 +155,29 @@ class TradeModel {
     this.riskAmount,
     this.achievedR,
     this.tradeDuration,
+    // Calculated Trade Transfers Fields
+    this.wl,
+    this.entryDayOfWeek,
+    this.entrySession,
+    this.orderValue,
+    this.qty,
+    // Calculated Trade Management Fields
+    this.positionToAccPercent,
+    this.plannedSlPercent,
+    this.accRiskedPercent,
+    this.plannedReturn,
+    // Calculated Trade Exit Fields
+    this.exitDayOfWeek,
+    this.psTag,
+    // Calculated Trade Results Fields
+    this.actualReturn,
+    this.grossProfitLoss,
+    this.positionFees,
+    this.netProfitLoss,
+    this.tradeGainPercent,
+    this.accountChangePercent,
+    this.newBalance,
+    this.calculatedTradeDuration,
   });
 
   // Convert from database entity to domain entity
@@ -190,6 +240,29 @@ class TradeModel {
       riskAmount: trade.riskAmount,
       achievedR: trade.achievedR,
       tradeDuration: trade.tradeDuration,
+      // Calculated Trade Transfers Fields
+      wl: trade.wl,
+      entryDayOfWeek: trade.entryDayOfWeek,
+      entrySession: trade.entrySession,
+      orderValue: trade.orderValue,
+      qty: trade.qty,
+      // Calculated Trade Management Fields
+      positionToAccPercent: trade.positionToAccPercent,
+      plannedSlPercent: trade.plannedSlPercent,
+      accRiskedPercent: trade.accRiskedPercent,
+      plannedReturn: trade.plannedReturn,
+      // Calculated Trade Exit Fields
+      exitDayOfWeek: trade.exitDayOfWeek,
+      psTag: trade.psTag,
+      // Calculated Trade Results Fields
+      actualReturn: trade.actualReturn,
+      grossProfitLoss: trade.grossProfitLoss,
+      positionFees: trade.positionFees,
+      netProfitLoss: trade.netProfitLoss,
+      tradeGainPercent: trade.tradeGainPercent,
+      accountChangePercent: trade.accountChangePercent,
+      newBalance: trade.newBalance,
+      calculatedTradeDuration: trade.calculatedTradeDuration,
     );
   }
 
@@ -253,6 +326,29 @@ class TradeModel {
       riskAmount: riskAmount,
       achievedR: achievedR,
       tradeDuration: tradeDuration,
+      // Calculated Trade Transfers Fields
+      wl: wl,
+      entryDayOfWeek: entryDayOfWeek,
+      entrySession: entrySession,
+      orderValue: orderValue,
+      qty: qty,
+      // Calculated Trade Management Fields
+      positionToAccPercent: positionToAccPercent,
+      plannedSlPercent: plannedSlPercent,
+      accRiskedPercent: accRiskedPercent,
+      plannedReturn: plannedReturn,
+      // Calculated Trade Exit Fields
+      exitDayOfWeek: exitDayOfWeek,
+      psTag: psTag,
+      // Calculated Trade Results Fields
+      actualReturn: actualReturn,
+      grossProfitLoss: grossProfitLoss,
+      positionFees: positionFees,
+      netProfitLoss: netProfitLoss,
+      tradeGainPercent: tradeGainPercent,
+      accountChangePercent: accountChangePercent,
+      newBalance: newBalance,
+      calculatedTradeDuration: calculatedTradeDuration,
     );
   }
 
@@ -316,6 +412,29 @@ class TradeModel {
       riskAmount: riskAmount != null ? Value(riskAmount!) : const Value.absent(),
       achievedR: achievedR != null ? Value(achievedR!) : const Value.absent(),
       tradeDuration: tradeDuration != null ? Value(tradeDuration!) : const Value.absent(),
+      // Calculated Trade Transfers Fields
+      wl: wl != null ? Value(wl!) : const Value.absent(),
+      entryDayOfWeek: entryDayOfWeek != null ? Value(entryDayOfWeek!) : const Value.absent(),
+      entrySession: entrySession != null ? Value(entrySession!) : const Value.absent(),
+      orderValue: orderValue != null ? Value(orderValue!) : const Value.absent(),
+      qty: qty != null ? Value(qty!) : const Value.absent(),
+      // Calculated Trade Management Fields
+      positionToAccPercent: positionToAccPercent != null ? Value(positionToAccPercent!) : const Value.absent(),
+      plannedSlPercent: plannedSlPercent != null ? Value(plannedSlPercent!) : const Value.absent(),
+      accRiskedPercent: accRiskedPercent != null ? Value(accRiskedPercent!) : const Value.absent(),
+      plannedReturn: plannedReturn != null ? Value(plannedReturn!) : const Value.absent(),
+      // Calculated Trade Exit Fields
+      exitDayOfWeek: exitDayOfWeek != null ? Value(exitDayOfWeek!) : const Value.absent(),
+      psTag: psTag != null ? Value(psTag!) : const Value.absent(),
+      // Calculated Trade Results Fields
+      actualReturn: actualReturn != null ? Value(actualReturn!) : const Value.absent(),
+      grossProfitLoss: grossProfitLoss != null ? Value(grossProfitLoss!) : const Value.absent(),
+      positionFees: positionFees != null ? Value(positionFees!) : const Value.absent(),
+      netProfitLoss: netProfitLoss != null ? Value(netProfitLoss!) : const Value.absent(),
+      tradeGainPercent: tradeGainPercent != null ? Value(tradeGainPercent!) : const Value.absent(),
+      accountChangePercent: accountChangePercent != null ? Value(accountChangePercent!) : const Value.absent(),
+      newBalance: newBalance != null ? Value(newBalance!) : const Value.absent(),
+      calculatedTradeDuration: calculatedTradeDuration != null ? Value(calculatedTradeDuration!) : const Value.absent(),
     );
   }
 

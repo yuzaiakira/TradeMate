@@ -73,6 +73,33 @@ class Trades extends Table {
   RealColumn get riskAmount => real().nullable()();
   RealColumn get achievedR => real().nullable()();
   IntColumn get tradeDuration => integer().nullable()(); // in minutes
+  
+  // Calculated Trade Transfers Fields
+  TextColumn get wl => text().nullable()(); // Win/Loss
+  TextColumn get entryDayOfWeek => text().nullable()(); // Day of the week for entry
+  TextColumn get entrySession => text().nullable()(); // Session (London, NY, Tokyo, etc.)
+  RealColumn get orderValue => real().nullable()(); // Order value
+  RealColumn get qty => real().nullable()(); // Quantity (same as quantity but for consistency)
+  
+  // Calculated Trade Management Fields
+  RealColumn get positionToAccPercent => real().nullable()(); // Position to account percentage
+  RealColumn get plannedSlPercent => real().nullable()(); // Planned stop loss percentage
+  RealColumn get accRiskedPercent => real().nullable()(); // Percentage of account risked
+  RealColumn get plannedReturn => real().nullable()(); // Planned return (R)
+  
+  // Calculated Trade Exit Fields
+  TextColumn get exitDayOfWeek => text().nullable()(); // Day of the week for exit
+  TextColumn get psTag => text().nullable()(); // PS Tag
+  
+  // Calculated Trade Results Fields
+  RealColumn get actualReturn => real().nullable()(); // Actual return
+  RealColumn get grossProfitLoss => real().nullable()(); // Gross profit/loss
+  RealColumn get positionFees => real().nullable()(); // Position fees
+  RealColumn get netProfitLoss => real().nullable()(); // Net profit/loss
+  RealColumn get tradeGainPercent => real().nullable()(); // Trade gain percentage
+  RealColumn get accountChangePercent => real().nullable()(); // Account change percentage
+  RealColumn get newBalance => real().nullable()(); // New balance
+  IntColumn get calculatedTradeDuration => integer().nullable()(); // Trade duration in minutes
 }
 
 // User-defined values table for dropdowns
@@ -118,12 +145,46 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   TradeMateDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   MigrationStrategy get migrations {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
+        print('Creating new database with all tables...');
         await m.createAll();
+        print('Database created successfully');
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        print('Upgrading database from version $from to version $to');
+        
+        if (from < 2) {
+          print('Adding new calculated fields columns...');
+          try {
+            await m.addColumn(trades, trades.wl);
+            await m.addColumn(trades, trades.entryDayOfWeek);
+            await m.addColumn(trades, trades.entrySession);
+            await m.addColumn(trades, trades.orderValue);
+            await m.addColumn(trades, trades.qty);
+            await m.addColumn(trades, trades.positionToAccPercent);
+            await m.addColumn(trades, trades.plannedSlPercent);
+            await m.addColumn(trades, trades.accRiskedPercent);
+            await m.addColumn(trades, trades.plannedReturn);
+            await m.addColumn(trades, trades.exitDayOfWeek);
+            await m.addColumn(trades, trades.psTag);
+            await m.addColumn(trades, trades.actualReturn);
+            await m.addColumn(trades, trades.grossProfitLoss);
+            await m.addColumn(trades, trades.positionFees);
+            await m.addColumn(trades, trades.netProfitLoss);
+            await m.addColumn(trades, trades.tradeGainPercent);
+            await m.addColumn(trades, trades.accountChangePercent);
+            await m.addColumn(trades, trades.newBalance);
+            await m.addColumn(trades, trades.calculatedTradeDuration);
+            print('Database migration completed successfully');
+          } catch (e) {
+            print('Error during migration: $e');
+            rethrow;
+          }
+        }
       },
     );
   }
@@ -572,7 +633,7 @@ class TradeMateDatabase extends _$TradeMateDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'trademate_v2.db'));
+    final file = File(p.join(dbFolder.path, 'trademate.db'));
     return NativeDatabase.createInBackground(file);
   });
 }

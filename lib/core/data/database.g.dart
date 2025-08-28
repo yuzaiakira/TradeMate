@@ -532,6 +532,209 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _wlMeta = const VerificationMeta('wl');
+  @override
+  late final GeneratedColumn<String> wl = GeneratedColumn<String>(
+    'wl',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryDayOfWeekMeta = const VerificationMeta(
+    'entryDayOfWeek',
+  );
+  @override
+  late final GeneratedColumn<String> entryDayOfWeek = GeneratedColumn<String>(
+    'entry_day_of_week',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entrySessionMeta = const VerificationMeta(
+    'entrySession',
+  );
+  @override
+  late final GeneratedColumn<String> entrySession = GeneratedColumn<String>(
+    'entry_session',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _orderValueMeta = const VerificationMeta(
+    'orderValue',
+  );
+  @override
+  late final GeneratedColumn<double> orderValue = GeneratedColumn<double>(
+    'order_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  @override
+  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
+    'qty',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _positionToAccPercentMeta =
+      const VerificationMeta('positionToAccPercent');
+  @override
+  late final GeneratedColumn<double> positionToAccPercent =
+      GeneratedColumn<double>(
+        'position_to_acc_percent',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _plannedSlPercentMeta = const VerificationMeta(
+    'plannedSlPercent',
+  );
+  @override
+  late final GeneratedColumn<double> plannedSlPercent = GeneratedColumn<double>(
+    'planned_sl_percent',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _accRiskedPercentMeta = const VerificationMeta(
+    'accRiskedPercent',
+  );
+  @override
+  late final GeneratedColumn<double> accRiskedPercent = GeneratedColumn<double>(
+    'acc_risked_percent',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _plannedReturnMeta = const VerificationMeta(
+    'plannedReturn',
+  );
+  @override
+  late final GeneratedColumn<double> plannedReturn = GeneratedColumn<double>(
+    'planned_return',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exitDayOfWeekMeta = const VerificationMeta(
+    'exitDayOfWeek',
+  );
+  @override
+  late final GeneratedColumn<String> exitDayOfWeek = GeneratedColumn<String>(
+    'exit_day_of_week',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _psTagMeta = const VerificationMeta('psTag');
+  @override
+  late final GeneratedColumn<String> psTag = GeneratedColumn<String>(
+    'ps_tag',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualReturnMeta = const VerificationMeta(
+    'actualReturn',
+  );
+  @override
+  late final GeneratedColumn<double> actualReturn = GeneratedColumn<double>(
+    'actual_return',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _grossProfitLossMeta = const VerificationMeta(
+    'grossProfitLoss',
+  );
+  @override
+  late final GeneratedColumn<double> grossProfitLoss = GeneratedColumn<double>(
+    'gross_profit_loss',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _positionFeesMeta = const VerificationMeta(
+    'positionFees',
+  );
+  @override
+  late final GeneratedColumn<double> positionFees = GeneratedColumn<double>(
+    'position_fees',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _netProfitLossMeta = const VerificationMeta(
+    'netProfitLoss',
+  );
+  @override
+  late final GeneratedColumn<double> netProfitLoss = GeneratedColumn<double>(
+    'net_profit_loss',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tradeGainPercentMeta = const VerificationMeta(
+    'tradeGainPercent',
+  );
+  @override
+  late final GeneratedColumn<double> tradeGainPercent = GeneratedColumn<double>(
+    'trade_gain_percent',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _accountChangePercentMeta =
+      const VerificationMeta('accountChangePercent');
+  @override
+  late final GeneratedColumn<double> accountChangePercent =
+      GeneratedColumn<double>(
+        'account_change_percent',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _newBalanceMeta = const VerificationMeta(
+    'newBalance',
+  );
+  @override
+  late final GeneratedColumn<double> newBalance = GeneratedColumn<double>(
+    'new_balance',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _calculatedTradeDurationMeta =
+      const VerificationMeta('calculatedTradeDuration');
+  @override
+  late final GeneratedColumn<int> calculatedTradeDuration =
+      GeneratedColumn<int>(
+        'calculated_trade_duration',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -583,6 +786,25 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     riskAmount,
     achievedR,
     tradeDuration,
+    wl,
+    entryDayOfWeek,
+    entrySession,
+    orderValue,
+    qty,
+    positionToAccPercent,
+    plannedSlPercent,
+    accRiskedPercent,
+    plannedReturn,
+    exitDayOfWeek,
+    psTag,
+    actualReturn,
+    grossProfitLoss,
+    positionFees,
+    netProfitLoss,
+    tradeGainPercent,
+    accountChangePercent,
+    newBalance,
+    calculatedTradeDuration,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -957,6 +1179,159 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
         ),
       );
     }
+    if (data.containsKey('wl')) {
+      context.handle(_wlMeta, wl.isAcceptableOrUnknown(data['wl']!, _wlMeta));
+    }
+    if (data.containsKey('entry_day_of_week')) {
+      context.handle(
+        _entryDayOfWeekMeta,
+        entryDayOfWeek.isAcceptableOrUnknown(
+          data['entry_day_of_week']!,
+          _entryDayOfWeekMeta,
+        ),
+      );
+    }
+    if (data.containsKey('entry_session')) {
+      context.handle(
+        _entrySessionMeta,
+        entrySession.isAcceptableOrUnknown(
+          data['entry_session']!,
+          _entrySessionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('order_value')) {
+      context.handle(
+        _orderValueMeta,
+        orderValue.isAcceptableOrUnknown(data['order_value']!, _orderValueMeta),
+      );
+    }
+    if (data.containsKey('qty')) {
+      context.handle(
+        _qtyMeta,
+        qty.isAcceptableOrUnknown(data['qty']!, _qtyMeta),
+      );
+    }
+    if (data.containsKey('position_to_acc_percent')) {
+      context.handle(
+        _positionToAccPercentMeta,
+        positionToAccPercent.isAcceptableOrUnknown(
+          data['position_to_acc_percent']!,
+          _positionToAccPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('planned_sl_percent')) {
+      context.handle(
+        _plannedSlPercentMeta,
+        plannedSlPercent.isAcceptableOrUnknown(
+          data['planned_sl_percent']!,
+          _plannedSlPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('acc_risked_percent')) {
+      context.handle(
+        _accRiskedPercentMeta,
+        accRiskedPercent.isAcceptableOrUnknown(
+          data['acc_risked_percent']!,
+          _accRiskedPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('planned_return')) {
+      context.handle(
+        _plannedReturnMeta,
+        plannedReturn.isAcceptableOrUnknown(
+          data['planned_return']!,
+          _plannedReturnMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exit_day_of_week')) {
+      context.handle(
+        _exitDayOfWeekMeta,
+        exitDayOfWeek.isAcceptableOrUnknown(
+          data['exit_day_of_week']!,
+          _exitDayOfWeekMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ps_tag')) {
+      context.handle(
+        _psTagMeta,
+        psTag.isAcceptableOrUnknown(data['ps_tag']!, _psTagMeta),
+      );
+    }
+    if (data.containsKey('actual_return')) {
+      context.handle(
+        _actualReturnMeta,
+        actualReturn.isAcceptableOrUnknown(
+          data['actual_return']!,
+          _actualReturnMeta,
+        ),
+      );
+    }
+    if (data.containsKey('gross_profit_loss')) {
+      context.handle(
+        _grossProfitLossMeta,
+        grossProfitLoss.isAcceptableOrUnknown(
+          data['gross_profit_loss']!,
+          _grossProfitLossMeta,
+        ),
+      );
+    }
+    if (data.containsKey('position_fees')) {
+      context.handle(
+        _positionFeesMeta,
+        positionFees.isAcceptableOrUnknown(
+          data['position_fees']!,
+          _positionFeesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('net_profit_loss')) {
+      context.handle(
+        _netProfitLossMeta,
+        netProfitLoss.isAcceptableOrUnknown(
+          data['net_profit_loss']!,
+          _netProfitLossMeta,
+        ),
+      );
+    }
+    if (data.containsKey('trade_gain_percent')) {
+      context.handle(
+        _tradeGainPercentMeta,
+        tradeGainPercent.isAcceptableOrUnknown(
+          data['trade_gain_percent']!,
+          _tradeGainPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('account_change_percent')) {
+      context.handle(
+        _accountChangePercentMeta,
+        accountChangePercent.isAcceptableOrUnknown(
+          data['account_change_percent']!,
+          _accountChangePercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('new_balance')) {
+      context.handle(
+        _newBalanceMeta,
+        newBalance.isAcceptableOrUnknown(data['new_balance']!, _newBalanceMeta),
+      );
+    }
+    if (data.containsKey('calculated_trade_duration')) {
+      context.handle(
+        _calculatedTradeDurationMeta,
+        calculatedTradeDuration.isAcceptableOrUnknown(
+          data['calculated_trade_duration']!,
+          _calculatedTradeDurationMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1162,6 +1537,82 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
         DriftSqlType.int,
         data['${effectivePrefix}trade_duration'],
       ),
+      wl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}wl'],
+      ),
+      entryDayOfWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_day_of_week'],
+      ),
+      entrySession: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_session'],
+      ),
+      orderValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}order_value'],
+      ),
+      qty: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}qty'],
+      ),
+      positionToAccPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}position_to_acc_percent'],
+      ),
+      plannedSlPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}planned_sl_percent'],
+      ),
+      accRiskedPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}acc_risked_percent'],
+      ),
+      plannedReturn: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}planned_return'],
+      ),
+      exitDayOfWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exit_day_of_week'],
+      ),
+      psTag: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ps_tag'],
+      ),
+      actualReturn: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}actual_return'],
+      ),
+      grossProfitLoss: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}gross_profit_loss'],
+      ),
+      positionFees: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}position_fees'],
+      ),
+      netProfitLoss: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}net_profit_loss'],
+      ),
+      tradeGainPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}trade_gain_percent'],
+      ),
+      accountChangePercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}account_change_percent'],
+      ),
+      newBalance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}new_balance'],
+      ),
+      calculatedTradeDuration: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}calculated_trade_duration'],
+      ),
     );
   }
 
@@ -1221,6 +1672,25 @@ class Trade extends DataClass implements Insertable<Trade> {
   final double? riskAmount;
   final double? achievedR;
   final int? tradeDuration;
+  final String? wl;
+  final String? entryDayOfWeek;
+  final String? entrySession;
+  final double? orderValue;
+  final double? qty;
+  final double? positionToAccPercent;
+  final double? plannedSlPercent;
+  final double? accRiskedPercent;
+  final double? plannedReturn;
+  final String? exitDayOfWeek;
+  final String? psTag;
+  final double? actualReturn;
+  final double? grossProfitLoss;
+  final double? positionFees;
+  final double? netProfitLoss;
+  final double? tradeGainPercent;
+  final double? accountChangePercent;
+  final double? newBalance;
+  final int? calculatedTradeDuration;
   const Trade({
     required this.id,
     this.tag,
@@ -1271,6 +1741,25 @@ class Trade extends DataClass implements Insertable<Trade> {
     this.riskAmount,
     this.achievedR,
     this.tradeDuration,
+    this.wl,
+    this.entryDayOfWeek,
+    this.entrySession,
+    this.orderValue,
+    this.qty,
+    this.positionToAccPercent,
+    this.plannedSlPercent,
+    this.accRiskedPercent,
+    this.plannedReturn,
+    this.exitDayOfWeek,
+    this.psTag,
+    this.actualReturn,
+    this.grossProfitLoss,
+    this.positionFees,
+    this.netProfitLoss,
+    this.tradeGainPercent,
+    this.accountChangePercent,
+    this.newBalance,
+    this.calculatedTradeDuration,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1404,6 +1893,63 @@ class Trade extends DataClass implements Insertable<Trade> {
     if (!nullToAbsent || tradeDuration != null) {
       map['trade_duration'] = Variable<int>(tradeDuration);
     }
+    if (!nullToAbsent || wl != null) {
+      map['wl'] = Variable<String>(wl);
+    }
+    if (!nullToAbsent || entryDayOfWeek != null) {
+      map['entry_day_of_week'] = Variable<String>(entryDayOfWeek);
+    }
+    if (!nullToAbsent || entrySession != null) {
+      map['entry_session'] = Variable<String>(entrySession);
+    }
+    if (!nullToAbsent || orderValue != null) {
+      map['order_value'] = Variable<double>(orderValue);
+    }
+    if (!nullToAbsent || qty != null) {
+      map['qty'] = Variable<double>(qty);
+    }
+    if (!nullToAbsent || positionToAccPercent != null) {
+      map['position_to_acc_percent'] = Variable<double>(positionToAccPercent);
+    }
+    if (!nullToAbsent || plannedSlPercent != null) {
+      map['planned_sl_percent'] = Variable<double>(plannedSlPercent);
+    }
+    if (!nullToAbsent || accRiskedPercent != null) {
+      map['acc_risked_percent'] = Variable<double>(accRiskedPercent);
+    }
+    if (!nullToAbsent || plannedReturn != null) {
+      map['planned_return'] = Variable<double>(plannedReturn);
+    }
+    if (!nullToAbsent || exitDayOfWeek != null) {
+      map['exit_day_of_week'] = Variable<String>(exitDayOfWeek);
+    }
+    if (!nullToAbsent || psTag != null) {
+      map['ps_tag'] = Variable<String>(psTag);
+    }
+    if (!nullToAbsent || actualReturn != null) {
+      map['actual_return'] = Variable<double>(actualReturn);
+    }
+    if (!nullToAbsent || grossProfitLoss != null) {
+      map['gross_profit_loss'] = Variable<double>(grossProfitLoss);
+    }
+    if (!nullToAbsent || positionFees != null) {
+      map['position_fees'] = Variable<double>(positionFees);
+    }
+    if (!nullToAbsent || netProfitLoss != null) {
+      map['net_profit_loss'] = Variable<double>(netProfitLoss);
+    }
+    if (!nullToAbsent || tradeGainPercent != null) {
+      map['trade_gain_percent'] = Variable<double>(tradeGainPercent);
+    }
+    if (!nullToAbsent || accountChangePercent != null) {
+      map['account_change_percent'] = Variable<double>(accountChangePercent);
+    }
+    if (!nullToAbsent || newBalance != null) {
+      map['new_balance'] = Variable<double>(newBalance);
+    }
+    if (!nullToAbsent || calculatedTradeDuration != null) {
+      map['calculated_trade_duration'] = Variable<int>(calculatedTradeDuration);
+    }
     return map;
   }
 
@@ -1530,6 +2076,59 @@ class Trade extends DataClass implements Insertable<Trade> {
       tradeDuration: tradeDuration == null && nullToAbsent
           ? const Value.absent()
           : Value(tradeDuration),
+      wl: wl == null && nullToAbsent ? const Value.absent() : Value(wl),
+      entryDayOfWeek: entryDayOfWeek == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryDayOfWeek),
+      entrySession: entrySession == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entrySession),
+      orderValue: orderValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(orderValue),
+      qty: qty == null && nullToAbsent ? const Value.absent() : Value(qty),
+      positionToAccPercent: positionToAccPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(positionToAccPercent),
+      plannedSlPercent: plannedSlPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plannedSlPercent),
+      accRiskedPercent: accRiskedPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accRiskedPercent),
+      plannedReturn: plannedReturn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plannedReturn),
+      exitDayOfWeek: exitDayOfWeek == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitDayOfWeek),
+      psTag: psTag == null && nullToAbsent
+          ? const Value.absent()
+          : Value(psTag),
+      actualReturn: actualReturn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualReturn),
+      grossProfitLoss: grossProfitLoss == null && nullToAbsent
+          ? const Value.absent()
+          : Value(grossProfitLoss),
+      positionFees: positionFees == null && nullToAbsent
+          ? const Value.absent()
+          : Value(positionFees),
+      netProfitLoss: netProfitLoss == null && nullToAbsent
+          ? const Value.absent()
+          : Value(netProfitLoss),
+      tradeGainPercent: tradeGainPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tradeGainPercent),
+      accountChangePercent: accountChangePercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountChangePercent),
+      newBalance: newBalance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(newBalance),
+      calculatedTradeDuration: calculatedTradeDuration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(calculatedTradeDuration),
     );
   }
 
@@ -1594,6 +2193,31 @@ class Trade extends DataClass implements Insertable<Trade> {
       riskAmount: serializer.fromJson<double?>(json['riskAmount']),
       achievedR: serializer.fromJson<double?>(json['achievedR']),
       tradeDuration: serializer.fromJson<int?>(json['tradeDuration']),
+      wl: serializer.fromJson<String?>(json['wl']),
+      entryDayOfWeek: serializer.fromJson<String?>(json['entryDayOfWeek']),
+      entrySession: serializer.fromJson<String?>(json['entrySession']),
+      orderValue: serializer.fromJson<double?>(json['orderValue']),
+      qty: serializer.fromJson<double?>(json['qty']),
+      positionToAccPercent: serializer.fromJson<double?>(
+        json['positionToAccPercent'],
+      ),
+      plannedSlPercent: serializer.fromJson<double?>(json['plannedSlPercent']),
+      accRiskedPercent: serializer.fromJson<double?>(json['accRiskedPercent']),
+      plannedReturn: serializer.fromJson<double?>(json['plannedReturn']),
+      exitDayOfWeek: serializer.fromJson<String?>(json['exitDayOfWeek']),
+      psTag: serializer.fromJson<String?>(json['psTag']),
+      actualReturn: serializer.fromJson<double?>(json['actualReturn']),
+      grossProfitLoss: serializer.fromJson<double?>(json['grossProfitLoss']),
+      positionFees: serializer.fromJson<double?>(json['positionFees']),
+      netProfitLoss: serializer.fromJson<double?>(json['netProfitLoss']),
+      tradeGainPercent: serializer.fromJson<double?>(json['tradeGainPercent']),
+      accountChangePercent: serializer.fromJson<double?>(
+        json['accountChangePercent'],
+      ),
+      newBalance: serializer.fromJson<double?>(json['newBalance']),
+      calculatedTradeDuration: serializer.fromJson<int?>(
+        json['calculatedTradeDuration'],
+      ),
     );
   }
   @override
@@ -1649,6 +2273,27 @@ class Trade extends DataClass implements Insertable<Trade> {
       'riskAmount': serializer.toJson<double?>(riskAmount),
       'achievedR': serializer.toJson<double?>(achievedR),
       'tradeDuration': serializer.toJson<int?>(tradeDuration),
+      'wl': serializer.toJson<String?>(wl),
+      'entryDayOfWeek': serializer.toJson<String?>(entryDayOfWeek),
+      'entrySession': serializer.toJson<String?>(entrySession),
+      'orderValue': serializer.toJson<double?>(orderValue),
+      'qty': serializer.toJson<double?>(qty),
+      'positionToAccPercent': serializer.toJson<double?>(positionToAccPercent),
+      'plannedSlPercent': serializer.toJson<double?>(plannedSlPercent),
+      'accRiskedPercent': serializer.toJson<double?>(accRiskedPercent),
+      'plannedReturn': serializer.toJson<double?>(plannedReturn),
+      'exitDayOfWeek': serializer.toJson<String?>(exitDayOfWeek),
+      'psTag': serializer.toJson<String?>(psTag),
+      'actualReturn': serializer.toJson<double?>(actualReturn),
+      'grossProfitLoss': serializer.toJson<double?>(grossProfitLoss),
+      'positionFees': serializer.toJson<double?>(positionFees),
+      'netProfitLoss': serializer.toJson<double?>(netProfitLoss),
+      'tradeGainPercent': serializer.toJson<double?>(tradeGainPercent),
+      'accountChangePercent': serializer.toJson<double?>(accountChangePercent),
+      'newBalance': serializer.toJson<double?>(newBalance),
+      'calculatedTradeDuration': serializer.toJson<int?>(
+        calculatedTradeDuration,
+      ),
     };
   }
 
@@ -1702,6 +2347,25 @@ class Trade extends DataClass implements Insertable<Trade> {
     Value<double?> riskAmount = const Value.absent(),
     Value<double?> achievedR = const Value.absent(),
     Value<int?> tradeDuration = const Value.absent(),
+    Value<String?> wl = const Value.absent(),
+    Value<String?> entryDayOfWeek = const Value.absent(),
+    Value<String?> entrySession = const Value.absent(),
+    Value<double?> orderValue = const Value.absent(),
+    Value<double?> qty = const Value.absent(),
+    Value<double?> positionToAccPercent = const Value.absent(),
+    Value<double?> plannedSlPercent = const Value.absent(),
+    Value<double?> accRiskedPercent = const Value.absent(),
+    Value<double?> plannedReturn = const Value.absent(),
+    Value<String?> exitDayOfWeek = const Value.absent(),
+    Value<String?> psTag = const Value.absent(),
+    Value<double?> actualReturn = const Value.absent(),
+    Value<double?> grossProfitLoss = const Value.absent(),
+    Value<double?> positionFees = const Value.absent(),
+    Value<double?> netProfitLoss = const Value.absent(),
+    Value<double?> tradeGainPercent = const Value.absent(),
+    Value<double?> accountChangePercent = const Value.absent(),
+    Value<double?> newBalance = const Value.absent(),
+    Value<int?> calculatedTradeDuration = const Value.absent(),
   }) => Trade(
     id: id ?? this.id,
     tag: tag.present ? tag.value : this.tag,
@@ -1780,6 +2444,47 @@ class Trade extends DataClass implements Insertable<Trade> {
     tradeDuration: tradeDuration.present
         ? tradeDuration.value
         : this.tradeDuration,
+    wl: wl.present ? wl.value : this.wl,
+    entryDayOfWeek: entryDayOfWeek.present
+        ? entryDayOfWeek.value
+        : this.entryDayOfWeek,
+    entrySession: entrySession.present ? entrySession.value : this.entrySession,
+    orderValue: orderValue.present ? orderValue.value : this.orderValue,
+    qty: qty.present ? qty.value : this.qty,
+    positionToAccPercent: positionToAccPercent.present
+        ? positionToAccPercent.value
+        : this.positionToAccPercent,
+    plannedSlPercent: plannedSlPercent.present
+        ? plannedSlPercent.value
+        : this.plannedSlPercent,
+    accRiskedPercent: accRiskedPercent.present
+        ? accRiskedPercent.value
+        : this.accRiskedPercent,
+    plannedReturn: plannedReturn.present
+        ? plannedReturn.value
+        : this.plannedReturn,
+    exitDayOfWeek: exitDayOfWeek.present
+        ? exitDayOfWeek.value
+        : this.exitDayOfWeek,
+    psTag: psTag.present ? psTag.value : this.psTag,
+    actualReturn: actualReturn.present ? actualReturn.value : this.actualReturn,
+    grossProfitLoss: grossProfitLoss.present
+        ? grossProfitLoss.value
+        : this.grossProfitLoss,
+    positionFees: positionFees.present ? positionFees.value : this.positionFees,
+    netProfitLoss: netProfitLoss.present
+        ? netProfitLoss.value
+        : this.netProfitLoss,
+    tradeGainPercent: tradeGainPercent.present
+        ? tradeGainPercent.value
+        : this.tradeGainPercent,
+    accountChangePercent: accountChangePercent.present
+        ? accountChangePercent.value
+        : this.accountChangePercent,
+    newBalance: newBalance.present ? newBalance.value : this.newBalance,
+    calculatedTradeDuration: calculatedTradeDuration.present
+        ? calculatedTradeDuration.value
+        : this.calculatedTradeDuration,
   );
   Trade copyWithCompanion(TradesCompanion data) {
     return Trade(
@@ -1878,6 +2583,57 @@ class Trade extends DataClass implements Insertable<Trade> {
       tradeDuration: data.tradeDuration.present
           ? data.tradeDuration.value
           : this.tradeDuration,
+      wl: data.wl.present ? data.wl.value : this.wl,
+      entryDayOfWeek: data.entryDayOfWeek.present
+          ? data.entryDayOfWeek.value
+          : this.entryDayOfWeek,
+      entrySession: data.entrySession.present
+          ? data.entrySession.value
+          : this.entrySession,
+      orderValue: data.orderValue.present
+          ? data.orderValue.value
+          : this.orderValue,
+      qty: data.qty.present ? data.qty.value : this.qty,
+      positionToAccPercent: data.positionToAccPercent.present
+          ? data.positionToAccPercent.value
+          : this.positionToAccPercent,
+      plannedSlPercent: data.plannedSlPercent.present
+          ? data.plannedSlPercent.value
+          : this.plannedSlPercent,
+      accRiskedPercent: data.accRiskedPercent.present
+          ? data.accRiskedPercent.value
+          : this.accRiskedPercent,
+      plannedReturn: data.plannedReturn.present
+          ? data.plannedReturn.value
+          : this.plannedReturn,
+      exitDayOfWeek: data.exitDayOfWeek.present
+          ? data.exitDayOfWeek.value
+          : this.exitDayOfWeek,
+      psTag: data.psTag.present ? data.psTag.value : this.psTag,
+      actualReturn: data.actualReturn.present
+          ? data.actualReturn.value
+          : this.actualReturn,
+      grossProfitLoss: data.grossProfitLoss.present
+          ? data.grossProfitLoss.value
+          : this.grossProfitLoss,
+      positionFees: data.positionFees.present
+          ? data.positionFees.value
+          : this.positionFees,
+      netProfitLoss: data.netProfitLoss.present
+          ? data.netProfitLoss.value
+          : this.netProfitLoss,
+      tradeGainPercent: data.tradeGainPercent.present
+          ? data.tradeGainPercent.value
+          : this.tradeGainPercent,
+      accountChangePercent: data.accountChangePercent.present
+          ? data.accountChangePercent.value
+          : this.accountChangePercent,
+      newBalance: data.newBalance.present
+          ? data.newBalance.value
+          : this.newBalance,
+      calculatedTradeDuration: data.calculatedTradeDuration.present
+          ? data.calculatedTradeDuration.value
+          : this.calculatedTradeDuration,
     );
   }
 
@@ -1932,7 +2688,26 @@ class Trade extends DataClass implements Insertable<Trade> {
           ..write('accountBalance: $accountBalance, ')
           ..write('riskAmount: $riskAmount, ')
           ..write('achievedR: $achievedR, ')
-          ..write('tradeDuration: $tradeDuration')
+          ..write('tradeDuration: $tradeDuration, ')
+          ..write('wl: $wl, ')
+          ..write('entryDayOfWeek: $entryDayOfWeek, ')
+          ..write('entrySession: $entrySession, ')
+          ..write('orderValue: $orderValue, ')
+          ..write('qty: $qty, ')
+          ..write('positionToAccPercent: $positionToAccPercent, ')
+          ..write('plannedSlPercent: $plannedSlPercent, ')
+          ..write('accRiskedPercent: $accRiskedPercent, ')
+          ..write('plannedReturn: $plannedReturn, ')
+          ..write('exitDayOfWeek: $exitDayOfWeek, ')
+          ..write('psTag: $psTag, ')
+          ..write('actualReturn: $actualReturn, ')
+          ..write('grossProfitLoss: $grossProfitLoss, ')
+          ..write('positionFees: $positionFees, ')
+          ..write('netProfitLoss: $netProfitLoss, ')
+          ..write('tradeGainPercent: $tradeGainPercent, ')
+          ..write('accountChangePercent: $accountChangePercent, ')
+          ..write('newBalance: $newBalance, ')
+          ..write('calculatedTradeDuration: $calculatedTradeDuration')
           ..write(')'))
         .toString();
   }
@@ -1988,6 +2763,25 @@ class Trade extends DataClass implements Insertable<Trade> {
     riskAmount,
     achievedR,
     tradeDuration,
+    wl,
+    entryDayOfWeek,
+    entrySession,
+    orderValue,
+    qty,
+    positionToAccPercent,
+    plannedSlPercent,
+    accRiskedPercent,
+    plannedReturn,
+    exitDayOfWeek,
+    psTag,
+    actualReturn,
+    grossProfitLoss,
+    positionFees,
+    netProfitLoss,
+    tradeGainPercent,
+    accountChangePercent,
+    newBalance,
+    calculatedTradeDuration,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -2041,7 +2835,26 @@ class Trade extends DataClass implements Insertable<Trade> {
           other.accountBalance == this.accountBalance &&
           other.riskAmount == this.riskAmount &&
           other.achievedR == this.achievedR &&
-          other.tradeDuration == this.tradeDuration);
+          other.tradeDuration == this.tradeDuration &&
+          other.wl == this.wl &&
+          other.entryDayOfWeek == this.entryDayOfWeek &&
+          other.entrySession == this.entrySession &&
+          other.orderValue == this.orderValue &&
+          other.qty == this.qty &&
+          other.positionToAccPercent == this.positionToAccPercent &&
+          other.plannedSlPercent == this.plannedSlPercent &&
+          other.accRiskedPercent == this.accRiskedPercent &&
+          other.plannedReturn == this.plannedReturn &&
+          other.exitDayOfWeek == this.exitDayOfWeek &&
+          other.psTag == this.psTag &&
+          other.actualReturn == this.actualReturn &&
+          other.grossProfitLoss == this.grossProfitLoss &&
+          other.positionFees == this.positionFees &&
+          other.netProfitLoss == this.netProfitLoss &&
+          other.tradeGainPercent == this.tradeGainPercent &&
+          other.accountChangePercent == this.accountChangePercent &&
+          other.newBalance == this.newBalance &&
+          other.calculatedTradeDuration == this.calculatedTradeDuration);
 }
 
 class TradesCompanion extends UpdateCompanion<Trade> {
@@ -2094,6 +2907,25 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   final Value<double?> riskAmount;
   final Value<double?> achievedR;
   final Value<int?> tradeDuration;
+  final Value<String?> wl;
+  final Value<String?> entryDayOfWeek;
+  final Value<String?> entrySession;
+  final Value<double?> orderValue;
+  final Value<double?> qty;
+  final Value<double?> positionToAccPercent;
+  final Value<double?> plannedSlPercent;
+  final Value<double?> accRiskedPercent;
+  final Value<double?> plannedReturn;
+  final Value<String?> exitDayOfWeek;
+  final Value<String?> psTag;
+  final Value<double?> actualReturn;
+  final Value<double?> grossProfitLoss;
+  final Value<double?> positionFees;
+  final Value<double?> netProfitLoss;
+  final Value<double?> tradeGainPercent;
+  final Value<double?> accountChangePercent;
+  final Value<double?> newBalance;
+  final Value<int?> calculatedTradeDuration;
   const TradesCompanion({
     this.id = const Value.absent(),
     this.tag = const Value.absent(),
@@ -2144,6 +2976,25 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     this.riskAmount = const Value.absent(),
     this.achievedR = const Value.absent(),
     this.tradeDuration = const Value.absent(),
+    this.wl = const Value.absent(),
+    this.entryDayOfWeek = const Value.absent(),
+    this.entrySession = const Value.absent(),
+    this.orderValue = const Value.absent(),
+    this.qty = const Value.absent(),
+    this.positionToAccPercent = const Value.absent(),
+    this.plannedSlPercent = const Value.absent(),
+    this.accRiskedPercent = const Value.absent(),
+    this.plannedReturn = const Value.absent(),
+    this.exitDayOfWeek = const Value.absent(),
+    this.psTag = const Value.absent(),
+    this.actualReturn = const Value.absent(),
+    this.grossProfitLoss = const Value.absent(),
+    this.positionFees = const Value.absent(),
+    this.netProfitLoss = const Value.absent(),
+    this.tradeGainPercent = const Value.absent(),
+    this.accountChangePercent = const Value.absent(),
+    this.newBalance = const Value.absent(),
+    this.calculatedTradeDuration = const Value.absent(),
   });
   TradesCompanion.insert({
     this.id = const Value.absent(),
@@ -2195,6 +3046,25 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     this.riskAmount = const Value.absent(),
     this.achievedR = const Value.absent(),
     this.tradeDuration = const Value.absent(),
+    this.wl = const Value.absent(),
+    this.entryDayOfWeek = const Value.absent(),
+    this.entrySession = const Value.absent(),
+    this.orderValue = const Value.absent(),
+    this.qty = const Value.absent(),
+    this.positionToAccPercent = const Value.absent(),
+    this.plannedSlPercent = const Value.absent(),
+    this.accRiskedPercent = const Value.absent(),
+    this.plannedReturn = const Value.absent(),
+    this.exitDayOfWeek = const Value.absent(),
+    this.psTag = const Value.absent(),
+    this.actualReturn = const Value.absent(),
+    this.grossProfitLoss = const Value.absent(),
+    this.positionFees = const Value.absent(),
+    this.netProfitLoss = const Value.absent(),
+    this.tradeGainPercent = const Value.absent(),
+    this.accountChangePercent = const Value.absent(),
+    this.newBalance = const Value.absent(),
+    this.calculatedTradeDuration = const Value.absent(),
   }) : datetime = Value(datetime),
        symbol = Value(symbol),
        entryPrice = Value(entryPrice),
@@ -2253,6 +3123,25 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     Expression<double>? riskAmount,
     Expression<double>? achievedR,
     Expression<int>? tradeDuration,
+    Expression<String>? wl,
+    Expression<String>? entryDayOfWeek,
+    Expression<String>? entrySession,
+    Expression<double>? orderValue,
+    Expression<double>? qty,
+    Expression<double>? positionToAccPercent,
+    Expression<double>? plannedSlPercent,
+    Expression<double>? accRiskedPercent,
+    Expression<double>? plannedReturn,
+    Expression<String>? exitDayOfWeek,
+    Expression<String>? psTag,
+    Expression<double>? actualReturn,
+    Expression<double>? grossProfitLoss,
+    Expression<double>? positionFees,
+    Expression<double>? netProfitLoss,
+    Expression<double>? tradeGainPercent,
+    Expression<double>? accountChangePercent,
+    Expression<double>? newBalance,
+    Expression<int>? calculatedTradeDuration,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2305,6 +3194,28 @@ class TradesCompanion extends UpdateCompanion<Trade> {
       if (riskAmount != null) 'risk_amount': riskAmount,
       if (achievedR != null) 'achieved_r': achievedR,
       if (tradeDuration != null) 'trade_duration': tradeDuration,
+      if (wl != null) 'wl': wl,
+      if (entryDayOfWeek != null) 'entry_day_of_week': entryDayOfWeek,
+      if (entrySession != null) 'entry_session': entrySession,
+      if (orderValue != null) 'order_value': orderValue,
+      if (qty != null) 'qty': qty,
+      if (positionToAccPercent != null)
+        'position_to_acc_percent': positionToAccPercent,
+      if (plannedSlPercent != null) 'planned_sl_percent': plannedSlPercent,
+      if (accRiskedPercent != null) 'acc_risked_percent': accRiskedPercent,
+      if (plannedReturn != null) 'planned_return': plannedReturn,
+      if (exitDayOfWeek != null) 'exit_day_of_week': exitDayOfWeek,
+      if (psTag != null) 'ps_tag': psTag,
+      if (actualReturn != null) 'actual_return': actualReturn,
+      if (grossProfitLoss != null) 'gross_profit_loss': grossProfitLoss,
+      if (positionFees != null) 'position_fees': positionFees,
+      if (netProfitLoss != null) 'net_profit_loss': netProfitLoss,
+      if (tradeGainPercent != null) 'trade_gain_percent': tradeGainPercent,
+      if (accountChangePercent != null)
+        'account_change_percent': accountChangePercent,
+      if (newBalance != null) 'new_balance': newBalance,
+      if (calculatedTradeDuration != null)
+        'calculated_trade_duration': calculatedTradeDuration,
     });
   }
 
@@ -2358,6 +3269,25 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     Value<double?>? riskAmount,
     Value<double?>? achievedR,
     Value<int?>? tradeDuration,
+    Value<String?>? wl,
+    Value<String?>? entryDayOfWeek,
+    Value<String?>? entrySession,
+    Value<double?>? orderValue,
+    Value<double?>? qty,
+    Value<double?>? positionToAccPercent,
+    Value<double?>? plannedSlPercent,
+    Value<double?>? accRiskedPercent,
+    Value<double?>? plannedReturn,
+    Value<String?>? exitDayOfWeek,
+    Value<String?>? psTag,
+    Value<double?>? actualReturn,
+    Value<double?>? grossProfitLoss,
+    Value<double?>? positionFees,
+    Value<double?>? netProfitLoss,
+    Value<double?>? tradeGainPercent,
+    Value<double?>? accountChangePercent,
+    Value<double?>? newBalance,
+    Value<int?>? calculatedTradeDuration,
   }) {
     return TradesCompanion(
       id: id ?? this.id,
@@ -2409,6 +3339,26 @@ class TradesCompanion extends UpdateCompanion<Trade> {
       riskAmount: riskAmount ?? this.riskAmount,
       achievedR: achievedR ?? this.achievedR,
       tradeDuration: tradeDuration ?? this.tradeDuration,
+      wl: wl ?? this.wl,
+      entryDayOfWeek: entryDayOfWeek ?? this.entryDayOfWeek,
+      entrySession: entrySession ?? this.entrySession,
+      orderValue: orderValue ?? this.orderValue,
+      qty: qty ?? this.qty,
+      positionToAccPercent: positionToAccPercent ?? this.positionToAccPercent,
+      plannedSlPercent: plannedSlPercent ?? this.plannedSlPercent,
+      accRiskedPercent: accRiskedPercent ?? this.accRiskedPercent,
+      plannedReturn: plannedReturn ?? this.plannedReturn,
+      exitDayOfWeek: exitDayOfWeek ?? this.exitDayOfWeek,
+      psTag: psTag ?? this.psTag,
+      actualReturn: actualReturn ?? this.actualReturn,
+      grossProfitLoss: grossProfitLoss ?? this.grossProfitLoss,
+      positionFees: positionFees ?? this.positionFees,
+      netProfitLoss: netProfitLoss ?? this.netProfitLoss,
+      tradeGainPercent: tradeGainPercent ?? this.tradeGainPercent,
+      accountChangePercent: accountChangePercent ?? this.accountChangePercent,
+      newBalance: newBalance ?? this.newBalance,
+      calculatedTradeDuration:
+          calculatedTradeDuration ?? this.calculatedTradeDuration,
     );
   }
 
@@ -2564,6 +3514,69 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     if (tradeDuration.present) {
       map['trade_duration'] = Variable<int>(tradeDuration.value);
     }
+    if (wl.present) {
+      map['wl'] = Variable<String>(wl.value);
+    }
+    if (entryDayOfWeek.present) {
+      map['entry_day_of_week'] = Variable<String>(entryDayOfWeek.value);
+    }
+    if (entrySession.present) {
+      map['entry_session'] = Variable<String>(entrySession.value);
+    }
+    if (orderValue.present) {
+      map['order_value'] = Variable<double>(orderValue.value);
+    }
+    if (qty.present) {
+      map['qty'] = Variable<double>(qty.value);
+    }
+    if (positionToAccPercent.present) {
+      map['position_to_acc_percent'] = Variable<double>(
+        positionToAccPercent.value,
+      );
+    }
+    if (plannedSlPercent.present) {
+      map['planned_sl_percent'] = Variable<double>(plannedSlPercent.value);
+    }
+    if (accRiskedPercent.present) {
+      map['acc_risked_percent'] = Variable<double>(accRiskedPercent.value);
+    }
+    if (plannedReturn.present) {
+      map['planned_return'] = Variable<double>(plannedReturn.value);
+    }
+    if (exitDayOfWeek.present) {
+      map['exit_day_of_week'] = Variable<String>(exitDayOfWeek.value);
+    }
+    if (psTag.present) {
+      map['ps_tag'] = Variable<String>(psTag.value);
+    }
+    if (actualReturn.present) {
+      map['actual_return'] = Variable<double>(actualReturn.value);
+    }
+    if (grossProfitLoss.present) {
+      map['gross_profit_loss'] = Variable<double>(grossProfitLoss.value);
+    }
+    if (positionFees.present) {
+      map['position_fees'] = Variable<double>(positionFees.value);
+    }
+    if (netProfitLoss.present) {
+      map['net_profit_loss'] = Variable<double>(netProfitLoss.value);
+    }
+    if (tradeGainPercent.present) {
+      map['trade_gain_percent'] = Variable<double>(tradeGainPercent.value);
+    }
+    if (accountChangePercent.present) {
+      map['account_change_percent'] = Variable<double>(
+        accountChangePercent.value,
+      );
+    }
+    if (newBalance.present) {
+      map['new_balance'] = Variable<double>(newBalance.value);
+    }
+    if (calculatedTradeDuration.present) {
+      map['calculated_trade_duration'] = Variable<int>(
+        calculatedTradeDuration.value,
+      );
+    }
     return map;
   }
 
@@ -2618,7 +3631,26 @@ class TradesCompanion extends UpdateCompanion<Trade> {
           ..write('accountBalance: $accountBalance, ')
           ..write('riskAmount: $riskAmount, ')
           ..write('achievedR: $achievedR, ')
-          ..write('tradeDuration: $tradeDuration')
+          ..write('tradeDuration: $tradeDuration, ')
+          ..write('wl: $wl, ')
+          ..write('entryDayOfWeek: $entryDayOfWeek, ')
+          ..write('entrySession: $entrySession, ')
+          ..write('orderValue: $orderValue, ')
+          ..write('qty: $qty, ')
+          ..write('positionToAccPercent: $positionToAccPercent, ')
+          ..write('plannedSlPercent: $plannedSlPercent, ')
+          ..write('accRiskedPercent: $accRiskedPercent, ')
+          ..write('plannedReturn: $plannedReturn, ')
+          ..write('exitDayOfWeek: $exitDayOfWeek, ')
+          ..write('psTag: $psTag, ')
+          ..write('actualReturn: $actualReturn, ')
+          ..write('grossProfitLoss: $grossProfitLoss, ')
+          ..write('positionFees: $positionFees, ')
+          ..write('netProfitLoss: $netProfitLoss, ')
+          ..write('tradeGainPercent: $tradeGainPercent, ')
+          ..write('accountChangePercent: $accountChangePercent, ')
+          ..write('newBalance: $newBalance, ')
+          ..write('calculatedTradeDuration: $calculatedTradeDuration')
           ..write(')'))
         .toString();
   }
@@ -4351,6 +5383,25 @@ typedef $$TradesTableCreateCompanionBuilder =
       Value<double?> riskAmount,
       Value<double?> achievedR,
       Value<int?> tradeDuration,
+      Value<String?> wl,
+      Value<String?> entryDayOfWeek,
+      Value<String?> entrySession,
+      Value<double?> orderValue,
+      Value<double?> qty,
+      Value<double?> positionToAccPercent,
+      Value<double?> plannedSlPercent,
+      Value<double?> accRiskedPercent,
+      Value<double?> plannedReturn,
+      Value<String?> exitDayOfWeek,
+      Value<String?> psTag,
+      Value<double?> actualReturn,
+      Value<double?> grossProfitLoss,
+      Value<double?> positionFees,
+      Value<double?> netProfitLoss,
+      Value<double?> tradeGainPercent,
+      Value<double?> accountChangePercent,
+      Value<double?> newBalance,
+      Value<int?> calculatedTradeDuration,
     });
 typedef $$TradesTableUpdateCompanionBuilder =
     TradesCompanion Function({
@@ -4403,6 +5454,25 @@ typedef $$TradesTableUpdateCompanionBuilder =
       Value<double?> riskAmount,
       Value<double?> achievedR,
       Value<int?> tradeDuration,
+      Value<String?> wl,
+      Value<String?> entryDayOfWeek,
+      Value<String?> entrySession,
+      Value<double?> orderValue,
+      Value<double?> qty,
+      Value<double?> positionToAccPercent,
+      Value<double?> plannedSlPercent,
+      Value<double?> accRiskedPercent,
+      Value<double?> plannedReturn,
+      Value<String?> exitDayOfWeek,
+      Value<String?> psTag,
+      Value<double?> actualReturn,
+      Value<double?> grossProfitLoss,
+      Value<double?> positionFees,
+      Value<double?> netProfitLoss,
+      Value<double?> tradeGainPercent,
+      Value<double?> accountChangePercent,
+      Value<double?> newBalance,
+      Value<int?> calculatedTradeDuration,
     });
 
 class $$TradesTableFilterComposer
@@ -4656,6 +5726,101 @@ class $$TradesTableFilterComposer
 
   ColumnFilters<int> get tradeDuration => $composableBuilder(
     column: $table.tradeDuration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get wl => $composableBuilder(
+    column: $table.wl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entryDayOfWeek => $composableBuilder(
+    column: $table.entryDayOfWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entrySession => $composableBuilder(
+    column: $table.entrySession,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get orderValue => $composableBuilder(
+    column: $table.orderValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get positionToAccPercent => $composableBuilder(
+    column: $table.positionToAccPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get plannedSlPercent => $composableBuilder(
+    column: $table.plannedSlPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get accRiskedPercent => $composableBuilder(
+    column: $table.accRiskedPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get plannedReturn => $composableBuilder(
+    column: $table.plannedReturn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exitDayOfWeek => $composableBuilder(
+    column: $table.exitDayOfWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get psTag => $composableBuilder(
+    column: $table.psTag,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get actualReturn => $composableBuilder(
+    column: $table.actualReturn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get grossProfitLoss => $composableBuilder(
+    column: $table.grossProfitLoss,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get positionFees => $composableBuilder(
+    column: $table.positionFees,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get netProfitLoss => $composableBuilder(
+    column: $table.netProfitLoss,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get tradeGainPercent => $composableBuilder(
+    column: $table.tradeGainPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get accountChangePercent => $composableBuilder(
+    column: $table.accountChangePercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get newBalance => $composableBuilder(
+    column: $table.newBalance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get calculatedTradeDuration => $composableBuilder(
+    column: $table.calculatedTradeDuration,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4913,6 +6078,101 @@ class $$TradesTableOrderingComposer
     column: $table.tradeDuration,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get wl => $composableBuilder(
+    column: $table.wl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entryDayOfWeek => $composableBuilder(
+    column: $table.entryDayOfWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entrySession => $composableBuilder(
+    column: $table.entrySession,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get orderValue => $composableBuilder(
+    column: $table.orderValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get positionToAccPercent => $composableBuilder(
+    column: $table.positionToAccPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get plannedSlPercent => $composableBuilder(
+    column: $table.plannedSlPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get accRiskedPercent => $composableBuilder(
+    column: $table.accRiskedPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get plannedReturn => $composableBuilder(
+    column: $table.plannedReturn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exitDayOfWeek => $composableBuilder(
+    column: $table.exitDayOfWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get psTag => $composableBuilder(
+    column: $table.psTag,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get actualReturn => $composableBuilder(
+    column: $table.actualReturn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get grossProfitLoss => $composableBuilder(
+    column: $table.grossProfitLoss,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get positionFees => $composableBuilder(
+    column: $table.positionFees,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get netProfitLoss => $composableBuilder(
+    column: $table.netProfitLoss,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get tradeGainPercent => $composableBuilder(
+    column: $table.tradeGainPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get accountChangePercent => $composableBuilder(
+    column: $table.accountChangePercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get newBalance => $composableBuilder(
+    column: $table.newBalance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get calculatedTradeDuration => $composableBuilder(
+    column: $table.calculatedTradeDuration,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TradesTableAnnotationComposer
@@ -5116,6 +6376,95 @@ class $$TradesTableAnnotationComposer
     column: $table.tradeDuration,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get wl =>
+      $composableBuilder(column: $table.wl, builder: (column) => column);
+
+  GeneratedColumn<String> get entryDayOfWeek => $composableBuilder(
+    column: $table.entryDayOfWeek,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entrySession => $composableBuilder(
+    column: $table.entrySession,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get orderValue => $composableBuilder(
+    column: $table.orderValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get qty =>
+      $composableBuilder(column: $table.qty, builder: (column) => column);
+
+  GeneratedColumn<double> get positionToAccPercent => $composableBuilder(
+    column: $table.positionToAccPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get plannedSlPercent => $composableBuilder(
+    column: $table.plannedSlPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get accRiskedPercent => $composableBuilder(
+    column: $table.accRiskedPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get plannedReturn => $composableBuilder(
+    column: $table.plannedReturn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exitDayOfWeek => $composableBuilder(
+    column: $table.exitDayOfWeek,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get psTag =>
+      $composableBuilder(column: $table.psTag, builder: (column) => column);
+
+  GeneratedColumn<double> get actualReturn => $composableBuilder(
+    column: $table.actualReturn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get grossProfitLoss => $composableBuilder(
+    column: $table.grossProfitLoss,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get positionFees => $composableBuilder(
+    column: $table.positionFees,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get netProfitLoss => $composableBuilder(
+    column: $table.netProfitLoss,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get tradeGainPercent => $composableBuilder(
+    column: $table.tradeGainPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get accountChangePercent => $composableBuilder(
+    column: $table.accountChangePercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get newBalance => $composableBuilder(
+    column: $table.newBalance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get calculatedTradeDuration => $composableBuilder(
+    column: $table.calculatedTradeDuration,
+    builder: (column) => column,
+  );
 }
 
 class $$TradesTableTableManager
@@ -5195,6 +6544,25 @@ class $$TradesTableTableManager
                 Value<double?> riskAmount = const Value.absent(),
                 Value<double?> achievedR = const Value.absent(),
                 Value<int?> tradeDuration = const Value.absent(),
+                Value<String?> wl = const Value.absent(),
+                Value<String?> entryDayOfWeek = const Value.absent(),
+                Value<String?> entrySession = const Value.absent(),
+                Value<double?> orderValue = const Value.absent(),
+                Value<double?> qty = const Value.absent(),
+                Value<double?> positionToAccPercent = const Value.absent(),
+                Value<double?> plannedSlPercent = const Value.absent(),
+                Value<double?> accRiskedPercent = const Value.absent(),
+                Value<double?> plannedReturn = const Value.absent(),
+                Value<String?> exitDayOfWeek = const Value.absent(),
+                Value<String?> psTag = const Value.absent(),
+                Value<double?> actualReturn = const Value.absent(),
+                Value<double?> grossProfitLoss = const Value.absent(),
+                Value<double?> positionFees = const Value.absent(),
+                Value<double?> netProfitLoss = const Value.absent(),
+                Value<double?> tradeGainPercent = const Value.absent(),
+                Value<double?> accountChangePercent = const Value.absent(),
+                Value<double?> newBalance = const Value.absent(),
+                Value<int?> calculatedTradeDuration = const Value.absent(),
               }) => TradesCompanion(
                 id: id,
                 tag: tag,
@@ -5245,6 +6613,25 @@ class $$TradesTableTableManager
                 riskAmount: riskAmount,
                 achievedR: achievedR,
                 tradeDuration: tradeDuration,
+                wl: wl,
+                entryDayOfWeek: entryDayOfWeek,
+                entrySession: entrySession,
+                orderValue: orderValue,
+                qty: qty,
+                positionToAccPercent: positionToAccPercent,
+                plannedSlPercent: plannedSlPercent,
+                accRiskedPercent: accRiskedPercent,
+                plannedReturn: plannedReturn,
+                exitDayOfWeek: exitDayOfWeek,
+                psTag: psTag,
+                actualReturn: actualReturn,
+                grossProfitLoss: grossProfitLoss,
+                positionFees: positionFees,
+                netProfitLoss: netProfitLoss,
+                tradeGainPercent: tradeGainPercent,
+                accountChangePercent: accountChangePercent,
+                newBalance: newBalance,
+                calculatedTradeDuration: calculatedTradeDuration,
               ),
           createCompanionCallback:
               ({
@@ -5297,6 +6684,25 @@ class $$TradesTableTableManager
                 Value<double?> riskAmount = const Value.absent(),
                 Value<double?> achievedR = const Value.absent(),
                 Value<int?> tradeDuration = const Value.absent(),
+                Value<String?> wl = const Value.absent(),
+                Value<String?> entryDayOfWeek = const Value.absent(),
+                Value<String?> entrySession = const Value.absent(),
+                Value<double?> orderValue = const Value.absent(),
+                Value<double?> qty = const Value.absent(),
+                Value<double?> positionToAccPercent = const Value.absent(),
+                Value<double?> plannedSlPercent = const Value.absent(),
+                Value<double?> accRiskedPercent = const Value.absent(),
+                Value<double?> plannedReturn = const Value.absent(),
+                Value<String?> exitDayOfWeek = const Value.absent(),
+                Value<String?> psTag = const Value.absent(),
+                Value<double?> actualReturn = const Value.absent(),
+                Value<double?> grossProfitLoss = const Value.absent(),
+                Value<double?> positionFees = const Value.absent(),
+                Value<double?> netProfitLoss = const Value.absent(),
+                Value<double?> tradeGainPercent = const Value.absent(),
+                Value<double?> accountChangePercent = const Value.absent(),
+                Value<double?> newBalance = const Value.absent(),
+                Value<int?> calculatedTradeDuration = const Value.absent(),
               }) => TradesCompanion.insert(
                 id: id,
                 tag: tag,
@@ -5347,6 +6753,25 @@ class $$TradesTableTableManager
                 riskAmount: riskAmount,
                 achievedR: achievedR,
                 tradeDuration: tradeDuration,
+                wl: wl,
+                entryDayOfWeek: entryDayOfWeek,
+                entrySession: entrySession,
+                orderValue: orderValue,
+                qty: qty,
+                positionToAccPercent: positionToAccPercent,
+                plannedSlPercent: plannedSlPercent,
+                accRiskedPercent: accRiskedPercent,
+                plannedReturn: plannedReturn,
+                exitDayOfWeek: exitDayOfWeek,
+                psTag: psTag,
+                actualReturn: actualReturn,
+                grossProfitLoss: grossProfitLoss,
+                positionFees: positionFees,
+                netProfitLoss: netProfitLoss,
+                tradeGainPercent: tradeGainPercent,
+                accountChangePercent: accountChangePercent,
+                newBalance: newBalance,
+                calculatedTradeDuration: calculatedTradeDuration,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
