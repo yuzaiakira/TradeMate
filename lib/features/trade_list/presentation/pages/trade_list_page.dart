@@ -756,7 +756,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                   _buildDetailSection('Trade Results', [
                     _buildDetailRow('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A'),
                     _buildDetailRowWithColor('Gross Profit/Loss', TradeCalculator.calculateGrossProfitLoss(trade) != null ? '\$${TradeCalculator.calculateGrossProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateGrossProfitLoss(trade) ?? 0),
-                    _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(2)}' : 'N/A'),
+                    _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(3)}' : 'N/A'),
                     _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
                     _buildDetailRow('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
                     _buildDetailRow('Account Change %', TradeCalculator.calculateAccountChangePercent(trade) != null ? '${TradeCalculator.calculateAccountChangePercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),

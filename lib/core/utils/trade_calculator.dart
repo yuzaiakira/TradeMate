@@ -28,7 +28,8 @@ class TradeCalculator {
 
   /// Calculate order value = entry price × QTY
   static double? calculateOrderValue(Trade trade) {
-    return trade.entryPrice * trade.quantity;
+    if (trade.leverage == null) return trade.entryPrice * trade.quantity;
+    return trade.entryPrice * trade.quantity * trade.leverage!;
   }
 
   /// Calculate QTY = (position margin × leverage) ÷ entry price
@@ -155,6 +156,7 @@ class TradeCalculator {
     if (trade.exitFeeRate != null) {
       totalFees += (orderValue * trade.exitFeeRate! / 100);
     }
+    
     
     return totalFees > 0 ? totalFees : null;
   }
