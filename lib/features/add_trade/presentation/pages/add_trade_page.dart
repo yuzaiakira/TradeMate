@@ -1935,9 +1935,12 @@ class _AddTradePageState extends State<AddTradePage> {
     AddTradeProvider provider,
   ) async {
     try {
+      // Use the provider's datetime if available, otherwise use current time
+      final DateTime initialDateTime = provider.datetime ?? DateTime.now();
+      
       final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: initialDateTime,
         firstDate: DateTime(2020),
         lastDate: DateTime.now(),
       );
@@ -1949,7 +1952,7 @@ class _AddTradePageState extends State<AddTradePage> {
       final TimeOfDay? time = await showCustomTimePicker(
         // ignore: use_build_context_synchronously
         context: context,
-        initialTime: TimeOfDay.now(),
+        initialTime: TimeOfDay.fromDateTime(initialDateTime),
       );
 
       if (!mounted || time == null) return;
@@ -1983,9 +1986,12 @@ class _AddTradePageState extends State<AddTradePage> {
     AddTradeProvider provider,
   ) async {
     try {
+      // Use the provider's exit datetime if available, otherwise use current time
+      final DateTime initialDateTime = provider.exitDatetime ?? DateTime.now();
+      
       final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: initialDateTime,
         firstDate: DateTime(2020),
         lastDate: DateTime.now(),
       );
@@ -1997,7 +2003,7 @@ class _AddTradePageState extends State<AddTradePage> {
       final TimeOfDay? time = await showCustomTimePicker(
         // ignore: use_build_context_synchronously
         context: context,
-        initialTime: TimeOfDay.now(),
+        initialTime: TimeOfDay.fromDateTime(initialDateTime),
       );
 
       if (!mounted || time == null) return;

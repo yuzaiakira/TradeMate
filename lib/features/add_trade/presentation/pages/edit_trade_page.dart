@@ -1088,9 +1088,12 @@ class _EditTradePageState extends State<EditTradePage> {
 
   // ignore: use_build_context_synchronously
   Future<void> _selectDateTime(BuildContext context, AddTradeProvider provider) async {
+    // Use the existing trade's datetime or the provider's datetime, fallback to current time
+    final DateTime initialDateTime = provider.datetime ?? widget.trade.datetime;
+    
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: provider.datetime ?? DateTime.now(),
+      initialDate: initialDateTime,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
@@ -1101,7 +1104,7 @@ class _EditTradePageState extends State<EditTradePage> {
     final TimeOfDay? time = await showCustomTimePicker(
       // ignore: use_build_context_synchronously
       context: context,
-      initialTime: TimeOfDay.fromDateTime(provider.datetime ?? DateTime.now()),
+      initialTime: TimeOfDay.fromDateTime(initialDateTime),
     );
     
     if (!mounted || time == null) return;
@@ -1122,9 +1125,12 @@ class _EditTradePageState extends State<EditTradePage> {
 
   // ignore: use_build_context_synchronously
   Future<void> _selectExitDateTime(BuildContext context, AddTradeProvider provider) async {
+    // Use the existing trade's exit datetime or the provider's exit datetime, fallback to current time
+    final DateTime initialDateTime = provider.exitDatetime ?? widget.trade.exitDatetime ?? DateTime.now();
+    
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: provider.exitDatetime ?? DateTime.now(),
+      initialDate: initialDateTime,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
@@ -1135,7 +1141,7 @@ class _EditTradePageState extends State<EditTradePage> {
     final TimeOfDay? time = await showCustomTimePicker(
       // ignore: use_build_context_synchronously
       context: context,
-      initialTime: TimeOfDay.fromDateTime(provider.exitDatetime ?? DateTime.now()),
+      initialTime: TimeOfDay.fromDateTime(initialDateTime),
     );
     
     if (!mounted || time == null) return;
