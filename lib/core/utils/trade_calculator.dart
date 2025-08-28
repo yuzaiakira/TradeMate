@@ -125,10 +125,17 @@ class TradeCalculator {
   static double? calculateGrossProfitLoss(Trade trade) {
     if (trade.status != TradeStatus.closed || trade.actualExitPrice == null) return null;
     
+    // Calculate quantity: (position margin × leverage ÷ entry price)
+    final qty = calculateQty(trade);
+    if (qty == null) return null;
+    
+    // Calculate margin closed percentage (default to 100% if not provided)
+    final marginClosedPercent = trade.marginClosedPercent ?? 100.0;
+    
     if (trade.side == Side.long) {
-      return (trade.actualExitPrice! - trade.entryPrice) * trade.quantity;
+      return (trade.actualExitPrice! - trade.entryPrice) * qty * (marginClosedPercent / 100);
     } else if (trade.side == Side.short) {
-      return (trade.entryPrice - trade.actualExitPrice!) * trade.quantity;
+      return (trade.entryPrice - trade.actualExitPrice!) * qty * (marginClosedPercent / 100);
     }
     
     return null;
