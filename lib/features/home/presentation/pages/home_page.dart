@@ -7,6 +7,10 @@ import '../../../account_management/presentation/bloc/account_bloc.dart';
 import '../../../account_management/presentation/bloc/account_event.dart';
 import '../../../account_management/presentation/bloc/account_state.dart';
 import '../../../account_management/presentation/widgets/balance_card.dart';
+import '../../../account_management/presentation/widgets/quick_actions.dart';
+import '../../../account_management/presentation/widgets/transaction_list.dart';
+import '../../../account_management/domain/entities/transaction.dart';
+import '../../../account_management/presentation/pages/transaction_history_page.dart';
 
 import '../widgets/account_growth_chart.dart';
 import '../../../../core/utils/app_theme.dart';
@@ -21,6 +25,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // Statistics are already loaded in MainNavigationPage
   // No need to load them again here
+
+  @override
+  void initState() {
+    super.initState();
+    // Load account data when page is opened
+    context.read<AccountBloc>().add(const LoadAccountBalance());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +129,21 @@ class _HomePageState extends State<HomePage> {
             
             const SizedBox(height: 12),
             
+            // Quick Actions
+            BlocBuilder<AccountBloc, AccountState>(
+              builder: (context, accountState) {
+                if (accountState is AccountLoaded) {
+                  return QuickActions(
+                    onDeposit: () => _showDepositDialog(context),
+                    onWithdraw: () => _showWithdrawalDialog(context),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            
+            const SizedBox(height: 12),
+            
             // Account Growth Chart
             Container(
               decoration: AppTheme.cardDecoration,
@@ -190,6 +216,54 @@ class _HomePageState extends State<HomePage> {
                   _buildDetailedStatistics(statistics),
                 ],
               ),
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // Recent Transactions
+            BlocBuilder<AccountBloc, AccountState>(
+              builder: (context, accountState) {
+                if (accountState is AccountLoaded) {
+                  return Container(
+                    decoration: AppTheme.cardDecoration,
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.receipt_long_rounded,
+                              size: 16,
+                              color: AppTheme.textSecondaryColor,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Recent Transactions',
+                              style: AppTheme.labelStyle.copyWith(
+                                color: AppTheme.textSecondaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Spacer(),
+                            TextButton(
+                              onPressed: () => _showTransactionHistory(context),
+                              child: const Text('View All'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        TransactionList(
+                          transactions: accountState.transactions,
+                          showAll: false,
+                          showDeleteButton: false,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
           ],
         ),
@@ -282,6 +356,245 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showDepositDialog(BuildContext context) {
+    final currentState = context.read<AccountBloc>().state;
+    double? currentBalance;
+    if (currentState is AccountLoaded) {
+      currentBalance = currentState.balance.balance;
+    }
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _TransactionDialog(
+        type: TransactionType.deposit,
+        currentBalance: currentBalance,
+        onConfirm: (amount, note) {
+          context.read<AccountBloc>().add(AddToBalance(
+            amount: amount,
+            note: note,
+          ));
+        },
+      ),
+    );
+  }
+
+  void _showWithdrawalDialog(BuildContext context) {
+    final currentState = context.read<AccountBloc>().state;
+    double? currentBalance;
+    if (currentState is AccountLoaded) {
+      currentBalance = currentState.balance.balance;
+    }
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _TransactionDialog(
+        type: TransactionType.withdrawal,
+        currentBalance: currentBalance,
+        onConfirm: (amount, note) {
+          context.read<AccountBloc>().add(AddToBalance(
+            amount: -amount, // Negative for withdrawal
+            note: note,
+          ));
+        },
+      ),
+    );
+  }
+
+  void _showTransactionHistory(BuildContext context) {
+    final bloc = context.read<AccountBloc>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const TransactionHistoryPage(),
+      ),
+    ).then((_) {
+      // Reload account data when returning from transaction history
+      bloc.add(const LoadAccountBalance());
+    });
+  }
+}
+
+class _TransactionDialog extends StatefulWidget {
+  final TransactionType type;
+  final Function(double amount, String? note) onConfirm;
+  final double? currentBalance;
+
+  const _TransactionDialog({
+    required this.type,
+    required this.onConfirm,
+    this.currentBalance,
+  });
+
+  @override
+  State<_TransactionDialog> createState() => _TransactionDialogState();
+}
+
+class _TransactionDialogState extends State<_TransactionDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _amountController = TextEditingController();
+  final _noteController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Add listener to update button state when amount changes
+    _amountController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  bool _isValidAmount() {
+    if (_amountController.text.isEmpty) return false;
+    final amount = double.tryParse(_amountController.text);
+    if (amount == null || amount <= 0) return false;
+    
+    // Check if withdrawal amount exceeds available balance
+    if (widget.type == TransactionType.withdrawal && 
+        widget.currentBalance != null && 
+        amount > widget.currentBalance!) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDeposit = widget.type == TransactionType.deposit;
+    final title = isDeposit ? 'Deposit' : 'Withdrawal';
+    final icon = isDeposit ? Icons.add_circle : Icons.remove_circle;
+    final color = isDeposit ? AppTheme.bullishColor : AppTheme.bearishColor;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 16,
+        right: 16,
+        top: 16,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: color, size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: AppTheme.subheadingStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Amount',
+                prefixText: '\$',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                helperText: widget.type == TransactionType.withdrawal && widget.currentBalance != null
+                    ? 'Available balance: \$${widget.currentBalance!.toStringAsFixed(2)}'
+                    : null,
+                helperStyle: TextStyle(
+                  color: AppTheme.textSecondaryColor,
+                  fontSize: 12,
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter amount';
+                }
+                final amount = double.tryParse(value);
+                if (amount == null || amount <= 0) {
+                  return 'Please enter a valid amount';
+                }
+                
+                // Check if withdrawal amount exceeds available balance
+                if (widget.type == TransactionType.withdrawal && 
+                    widget.currentBalance != null && 
+                    amount > widget.currentBalance!) {
+                  return 'Amount exceeds available balance (\$${widget.currentBalance!.toStringAsFixed(2)})';
+                }
+                
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _noteController,
+              decoration: InputDecoration(
+                labelText: 'Note (Optional)',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              maxLines: 2,
+            ),
+            const SizedBox(height: 24),
+            StatefulBuilder(
+              builder: (context, setState) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isValidAmount() ? () {
+                      if (_formKey.currentState!.validate()) {
+                        final amount = double.parse(_amountController.text);
+                        final note = _noteController.text.isEmpty 
+                            ? null 
+                            : _noteController.text;
+                        
+                        widget.onConfirm(amount, note);
+                        Navigator.pop(context);
+                      }
+                    } : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isValidAmount() ? color : AppTheme.textSecondaryColor.withValues(alpha: 0.3),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text('Confirm $title'),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
