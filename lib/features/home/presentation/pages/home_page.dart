@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/trade_statistics.dart';
 import '../provider/home_provider.dart';
+import '../../../account_management/presentation/bloc/account_bloc.dart';
+import '../../../account_management/presentation/bloc/account_event.dart';
+import '../../../account_management/presentation/bloc/account_state.dart';
+import '../../../account_management/presentation/widgets/balance_card.dart';
 
 import '../widgets/account_growth_chart.dart';
 import '../../../../core/utils/app_theme.dart';
@@ -92,6 +97,7 @@ class _HomePageState extends State<HomePage> {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<HomeProvider>().refresh();
+        context.read<AccountBloc>().add(const LoadAccountBalance());
       },
       color: AppTheme.primaryColor,
       child: SingleChildScrollView(
@@ -100,6 +106,18 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Account Balance Card
+            BlocBuilder<AccountBloc, AccountState>(
+              builder: (context, accountState) {
+                if (accountState is AccountLoaded) {
+                  return BalanceCard(balance: accountState.balance);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            
+            const SizedBox(height: 12),
+            
             // Account Growth Chart
             Container(
               decoration: AppTheme.cardDecoration,

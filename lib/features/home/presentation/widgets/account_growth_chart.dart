@@ -82,7 +82,7 @@ class _AccountGrowthChartState extends State<AccountGrowthChart> {
       // Add transactions
       for (final transaction in transactions) {
         final amount = transaction.type == 'DEPOSIT' ? transaction.amount : -transaction.amount;
-        events.add(MapEntry(transaction.date, amount));
+        events.add(MapEntry(transaction.datetime, amount));
       }
       
       // Sort events by date

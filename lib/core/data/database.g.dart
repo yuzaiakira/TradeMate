@@ -4056,6 +4056,309 @@ class UserDefinedValuesCompanion extends UpdateCompanion<UserDefinedValue> {
   }
 }
 
+class $AccountBalanceTable extends AccountBalance
+    with TableInfo<$AccountBalanceTable, AccountBalanceData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AccountBalanceTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _balanceMeta = const VerificationMeta(
+    'balance',
+  );
+  @override
+  late final GeneratedColumn<double> balance = GeneratedColumn<double>(
+    'balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdatedMeta = const VerificationMeta(
+    'lastUpdated',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdated = GeneratedColumn<DateTime>(
+    'last_updated',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, balance, lastUpdated, note];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'account_balance';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AccountBalanceData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('balance')) {
+      context.handle(
+        _balanceMeta,
+        balance.isAcceptableOrUnknown(data['balance']!, _balanceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_balanceMeta);
+    }
+    if (data.containsKey('last_updated')) {
+      context.handle(
+        _lastUpdatedMeta,
+        lastUpdated.isAcceptableOrUnknown(
+          data['last_updated']!,
+          _lastUpdatedMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdatedMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AccountBalanceData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AccountBalanceData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      balance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}balance'],
+      )!,
+      lastUpdated: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_updated'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+    );
+  }
+
+  @override
+  $AccountBalanceTable createAlias(String alias) {
+    return $AccountBalanceTable(attachedDatabase, alias);
+  }
+}
+
+class AccountBalanceData extends DataClass
+    implements Insertable<AccountBalanceData> {
+  final int id;
+  final double balance;
+  final DateTime lastUpdated;
+  final String? note;
+  const AccountBalanceData({
+    required this.id,
+    required this.balance,
+    required this.lastUpdated,
+    this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['balance'] = Variable<double>(balance);
+    map['last_updated'] = Variable<DateTime>(lastUpdated);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    return map;
+  }
+
+  AccountBalanceCompanion toCompanion(bool nullToAbsent) {
+    return AccountBalanceCompanion(
+      id: Value(id),
+      balance: Value(balance),
+      lastUpdated: Value(lastUpdated),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+    );
+  }
+
+  factory AccountBalanceData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AccountBalanceData(
+      id: serializer.fromJson<int>(json['id']),
+      balance: serializer.fromJson<double>(json['balance']),
+      lastUpdated: serializer.fromJson<DateTime>(json['lastUpdated']),
+      note: serializer.fromJson<String?>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'balance': serializer.toJson<double>(balance),
+      'lastUpdated': serializer.toJson<DateTime>(lastUpdated),
+      'note': serializer.toJson<String?>(note),
+    };
+  }
+
+  AccountBalanceData copyWith({
+    int? id,
+    double? balance,
+    DateTime? lastUpdated,
+    Value<String?> note = const Value.absent(),
+  }) => AccountBalanceData(
+    id: id ?? this.id,
+    balance: balance ?? this.balance,
+    lastUpdated: lastUpdated ?? this.lastUpdated,
+    note: note.present ? note.value : this.note,
+  );
+  AccountBalanceData copyWithCompanion(AccountBalanceCompanion data) {
+    return AccountBalanceData(
+      id: data.id.present ? data.id.value : this.id,
+      balance: data.balance.present ? data.balance.value : this.balance,
+      lastUpdated: data.lastUpdated.present
+          ? data.lastUpdated.value
+          : this.lastUpdated,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AccountBalanceData(')
+          ..write('id: $id, ')
+          ..write('balance: $balance, ')
+          ..write('lastUpdated: $lastUpdated, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, balance, lastUpdated, note);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AccountBalanceData &&
+          other.id == this.id &&
+          other.balance == this.balance &&
+          other.lastUpdated == this.lastUpdated &&
+          other.note == this.note);
+}
+
+class AccountBalanceCompanion extends UpdateCompanion<AccountBalanceData> {
+  final Value<int> id;
+  final Value<double> balance;
+  final Value<DateTime> lastUpdated;
+  final Value<String?> note;
+  const AccountBalanceCompanion({
+    this.id = const Value.absent(),
+    this.balance = const Value.absent(),
+    this.lastUpdated = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  AccountBalanceCompanion.insert({
+    this.id = const Value.absent(),
+    required double balance,
+    required DateTime lastUpdated,
+    this.note = const Value.absent(),
+  }) : balance = Value(balance),
+       lastUpdated = Value(lastUpdated);
+  static Insertable<AccountBalanceData> custom({
+    Expression<int>? id,
+    Expression<double>? balance,
+    Expression<DateTime>? lastUpdated,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (balance != null) 'balance': balance,
+      if (lastUpdated != null) 'last_updated': lastUpdated,
+      if (note != null) 'note': note,
+    });
+  }
+
+  AccountBalanceCompanion copyWith({
+    Value<int>? id,
+    Value<double>? balance,
+    Value<DateTime>? lastUpdated,
+    Value<String?>? note,
+  }) {
+    return AccountBalanceCompanion(
+      id: id ?? this.id,
+      balance: balance ?? this.balance,
+      lastUpdated: lastUpdated ?? this.lastUpdated,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (balance.present) {
+      map['balance'] = Variable<double>(balance.value);
+    }
+    if (lastUpdated.present) {
+      map['last_updated'] = Variable<DateTime>(lastUpdated.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AccountBalanceCompanion(')
+          ..write('id: $id, ')
+          ..write('balance: $balance, ')
+          ..write('lastUpdated: $lastUpdated, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AccountTransactionsTable extends AccountTransactions
     with TableInfo<$AccountTransactionsTable, AccountTransaction> {
   @override
@@ -4093,26 +4396,70 @@ class $AccountTransactionsTable extends AccountTransactions
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-    'date',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-    'notes',
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _datetimeMeta = const VerificationMeta(
+    'datetime',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, type, amount, date, notes];
+  late final GeneratedColumn<DateTime> datetime = GeneratedColumn<DateTime>(
+    'datetime',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tradeIdMeta = const VerificationMeta(
+    'tradeId',
+  );
+  @override
+  late final GeneratedColumn<int> tradeId = GeneratedColumn<int>(
+    'trade_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _balanceBeforeMeta = const VerificationMeta(
+    'balanceBefore',
+  );
+  @override
+  late final GeneratedColumn<double> balanceBefore = GeneratedColumn<double>(
+    'balance_before',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _balanceAfterMeta = const VerificationMeta(
+    'balanceAfter',
+  );
+  @override
+  late final GeneratedColumn<double> balanceAfter = GeneratedColumn<double>(
+    'balance_after',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    amount,
+    note,
+    datetime,
+    tradeId,
+    balanceBefore,
+    balanceAfter,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4144,19 +4491,47 @@ class $AccountTransactionsTable extends AccountTransactions
     } else if (isInserting) {
       context.missing(_amountMeta);
     }
-    if (data.containsKey('date')) {
+    if (data.containsKey('note')) {
       context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('datetime')) {
+      context.handle(
+        _datetimeMeta,
+        datetime.isAcceptableOrUnknown(data['datetime']!, _datetimeMeta),
       );
     } else if (isInserting) {
-      context.missing(_dateMeta);
+      context.missing(_datetimeMeta);
     }
-    if (data.containsKey('notes')) {
+    if (data.containsKey('trade_id')) {
       context.handle(
-        _notesMeta,
-        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+        _tradeIdMeta,
+        tradeId.isAcceptableOrUnknown(data['trade_id']!, _tradeIdMeta),
       );
+    }
+    if (data.containsKey('balance_before')) {
+      context.handle(
+        _balanceBeforeMeta,
+        balanceBefore.isAcceptableOrUnknown(
+          data['balance_before']!,
+          _balanceBeforeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_balanceBeforeMeta);
+    }
+    if (data.containsKey('balance_after')) {
+      context.handle(
+        _balanceAfterMeta,
+        balanceAfter.isAcceptableOrUnknown(
+          data['balance_after']!,
+          _balanceAfterMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_balanceAfterMeta);
     }
     return context;
   }
@@ -4179,14 +4554,26 @@ class $AccountTransactionsTable extends AccountTransactions
         DriftSqlType.double,
         data['${effectivePrefix}amount'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
-      notes: attachedDatabase.typeMapping.read(
+      note: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}notes'],
+        data['${effectivePrefix}note'],
       ),
+      datetime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}datetime'],
+      )!,
+      tradeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}trade_id'],
+      ),
+      balanceBefore: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}balance_before'],
+      )!,
+      balanceAfter: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}balance_after'],
+      )!,
     );
   }
 
@@ -4201,14 +4588,20 @@ class AccountTransaction extends DataClass
   final int id;
   final String type;
   final double amount;
-  final DateTime date;
-  final String? notes;
+  final String? note;
+  final DateTime datetime;
+  final int? tradeId;
+  final double balanceBefore;
+  final double balanceAfter;
   const AccountTransaction({
     required this.id,
     required this.type,
     required this.amount,
-    required this.date,
-    this.notes,
+    this.note,
+    required this.datetime,
+    this.tradeId,
+    required this.balanceBefore,
+    required this.balanceAfter,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4216,10 +4609,15 @@ class AccountTransaction extends DataClass
     map['id'] = Variable<int>(id);
     map['type'] = Variable<String>(type);
     map['amount'] = Variable<double>(amount);
-    map['date'] = Variable<DateTime>(date);
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
     }
+    map['datetime'] = Variable<DateTime>(datetime);
+    if (!nullToAbsent || tradeId != null) {
+      map['trade_id'] = Variable<int>(tradeId);
+    }
+    map['balance_before'] = Variable<double>(balanceBefore);
+    map['balance_after'] = Variable<double>(balanceAfter);
     return map;
   }
 
@@ -4228,10 +4626,13 @@ class AccountTransaction extends DataClass
       id: Value(id),
       type: Value(type),
       amount: Value(amount),
-      date: Value(date),
-      notes: notes == null && nullToAbsent
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      datetime: Value(datetime),
+      tradeId: tradeId == null && nullToAbsent
           ? const Value.absent()
-          : Value(notes),
+          : Value(tradeId),
+      balanceBefore: Value(balanceBefore),
+      balanceAfter: Value(balanceAfter),
     );
   }
 
@@ -4244,8 +4645,11 @@ class AccountTransaction extends DataClass
       id: serializer.fromJson<int>(json['id']),
       type: serializer.fromJson<String>(json['type']),
       amount: serializer.fromJson<double>(json['amount']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      notes: serializer.fromJson<String?>(json['notes']),
+      note: serializer.fromJson<String?>(json['note']),
+      datetime: serializer.fromJson<DateTime>(json['datetime']),
+      tradeId: serializer.fromJson<int?>(json['tradeId']),
+      balanceBefore: serializer.fromJson<double>(json['balanceBefore']),
+      balanceAfter: serializer.fromJson<double>(json['balanceAfter']),
     );
   }
   @override
@@ -4255,8 +4659,11 @@ class AccountTransaction extends DataClass
       'id': serializer.toJson<int>(id),
       'type': serializer.toJson<String>(type),
       'amount': serializer.toJson<double>(amount),
-      'date': serializer.toJson<DateTime>(date),
-      'notes': serializer.toJson<String?>(notes),
+      'note': serializer.toJson<String?>(note),
+      'datetime': serializer.toJson<DateTime>(datetime),
+      'tradeId': serializer.toJson<int?>(tradeId),
+      'balanceBefore': serializer.toJson<double>(balanceBefore),
+      'balanceAfter': serializer.toJson<double>(balanceAfter),
     };
   }
 
@@ -4264,22 +4671,35 @@ class AccountTransaction extends DataClass
     int? id,
     String? type,
     double? amount,
-    DateTime? date,
-    Value<String?> notes = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+    DateTime? datetime,
+    Value<int?> tradeId = const Value.absent(),
+    double? balanceBefore,
+    double? balanceAfter,
   }) => AccountTransaction(
     id: id ?? this.id,
     type: type ?? this.type,
     amount: amount ?? this.amount,
-    date: date ?? this.date,
-    notes: notes.present ? notes.value : this.notes,
+    note: note.present ? note.value : this.note,
+    datetime: datetime ?? this.datetime,
+    tradeId: tradeId.present ? tradeId.value : this.tradeId,
+    balanceBefore: balanceBefore ?? this.balanceBefore,
+    balanceAfter: balanceAfter ?? this.balanceAfter,
   );
   AccountTransaction copyWithCompanion(AccountTransactionsCompanion data) {
     return AccountTransaction(
       id: data.id.present ? data.id.value : this.id,
       type: data.type.present ? data.type.value : this.type,
       amount: data.amount.present ? data.amount.value : this.amount,
-      date: data.date.present ? data.date.value : this.date,
-      notes: data.notes.present ? data.notes.value : this.notes,
+      note: data.note.present ? data.note.value : this.note,
+      datetime: data.datetime.present ? data.datetime.value : this.datetime,
+      tradeId: data.tradeId.present ? data.tradeId.value : this.tradeId,
+      balanceBefore: data.balanceBefore.present
+          ? data.balanceBefore.value
+          : this.balanceBefore,
+      balanceAfter: data.balanceAfter.present
+          ? data.balanceAfter.value
+          : this.balanceAfter,
     );
   }
 
@@ -4289,14 +4709,26 @@ class AccountTransaction extends DataClass
           ..write('id: $id, ')
           ..write('type: $type, ')
           ..write('amount: $amount, ')
-          ..write('date: $date, ')
-          ..write('notes: $notes')
+          ..write('note: $note, ')
+          ..write('datetime: $datetime, ')
+          ..write('tradeId: $tradeId, ')
+          ..write('balanceBefore: $balanceBefore, ')
+          ..write('balanceAfter: $balanceAfter')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, type, amount, date, notes);
+  int get hashCode => Object.hash(
+    id,
+    type,
+    amount,
+    note,
+    datetime,
+    tradeId,
+    balanceBefore,
+    balanceAfter,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4304,45 +4736,65 @@ class AccountTransaction extends DataClass
           other.id == this.id &&
           other.type == this.type &&
           other.amount == this.amount &&
-          other.date == this.date &&
-          other.notes == this.notes);
+          other.note == this.note &&
+          other.datetime == this.datetime &&
+          other.tradeId == this.tradeId &&
+          other.balanceBefore == this.balanceBefore &&
+          other.balanceAfter == this.balanceAfter);
 }
 
 class AccountTransactionsCompanion extends UpdateCompanion<AccountTransaction> {
   final Value<int> id;
   final Value<String> type;
   final Value<double> amount;
-  final Value<DateTime> date;
-  final Value<String?> notes;
+  final Value<String?> note;
+  final Value<DateTime> datetime;
+  final Value<int?> tradeId;
+  final Value<double> balanceBefore;
+  final Value<double> balanceAfter;
   const AccountTransactionsCompanion({
     this.id = const Value.absent(),
     this.type = const Value.absent(),
     this.amount = const Value.absent(),
-    this.date = const Value.absent(),
-    this.notes = const Value.absent(),
+    this.note = const Value.absent(),
+    this.datetime = const Value.absent(),
+    this.tradeId = const Value.absent(),
+    this.balanceBefore = const Value.absent(),
+    this.balanceAfter = const Value.absent(),
   });
   AccountTransactionsCompanion.insert({
     this.id = const Value.absent(),
     required String type,
     required double amount,
-    required DateTime date,
-    this.notes = const Value.absent(),
+    this.note = const Value.absent(),
+    required DateTime datetime,
+    this.tradeId = const Value.absent(),
+    required double balanceBefore,
+    required double balanceAfter,
   }) : type = Value(type),
        amount = Value(amount),
-       date = Value(date);
+       datetime = Value(datetime),
+       balanceBefore = Value(balanceBefore),
+       balanceAfter = Value(balanceAfter);
   static Insertable<AccountTransaction> custom({
     Expression<int>? id,
     Expression<String>? type,
     Expression<double>? amount,
-    Expression<DateTime>? date,
-    Expression<String>? notes,
+    Expression<String>? note,
+    Expression<DateTime>? datetime,
+    Expression<int>? tradeId,
+    Expression<double>? balanceBefore,
+    Expression<double>? balanceAfter,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (type != null) 'type': type,
       if (amount != null) 'amount': amount,
-      if (date != null) 'date': date,
-      if (notes != null) 'notes': notes,
+      if (note != null) 'note': note,
+      if (datetime != null) 'datetime': datetime,
+      if (tradeId != null) 'trade_id': tradeId,
+      if (balanceBefore != null) 'balance_before': balanceBefore,
+      if (balanceAfter != null) 'balance_after': balanceAfter,
     });
   }
 
@@ -4350,15 +4802,21 @@ class AccountTransactionsCompanion extends UpdateCompanion<AccountTransaction> {
     Value<int>? id,
     Value<String>? type,
     Value<double>? amount,
-    Value<DateTime>? date,
-    Value<String?>? notes,
+    Value<String?>? note,
+    Value<DateTime>? datetime,
+    Value<int?>? tradeId,
+    Value<double>? balanceBefore,
+    Value<double>? balanceAfter,
   }) {
     return AccountTransactionsCompanion(
       id: id ?? this.id,
       type: type ?? this.type,
       amount: amount ?? this.amount,
-      date: date ?? this.date,
-      notes: notes ?? this.notes,
+      note: note ?? this.note,
+      datetime: datetime ?? this.datetime,
+      tradeId: tradeId ?? this.tradeId,
+      balanceBefore: balanceBefore ?? this.balanceBefore,
+      balanceAfter: balanceAfter ?? this.balanceAfter,
     );
   }
 
@@ -4374,11 +4832,20 @@ class AccountTransactionsCompanion extends UpdateCompanion<AccountTransaction> {
     if (amount.present) {
       map['amount'] = Variable<double>(amount.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
     }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
+    if (datetime.present) {
+      map['datetime'] = Variable<DateTime>(datetime.value);
+    }
+    if (tradeId.present) {
+      map['trade_id'] = Variable<int>(tradeId.value);
+    }
+    if (balanceBefore.present) {
+      map['balance_before'] = Variable<double>(balanceBefore.value);
+    }
+    if (balanceAfter.present) {
+      map['balance_after'] = Variable<double>(balanceAfter.value);
     }
     return map;
   }
@@ -4389,8 +4856,11 @@ class AccountTransactionsCompanion extends UpdateCompanion<AccountTransaction> {
           ..write('id: $id, ')
           ..write('type: $type, ')
           ..write('amount: $amount, ')
-          ..write('date: $date, ')
-          ..write('notes: $notes')
+          ..write('note: $note, ')
+          ..write('datetime: $datetime, ')
+          ..write('tradeId: $tradeId, ')
+          ..write('balanceBefore: $balanceBefore, ')
+          ..write('balanceAfter: $balanceAfter')
           ..write(')'))
         .toString();
   }
@@ -5316,6 +5786,7 @@ abstract class _$TradeMateDatabase extends GeneratedDatabase {
   late final $TradesTable trades = $TradesTable(this);
   late final $UserDefinedValuesTable userDefinedValues =
       $UserDefinedValuesTable(this);
+  late final $AccountBalanceTable accountBalance = $AccountBalanceTable(this);
   late final $AccountTransactionsTable accountTransactions =
       $AccountTransactionsTable(this);
   late final $TradeStatisticsTableTable tradeStatisticsTable =
@@ -5327,6 +5798,7 @@ abstract class _$TradeMateDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     trades,
     userDefinedValues,
+    accountBalance,
     accountTransactions,
     tradeStatisticsTable,
   ];
@@ -7021,21 +7493,214 @@ typedef $$UserDefinedValuesTableProcessedTableManager =
       UserDefinedValue,
       PrefetchHooks Function()
     >;
+typedef $$AccountBalanceTableCreateCompanionBuilder =
+    AccountBalanceCompanion Function({
+      Value<int> id,
+      required double balance,
+      required DateTime lastUpdated,
+      Value<String?> note,
+    });
+typedef $$AccountBalanceTableUpdateCompanionBuilder =
+    AccountBalanceCompanion Function({
+      Value<int> id,
+      Value<double> balance,
+      Value<DateTime> lastUpdated,
+      Value<String?> note,
+    });
+
+class $$AccountBalanceTableFilterComposer
+    extends Composer<_$TradeMateDatabase, $AccountBalanceTable> {
+  $$AccountBalanceTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get balance => $composableBuilder(
+    column: $table.balance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdated => $composableBuilder(
+    column: $table.lastUpdated,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AccountBalanceTableOrderingComposer
+    extends Composer<_$TradeMateDatabase, $AccountBalanceTable> {
+  $$AccountBalanceTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get balance => $composableBuilder(
+    column: $table.balance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdated => $composableBuilder(
+    column: $table.lastUpdated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AccountBalanceTableAnnotationComposer
+    extends Composer<_$TradeMateDatabase, $AccountBalanceTable> {
+  $$AccountBalanceTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get balance =>
+      $composableBuilder(column: $table.balance, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdated => $composableBuilder(
+    column: $table.lastUpdated,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$AccountBalanceTableTableManager
+    extends
+        RootTableManager<
+          _$TradeMateDatabase,
+          $AccountBalanceTable,
+          AccountBalanceData,
+          $$AccountBalanceTableFilterComposer,
+          $$AccountBalanceTableOrderingComposer,
+          $$AccountBalanceTableAnnotationComposer,
+          $$AccountBalanceTableCreateCompanionBuilder,
+          $$AccountBalanceTableUpdateCompanionBuilder,
+          (
+            AccountBalanceData,
+            BaseReferences<
+              _$TradeMateDatabase,
+              $AccountBalanceTable,
+              AccountBalanceData
+            >,
+          ),
+          AccountBalanceData,
+          PrefetchHooks Function()
+        > {
+  $$AccountBalanceTableTableManager(
+    _$TradeMateDatabase db,
+    $AccountBalanceTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AccountBalanceTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AccountBalanceTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AccountBalanceTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<double> balance = const Value.absent(),
+                Value<DateTime> lastUpdated = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => AccountBalanceCompanion(
+                id: id,
+                balance: balance,
+                lastUpdated: lastUpdated,
+                note: note,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required double balance,
+                required DateTime lastUpdated,
+                Value<String?> note = const Value.absent(),
+              }) => AccountBalanceCompanion.insert(
+                id: id,
+                balance: balance,
+                lastUpdated: lastUpdated,
+                note: note,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AccountBalanceTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TradeMateDatabase,
+      $AccountBalanceTable,
+      AccountBalanceData,
+      $$AccountBalanceTableFilterComposer,
+      $$AccountBalanceTableOrderingComposer,
+      $$AccountBalanceTableAnnotationComposer,
+      $$AccountBalanceTableCreateCompanionBuilder,
+      $$AccountBalanceTableUpdateCompanionBuilder,
+      (
+        AccountBalanceData,
+        BaseReferences<
+          _$TradeMateDatabase,
+          $AccountBalanceTable,
+          AccountBalanceData
+        >,
+      ),
+      AccountBalanceData,
+      PrefetchHooks Function()
+    >;
 typedef $$AccountTransactionsTableCreateCompanionBuilder =
     AccountTransactionsCompanion Function({
       Value<int> id,
       required String type,
       required double amount,
-      required DateTime date,
-      Value<String?> notes,
+      Value<String?> note,
+      required DateTime datetime,
+      Value<int?> tradeId,
+      required double balanceBefore,
+      required double balanceAfter,
     });
 typedef $$AccountTransactionsTableUpdateCompanionBuilder =
     AccountTransactionsCompanion Function({
       Value<int> id,
       Value<String> type,
       Value<double> amount,
-      Value<DateTime> date,
-      Value<String?> notes,
+      Value<String?> note,
+      Value<DateTime> datetime,
+      Value<int?> tradeId,
+      Value<double> balanceBefore,
+      Value<double> balanceAfter,
     });
 
 class $$AccountTransactionsTableFilterComposer
@@ -7062,13 +7727,28 @@ class $$AccountTransactionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
-    column: $table.date,
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get notes => $composableBuilder(
-    column: $table.notes,
+  ColumnFilters<DateTime> get datetime => $composableBuilder(
+    column: $table.datetime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tradeId => $composableBuilder(
+    column: $table.tradeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get balanceBefore => $composableBuilder(
+    column: $table.balanceBefore,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get balanceAfter => $composableBuilder(
+    column: $table.balanceAfter,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -7097,13 +7777,28 @@ class $$AccountTransactionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get date => $composableBuilder(
-    column: $table.date,
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get notes => $composableBuilder(
-    column: $table.notes,
+  ColumnOrderings<DateTime> get datetime => $composableBuilder(
+    column: $table.datetime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tradeId => $composableBuilder(
+    column: $table.tradeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get balanceBefore => $composableBuilder(
+    column: $table.balanceBefore,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get balanceAfter => $composableBuilder(
+    column: $table.balanceAfter,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -7126,11 +7821,24 @@ class $$AccountTransactionsTableAnnotationComposer
   GeneratedColumn<double> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => column);
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
 
-  GeneratedColumn<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => column);
+  GeneratedColumn<DateTime> get datetime =>
+      $composableBuilder(column: $table.datetime, builder: (column) => column);
+
+  GeneratedColumn<int> get tradeId =>
+      $composableBuilder(column: $table.tradeId, builder: (column) => column);
+
+  GeneratedColumn<double> get balanceBefore => $composableBuilder(
+    column: $table.balanceBefore,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get balanceAfter => $composableBuilder(
+    column: $table.balanceAfter,
+    builder: (column) => column,
+  );
 }
 
 class $$AccountTransactionsTableTableManager
@@ -7179,28 +7887,40 @@ class $$AccountTransactionsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<double> amount = const Value.absent(),
-                Value<DateTime> date = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<DateTime> datetime = const Value.absent(),
+                Value<int?> tradeId = const Value.absent(),
+                Value<double> balanceBefore = const Value.absent(),
+                Value<double> balanceAfter = const Value.absent(),
               }) => AccountTransactionsCompanion(
                 id: id,
                 type: type,
                 amount: amount,
-                date: date,
-                notes: notes,
+                note: note,
+                datetime: datetime,
+                tradeId: tradeId,
+                balanceBefore: balanceBefore,
+                balanceAfter: balanceAfter,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String type,
                 required double amount,
-                required DateTime date,
-                Value<String?> notes = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                required DateTime datetime,
+                Value<int?> tradeId = const Value.absent(),
+                required double balanceBefore,
+                required double balanceAfter,
               }) => AccountTransactionsCompanion.insert(
                 id: id,
                 type: type,
                 amount: amount,
-                date: date,
-                notes: notes,
+                note: note,
+                datetime: datetime,
+                tradeId: tradeId,
+                balanceBefore: balanceBefore,
+                balanceAfter: balanceAfter,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -7665,6 +8385,8 @@ class $TradeMateDatabaseManager {
       $$TradesTableTableManager(_db, _db.trades);
   $$UserDefinedValuesTableTableManager get userDefinedValues =>
       $$UserDefinedValuesTableTableManager(_db, _db.userDefinedValues);
+  $$AccountBalanceTableTableManager get accountBalance =>
+      $$AccountBalanceTableTableManager(_db, _db.accountBalance);
   $$AccountTransactionsTableTableManager get accountTransactions =>
       $$AccountTransactionsTableTableManager(_db, _db.accountTransactions);
   $$TradeStatisticsTableTableTableManager get tradeStatisticsTable =>

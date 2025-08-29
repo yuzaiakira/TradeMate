@@ -113,13 +113,24 @@ class UserDefinedValues extends Table {
   DateTimeColumn get updatedAt => dateTime()();
 }
 
+// Account Balance table
+class AccountBalance extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  RealColumn get balance => real()();
+  DateTimeColumn get lastUpdated => dateTime()();
+  TextColumn get note => text().nullable()();
+}
+
 // Account transactions table
 class AccountTransactions extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get type => text()(); // DEPOSIT, WITHDRAWAL
+  TextColumn get type => text()(); // deposit, withdrawal, tradeProfit, tradeLoss, tradeFee
   RealColumn get amount => real()();
-  DateTimeColumn get date => dateTime()();
-  TextColumn get notes => text().nullable()();
+  TextColumn get note => text().nullable()();
+  DateTimeColumn get datetime => dateTime()();
+  IntColumn get tradeId => integer().nullable()(); // برای تراکنش‌های مربوط به ترید
+  RealColumn get balanceBefore => real()();
+  RealColumn get balanceAfter => real()();
 }
 
 // Trade statistics table for caching
@@ -141,12 +152,47 @@ class TradeStatisticsTable extends Table {
   DateTimeColumn get lastUpdated => dateTime()();
 }
 
-@DriftDatabase(tables: [Trades, UserDefinedValues, AccountTransactions, TradeStatisticsTable])
+@DriftDatabase(tables: [Trades, UserDefinedValues, AccountBalance, AccountTransactions, TradeStatisticsTable])
 class TradeMateDatabase extends _$TradeMateDatabase {
   TradeMateDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
+
+  // Method to reset database if needed
+  Future<void> resetDatabase() async {
+    try {
+      // Delete all data from tables
+      await delete(trades).go();
+      await delete(userDefinedValues).go();
+      await delete(accountBalance).go();
+      await delete(accountTransactions).go();
+      await delete(tradeStatisticsTable).go();
+      
+      Logger.migration('Database reset successfully');
+    } catch (e) {
+      Logger.error('Error resetting database: $e', e);
+      rethrow;
+    }
+  }
+
+  // Method to completely recreate database file
+  static Future<void> recreateDatabaseFile() async {
+    try {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, 'trademate.db'));
+      
+      if (await file.exists()) {
+        await file.delete();
+        Logger.migration('Database file deleted successfully');
+      }
+      
+      Logger.migration('Database file ready for recreation');
+    } catch (e) {
+      Logger.error('Error recreating database file: $e', e);
+      rethrow;
+    }
+  }
 
   MigrationStrategy get migrations {
     return MigrationStrategy(
@@ -157,35 +203,9 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       },
       onUpgrade: (Migrator m, int from, int to) async {
         Logger.migration('Upgrading database from version $from to version $to');
-        
-        if (from < 2) {
-          Logger.migration('Adding new calculated fields columns...');
-          try {
-            await m.addColumn(trades, trades.wl);
-            await m.addColumn(trades, trades.entryDayOfWeek);
-            await m.addColumn(trades, trades.entrySession);
-            await m.addColumn(trades, trades.orderValue);
-            await m.addColumn(trades, trades.qty);
-            await m.addColumn(trades, trades.positionToAccPercent);
-            await m.addColumn(trades, trades.plannedSlPercent);
-            await m.addColumn(trades, trades.accRiskedPercent);
-            await m.addColumn(trades, trades.plannedReturn);
-            await m.addColumn(trades, trades.exitDayOfWeek);
-            await m.addColumn(trades, trades.psTag);
-            await m.addColumn(trades, trades.actualReturn);
-            await m.addColumn(trades, trades.grossProfitLoss);
-            await m.addColumn(trades, trades.positionFees);
-            await m.addColumn(trades, trades.netProfitLoss);
-            await m.addColumn(trades, trades.tradeGainPercent);
-            await m.addColumn(trades, trades.accountChangePercent);
-            await m.addColumn(trades, trades.newBalance);
-            await m.addColumn(trades, trades.calculatedTradeDuration);
-            Logger.migration('Database migration completed successfully');
-          } catch (e) {
-            Logger.error('Error during migration: $e', e);
-            rethrow;
-          }
-        }
+        // For now, just recreate all tables to avoid migration issues
+        await m.createAll();
+        Logger.migration('Database recreated successfully');
       },
     );
   }

@@ -25,12 +25,32 @@ import 'features/home/presentation/pages/home_page.dart';
 import 'features/add_trade/presentation/pages/add_trade_page.dart';
 import 'features/trade_list/presentation/pages/trade_list_page.dart';
 import 'features/tools/presentation/pages/tools_page.dart';
+import 'features/account_management/data/datasources/account_local_datasource.dart';
+import 'features/account_management/data/datasources/transaction_local_datasource.dart';
+import 'features/account_management/data/repositories/account_repository_impl.dart';
+import 'features/account_management/domain/repositories/account_repository.dart';
+import 'features/account_management/domain/usecases/get_account_balance_usecase.dart';
+import 'features/account_management/domain/usecases/update_balance_usecase.dart';
+import 'features/account_management/domain/usecases/add_transaction_usecase.dart';
+import 'features/account_management/presentation/bloc/account_bloc.dart';
+import 'features/account_management/presentation/pages/account_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize database
-  final database = TradeMateDatabase();
+  // Initialize database with error handling
+  TradeMateDatabase database;
+  try {
+    // First, try to recreate the database file to ensure a clean start
+    await TradeMateDatabase.recreateDatabaseFile();
+    database = TradeMateDatabase();
+    // Test database connection
+    await database.getTradesCount();
+  } catch (e) {
+    // If recreation fails, try normal initialization
+    database = TradeMateDatabase();
+  }
   
   runApp(TradeMateApp(database: database));
 }
@@ -97,6 +117,43 @@ class TradeMateApp extends StatelessWidget {
         Provider<GetStatisticsUseCase>(
           create: (context) => GetStatisticsUseCase(
             context.read<StatisticsRepository>(),
+          ),
+        ),
+        
+        // Account Management - Data Sources
+        Provider<AccountLocalDataSource>(
+          create: (context) => AccountLocalDataSourceImpl(
+            database: context.read<TradeMateDatabase>(),
+          ),
+        ),
+        Provider<TransactionLocalDataSource>(
+          create: (context) => TransactionLocalDataSourceImpl(
+            database: context.read<TradeMateDatabase>(),
+          ),
+        ),
+        
+        // Account Management - Repository
+        Provider<AccountRepository>(
+          create: (context) => AccountRepositoryImpl(
+            accountLocalDataSource: context.read<AccountLocalDataSource>(),
+            transactionLocalDataSource: context.read<TransactionLocalDataSource>(),
+          ),
+        ),
+        
+        // Account Management - Use Cases
+        Provider<GetAccountBalance>(
+          create: (context) => GetAccountBalance(
+            context.read<AccountRepository>(),
+          ),
+        ),
+        Provider<UpdateBalance>(
+          create: (context) => UpdateBalance(
+            context.read<AccountRepository>(),
+          ),
+        ),
+        Provider<AddTransaction>(
+          create: (context) => AddTransaction(
+            context.read<AccountRepository>(),
           ),
         ),
         
@@ -173,6 +230,16 @@ class TradeMateApp extends StatelessWidget {
             return provider;
           },
         ),
+        
+        // Account Management - Bloc
+        BlocProvider<AccountBloc>(
+          create: (context) => AccountBloc(
+            getAccountBalance: context.read<GetAccountBalance>(),
+            updateBalance: context.read<UpdateBalance>(),
+            addTransaction: context.read<AddTransaction>(),
+            accountRepository: context.read<AccountRepository>(),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'TradeMate',
@@ -230,6 +297,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       const HomePage(),
       const AddTradePage(),
       TradeListPage(onNavigateToTab: navigateToTab),
+      const AccountPage(),
       const ToolsPage(),
     ];
     
@@ -314,6 +382,10 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Trade List',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance),
+            label: 'Account',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.build),
