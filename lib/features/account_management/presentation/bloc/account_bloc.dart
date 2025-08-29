@@ -3,6 +3,8 @@ import '../../domain/repositories/account_repository.dart';
 import '../../domain/usecases/get_account_balance_usecase.dart';
 import '../../domain/usecases/update_balance_usecase.dart';
 import '../../domain/usecases/add_transaction_usecase.dart' as usecase;
+import '../../domain/usecases/delete_transaction_usecase.dart' as delete_usecase;
+import '../../domain/entities/transaction.dart' as domain_entity;
 import '../../../../core/usecases/usecase.dart';
 import 'account_event.dart';
 import 'account_state.dart';
@@ -11,12 +13,14 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final GetAccountBalance getAccountBalance;
   final UpdateBalance updateBalance;
   final usecase.AddTransaction addTransaction;
+  final delete_usecase.DeleteTransaction deleteTransaction;
   final AccountRepository accountRepository;
 
   AccountBloc({
     required this.getAccountBalance,
     required this.updateBalance,
     required this.addTransaction,
+    required this.deleteTransaction,
     required this.accountRepository,
   }) : super(const AccountInitial()) {
     on<LoadAccountBalance>(_onLoadAccountBalance);
@@ -25,6 +29,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AddTransaction>(_onAddTransaction);
     on<LoadTransactionHistory>(_onLoadTransactionHistory);
     on<ProcessTradeResult>(_onProcessTradeResult);
+    on<DeleteTransaction>(_onDeleteTransaction);
   }
 
   Future<void> _onLoadAccountBalance(
@@ -84,8 +89,29 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     final currentState = state;
     if (currentState is AccountLoaded) {
       try {
-        final newBalance = currentState.balance.balance + event.amount;
+        final currentBalance = currentState.balance.balance;
+        final newBalance = currentBalance + event.amount;
         
+        // Determine transaction type based on amount
+        final transactionType = event.amount > 0 
+            ? domain_entity.TransactionType.deposit 
+            : domain_entity.TransactionType.withdrawal;
+        
+        // Create transaction
+        final transaction = domain_entity.Transaction(
+          type: transactionType,
+          amount: event.amount.abs(),
+          note: event.note ?? (event.amount > 0 ? 'Deposit' : 'Withdrawal'),
+          datetime: DateTime.now(),
+          tradeId: null,
+          balanceBefore: currentBalance,
+          balanceAfter: newBalance,
+        );
+        
+        // Add transaction to database
+        await addTransaction(transaction);
+        
+        // Update balance
         await updateBalance(UpdateBalanceParams(
           newBalance: newBalance,
           note: event.note,
@@ -142,6 +168,20 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         fees: event.fees,
         balanceBefore: event.balanceBefore,
       );
+
+      // Reload account data
+      add(const LoadAccountBalance());
+    } catch (e) {
+      emit(AccountError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteTransaction(
+    DeleteTransaction event,
+    Emitter<AccountState> emit,
+  ) async {
+    try {
+      await deleteTransaction(event.transactionId);
 
       // Reload account data
       add(const LoadAccountBalance());

@@ -106,6 +106,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                         TransactionList(
                           transactions: state.transactions,
                           showAll: true,
+                          showDeleteButton: true,
                         ),
                       ],
                     ),

@@ -32,6 +32,7 @@ import 'features/account_management/domain/repositories/account_repository.dart'
 import 'features/account_management/domain/usecases/get_account_balance_usecase.dart';
 import 'features/account_management/domain/usecases/update_balance_usecase.dart';
 import 'features/account_management/domain/usecases/add_transaction_usecase.dart';
+import 'features/account_management/domain/usecases/delete_transaction_usecase.dart';
 import 'features/account_management/presentation/bloc/account_bloc.dart';
 import 'features/account_management/presentation/pages/account_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -161,6 +162,11 @@ class TradeMateApp extends StatelessWidget {
             context.read<AccountRepository>(),
           ),
         ),
+        Provider<DeleteTransaction>(
+          create: (context) => DeleteTransaction(
+            context.read<AccountRepository>(),
+          ),
+        ),
         
         // Providers
         ChangeNotifierProvider<AddTradeProvider>(
@@ -242,6 +248,7 @@ class TradeMateApp extends StatelessWidget {
             getAccountBalance: context.read<GetAccountBalance>(),
             updateBalance: context.read<UpdateBalance>(),
             addTransaction: context.read<AddTransaction>(),
+            deleteTransaction: context.read<DeleteTransaction>(),
             accountRepository: context.read<AccountRepository>(),
           ),
         ),

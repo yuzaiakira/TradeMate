@@ -173,6 +173,7 @@ class _AccountPageState extends State<AccountPage> {
                           TransactionList(
                             transactions: state.transactions,
                             showAll: false,
+                            showDeleteButton: true,
                           ),
                         ],
                       ),

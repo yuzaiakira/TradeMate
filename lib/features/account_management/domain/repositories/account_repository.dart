@@ -16,6 +16,7 @@ abstract class AccountRepository {
     int? limit,
   });
   Future<List<Transaction>> getTransactionsByTradeId(int tradeId);
+  Future<void> deleteTransaction(int transactionId);
   
   // Trade-related operations
   Future<void> processTradeResult({

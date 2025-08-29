@@ -91,6 +91,15 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
+  Future<void> deleteTransaction(int transactionId) async {
+    try {
+      await transactionLocalDataSource.deleteTransaction(transactionId);
+    } catch (e) {
+      throw DatabaseFailure(e.toString());
+    }
+  }
+
+  @override
   Future<void> processTradeResult({
     required int tradeId,
     required double pnl,

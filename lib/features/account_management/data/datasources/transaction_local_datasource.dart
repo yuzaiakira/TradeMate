@@ -15,6 +15,7 @@ abstract class TransactionLocalDataSource {
   Future<double> getTotalDeposits();
   Future<double> getTotalWithdrawals();
   Future<double> getTotalTradePnL();
+  Future<void> deleteTransaction(int transactionId);
 }
 
 class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
@@ -153,6 +154,20 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
       return totalProfit - totalLoss;
     } catch (e) {
       throw Exception('Failed to get total trade PnL: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteTransaction(int transactionId) async {
+    try {
+      await (database.delete(database.accountTransactions)
+        ..where((t) => t.id.equals(transactionId)))
+        .go();
+      
+      // Force sync to ensure data is written
+      await database.ensureDataPersisted();
+    } catch (e) {
+      throw Exception('Failed to delete transaction: $e');
     }
   }
 

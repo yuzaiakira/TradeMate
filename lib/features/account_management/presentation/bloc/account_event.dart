@@ -74,3 +74,12 @@ class ProcessTradeResult extends AccountEvent {
   @override
   List<Object?> get props => [tradeId, pnl, fees, balanceBefore];
 }
+
+class DeleteTransaction extends AccountEvent {
+  final int transactionId;
+
+  const DeleteTransaction({required this.transactionId});
+
+  @override
+  List<Object?> get props => [transactionId];
+}

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../domain/entities/transaction.dart';
+import '../bloc/account_bloc.dart';
+import '../bloc/account_event.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
   final bool showAll;
+  final bool showDeleteButton;
 
   const TransactionList({
     super.key,
     required this.transactions,
     this.showAll = true,
+    this.showDeleteButton = false,
   });
 
   @override
@@ -47,7 +52,10 @@ class TransactionList extends StatelessWidget {
 
     return Column(
       children: displayTransactions.map((transaction) {
-        return _TransactionItem(transaction: transaction);
+        return _TransactionItem(
+          transaction: transaction,
+          showDeleteButton: showDeleteButton,
+        );
       }).toList(),
     );
   }
@@ -55,8 +63,12 @@ class TransactionList extends StatelessWidget {
 
 class _TransactionItem extends StatelessWidget {
   final Transaction transaction;
+  final bool showDeleteButton;
 
-  const _TransactionItem({required this.transaction});
+  const _TransactionItem({
+    required this.transaction,
+    this.showDeleteButton = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -193,8 +205,72 @@ class _TransactionItem extends StatelessWidget {
               ],
             ),
           ),
+          if (showDeleteButton && transaction.id != null) ...[
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: () => _showDeleteConfirmation(context),
+              icon: Icon(
+                Icons.delete_outline,
+                color: AppTheme.errorColor,
+                size: 20,
+              ),
+              tooltip: 'Delete Transaction',
+              padding: const EdgeInsets.all(4),
+              constraints: const BoxConstraints(
+                minWidth: 32,
+                minHeight: 32,
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.delete_outline,
+                color: AppTheme.errorColor,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              const Text('Delete Transaction'),
+            ],
+          ),
+          content: Text(
+            'Are you sure you want to delete this transaction?\n\n'
+            'This action cannot be undone.',
+            style: AppTheme.bodyStyle,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (transaction.id != null) {
+                  context.read<AccountBloc>().add(
+                    DeleteTransaction(transactionId: transaction.id!),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.errorColor,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
