@@ -26,6 +26,8 @@ class _AccountPageState extends State<AccountPage> {
     context.read<AccountBloc>().add(const LoadAccountBalance());
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +107,8 @@ class _AccountPageState extends State<AccountPage> {
               ),
             );
           }
+
+
 
           if (state is AccountLoaded) {
             return RefreshIndicator(
@@ -225,12 +229,16 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _showTransactionHistory(BuildContext context) {
+    final bloc = context.read<AccountBloc>();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const TransactionHistoryPage(),
       ),
-    );
+    ).then((_) {
+      // Reload account data when returning from transaction history
+      bloc.add(const LoadAccountBalance());
+    });
   }
 }
 

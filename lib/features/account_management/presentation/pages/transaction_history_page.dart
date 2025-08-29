@@ -301,9 +301,11 @@ class _FilterDialogState extends State<_FilterDialog> {
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children: [
-              _FilterChip(
-                label: 'All',
+              _TransactionTypeChip(
+                type: null,
+                label: 'All Transactions',
                 selected: _selectedType == null,
                 onSelected: (selected) {
                   setState(() {
@@ -311,7 +313,8 @@ class _FilterDialogState extends State<_FilterDialog> {
                   });
                 },
               ),
-              _FilterChip(
+              _TransactionTypeChip(
+                type: TransactionType.deposit,
                 label: 'Deposits',
                 selected: _selectedType == TransactionType.deposit,
                 onSelected: (selected) {
@@ -320,7 +323,8 @@ class _FilterDialogState extends State<_FilterDialog> {
                   });
                 },
               ),
-              _FilterChip(
+              _TransactionTypeChip(
+                type: TransactionType.withdrawal,
                 label: 'Withdrawals',
                 selected: _selectedType == TransactionType.withdrawal,
                 onSelected: (selected) {
@@ -329,7 +333,8 @@ class _FilterDialogState extends State<_FilterDialog> {
                   });
                 },
               ),
-              _FilterChip(
+              _TransactionTypeChip(
+                type: TransactionType.tradeProfit,
                 label: 'Trade Profits',
                 selected: _selectedType == TransactionType.tradeProfit,
                 onSelected: (selected) {
@@ -338,12 +343,23 @@ class _FilterDialogState extends State<_FilterDialog> {
                   });
                 },
               ),
-              _FilterChip(
+              _TransactionTypeChip(
+                type: TransactionType.tradeLoss,
                 label: 'Trade Losses',
                 selected: _selectedType == TransactionType.tradeLoss,
                 onSelected: (selected) {
                   setState(() {
                     _selectedType = selected ? TransactionType.tradeLoss : null;
+                  });
+                },
+              ),
+              _TransactionTypeChip(
+                type: TransactionType.tradeFee,
+                label: 'Trade Fees',
+                selected: _selectedType == TransactionType.tradeFee,
+                onSelected: (selected) {
+                  setState(() {
+                    _selectedType = selected ? TransactionType.tradeFee : null;
                   });
                 },
               ),
@@ -360,32 +376,48 @@ class _FilterDialogState extends State<_FilterDialog> {
             ),
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: _DatePickerField(
-                  label: 'From Date',
-                  date: _fromDate,
-                  onDateSelected: (date) {
-                    setState(() {
-                      _fromDate = date;
-                    });
-                  },
-                ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppTheme.borderColor.withValues(alpha: 0.5),
+                width: 1,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _DatePickerField(
-                  label: 'To Date',
-                  date: _toDate,
-                  onDateSelected: (date) {
-                    setState(() {
-                      _toDate = date;
-                    });
-                  },
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _DatePickerField(
+                    label: 'From Date',
+                    date: _fromDate,
+                    onDateSelected: (date) {
+                      setState(() {
+                        _fromDate = date;
+                      });
+                    },
+                  ),
                 ),
-              ),
-            ],
+                Container(
+                  width: 1,
+                  height: 40,
+                  color: AppTheme.borderColor.withValues(alpha: 0.3),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _DatePickerField(
+                    label: 'To Date',
+                    date: _toDate,
+                    onDateSelected: (date) {
+                      setState(() {
+                        _toDate = date;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
           
           const SizedBox(height: 24),
@@ -402,7 +434,22 @@ class _FilterDialogState extends State<_FilterDialog> {
                       _toDate = null;
                     });
                   },
-                  child: const Text('Clear All'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppTheme.textSecondaryColor,
+                    side: BorderSide(color: AppTheme.borderColor),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.clear_rounded, size: 18),
+                      const SizedBox(width: 8),
+                      const Text('Clear All'),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -412,7 +459,22 @@ class _FilterDialogState extends State<_FilterDialog> {
                     widget.onApply(_selectedType, _fromDate, _toDate);
                     Navigator.pop(context);
                   },
-                  child: const Text('Apply'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.check_rounded, size: 18),
+                      const SizedBox(width: 8),
+                      const Text('Apply Filters'),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -424,28 +486,85 @@ class _FilterDialogState extends State<_FilterDialog> {
   }
 }
 
-class _FilterChip extends StatelessWidget {
+class _TransactionTypeChip extends StatelessWidget {
+  final TransactionType? type;
   final String label;
   final bool selected;
   final ValueChanged<bool> onSelected;
 
-  const _FilterChip({
+  const _TransactionTypeChip({
+    this.type,
     required this.label,
     required this.selected,
     required this.onSelected,
   });
 
+  IconData _getIcon() {
+    if (type == null) return Icons.list_alt_rounded;
+    
+    switch (type!) {
+      case TransactionType.deposit:
+        return Icons.add_circle_rounded;
+      case TransactionType.withdrawal:
+        return Icons.remove_circle_rounded;
+      case TransactionType.tradeProfit:
+        return Icons.trending_up_rounded;
+      case TransactionType.tradeLoss:
+        return Icons.trending_down_rounded;
+      case TransactionType.tradeFee:
+        return Icons.receipt_rounded;
+    }
+  }
+
+  Color _getColor() {
+    if (type == null) return AppTheme.primaryColor;
+    
+    switch (type!) {
+      case TransactionType.deposit:
+      case TransactionType.tradeProfit:
+        return AppTheme.bullishColor;
+      case TransactionType.withdrawal:
+      case TransactionType.tradeLoss:
+      case TransactionType.tradeFee:
+        return AppTheme.bearishColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final color = _getColor();
+    final icon = _getIcon();
+    
     return FilterChip(
-      label: Text(label),
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: selected ? color : AppTheme.textSecondaryColor,
+          ),
+          const SizedBox(width: 6),
+          Text(label),
+        ],
+      ),
       selected: selected,
       onSelected: onSelected,
-      selectedColor: AppTheme.primaryColor.withValues(alpha: 0.2),
-      checkmarkColor: AppTheme.primaryColor,
+      selectedColor: color.withValues(alpha: 0.15),
+      checkmarkColor: color,
+      backgroundColor: AppTheme.surfaceColor,
+      side: BorderSide(
+        color: selected ? color : AppTheme.borderColor,
+        width: selected ? 1.5 : 1,
+      ),
       labelStyle: TextStyle(
-        color: selected ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+        color: selected ? color : AppTheme.textSecondaryColor,
         fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+        fontSize: 13,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
       ),
     );
   }
@@ -471,35 +590,58 @@ class _DatePickerField extends StatelessWidget {
           initialDate: date ?? DateTime.now(),
           firstDate: DateTime(2020),
           lastDate: DateTime.now(),
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: AppTheme.primaryColor,
+                ),
+              ),
+              child: child!,
+            );
+          },
         );
         onDateSelected(selectedDate);
       },
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppTheme.borderColor),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.calendar_today_rounded,
-              size: 16,
-              color: AppTheme.textSecondaryColor,
+            Text(
+              label,
+              style: AppTheme.captionStyle.copyWith(
+                color: AppTheme.textSecondaryColor,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                date != null 
-                    ? '${date!.day}/${date!.month}/${date!.year}'
-                    : 'Select date',
-                style: AppTheme.captionStyle.copyWith(
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(
+                  Icons.calendar_today_rounded,
+                  size: 16,
                   color: date != null 
-                      ? AppTheme.textSecondaryColor 
+                      ? AppTheme.primaryColor 
                       : AppTheme.textSecondaryColor,
                 ),
-              ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    date != null 
+                        ? '${date!.day}/${date!.month}/${date!.year}'
+                        : 'Select date',
+                    style: AppTheme.bodyStyle.copyWith(
+                      color: date != null 
+                          ? AppTheme.textPrimaryColor 
+                          : AppTheme.textSecondaryColor,
+                      fontWeight: date != null ? FontWeight.w500 : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
