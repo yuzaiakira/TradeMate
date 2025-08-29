@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../domain/entities/transaction.dart';
-import '../bloc/account_bloc.dart';
-import '../bloc/account_event.dart';
+import '../provider/account_provider.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
@@ -257,9 +256,7 @@ class _TransactionItem extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 if (transaction.id != null) {
-                  context.read<AccountBloc>().add(
-                    DeleteTransaction(transactionId: transaction.id!),
-                  );
+                  context.read<AccountProvider>().deleteTransaction(transaction.id!);
                 }
               },
               style: ElevatedButton.styleFrom(

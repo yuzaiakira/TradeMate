@@ -29,13 +29,9 @@ import 'features/account_management/data/datasources/account_local_datasource.da
 import 'features/account_management/data/datasources/transaction_local_datasource.dart';
 import 'features/account_management/data/repositories/account_repository_impl.dart';
 import 'features/account_management/domain/repositories/account_repository.dart';
-import 'features/account_management/domain/usecases/get_account_balance_usecase.dart';
-import 'features/account_management/domain/usecases/update_balance_usecase.dart';
-import 'features/account_management/domain/usecases/add_transaction_usecase.dart';
-import 'features/account_management/domain/usecases/delete_transaction_usecase.dart';
-import 'features/account_management/presentation/bloc/account_bloc.dart';
-import 'features/account_management/presentation/pages/account_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'features/account_management/presentation/provider/account_provider.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -146,28 +142,6 @@ class TradeMateApp extends StatelessWidget {
           ),
         ),
         
-        // Account Management - Use Cases
-        Provider<GetAccountBalance>(
-          create: (context) => GetAccountBalance(
-            context.read<AccountRepository>(),
-          ),
-        ),
-        Provider<UpdateBalance>(
-          create: (context) => UpdateBalance(
-            context.read<AccountRepository>(),
-          ),
-        ),
-        Provider<AddTransaction>(
-          create: (context) => AddTransaction(
-            context.read<AccountRepository>(),
-          ),
-        ),
-        Provider<DeleteTransaction>(
-          create: (context) => DeleteTransaction(
-            context.read<AccountRepository>(),
-          ),
-        ),
-        
         // Providers
         ChangeNotifierProvider<AddTradeProvider>(
           create: (context) {
@@ -241,17 +215,12 @@ class TradeMateApp extends StatelessWidget {
             return provider;
           },
         ),
-        
-        // Account Management - Bloc
-        BlocProvider<AccountBloc>(
-          create: (context) => AccountBloc(
-            getAccountBalance: context.read<GetAccountBalance>(),
-            updateBalance: context.read<UpdateBalance>(),
-            addTransaction: context.read<AddTransaction>(),
-            deleteTransaction: context.read<DeleteTransaction>(),
-            accountRepository: context.read<AccountRepository>(),
+        ChangeNotifierProvider<AccountProvider>(
+          create: (context) => AccountProvider(
+            context.read<AccountRepository>(),
           ),
         ),
+
       ],
       child: MaterialApp(
         title: 'TradeMate',
@@ -309,7 +278,6 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       const HomePage(),
       const AddTradePage(),
       TradeListPage(onNavigateToTab: navigateToTab),
-      const AccountPage(),
       const ToolsPage(),
     ];
     
@@ -394,10 +362,6 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Trade List',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance),
-            label: 'Account',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.build),

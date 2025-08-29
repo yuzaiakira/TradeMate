@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/trade_statistics.dart';
 import '../provider/home_provider.dart';
-import '../../../account_management/presentation/bloc/account_bloc.dart';
-import '../../../account_management/presentation/bloc/account_event.dart';
-import '../../../account_management/presentation/bloc/account_state.dart';
 import '../../../account_management/presentation/widgets/balance_card.dart';
 import '../../../account_management/presentation/widgets/quick_actions.dart';
 import '../../../account_management/presentation/widgets/transaction_list.dart';
 import '../../../account_management/domain/entities/transaction.dart';
 import '../../../account_management/presentation/pages/transaction_history_page.dart';
+import '../../../account_management/presentation/provider/account_provider.dart';
 
 import '../widgets/account_growth_chart.dart';
 import '../../../../core/utils/app_theme.dart';
@@ -30,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // Load account data when page is opened
-    context.read<AccountBloc>().add(const LoadAccountBalance());
+    context.read<AccountProvider>().loadAccountData();
   }
 
   @override
@@ -108,7 +105,7 @@ class _HomePageState extends State<HomePage> {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<HomeProvider>().refresh();
-        context.read<AccountBloc>().add(const LoadAccountBalance());
+        context.read<AccountProvider>().loadAccountData();
       },
       color: AppTheme.primaryColor,
       child: SingleChildScrollView(
@@ -118,10 +115,10 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Account Balance Card
-            BlocBuilder<AccountBloc, AccountState>(
-              builder: (context, accountState) {
-                if (accountState is AccountLoaded) {
-                  return BalanceCard(balance: accountState.balance);
+            Consumer<AccountProvider>(
+              builder: (context, accountProvider, child) {
+                if (accountProvider.status == AccountStatus.loaded && accountProvider.balance != null) {
+                  return BalanceCard(balance: accountProvider.balance!);
                 }
                 return const SizedBox.shrink();
               },
@@ -130,9 +127,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 12),
             
             // Quick Actions
-            BlocBuilder<AccountBloc, AccountState>(
-              builder: (context, accountState) {
-                if (accountState is AccountLoaded) {
+            Consumer<AccountProvider>(
+              builder: (context, accountProvider, child) {
+                if (accountProvider.status == AccountStatus.loaded) {
                   return QuickActions(
                     onDeposit: () => _showDepositDialog(context),
                     onWithdraw: () => _showWithdrawalDialog(context),
@@ -221,9 +218,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 12),
             
             // Recent Transactions
-            BlocBuilder<AccountBloc, AccountState>(
-              builder: (context, accountState) {
-                if (accountState is AccountLoaded) {
+            Consumer<AccountProvider>(
+              builder: (context, accountProvider, child) {
+                if (accountProvider.status == AccountStatus.loaded) {
                   return Container(
                     decoration: AppTheme.cardDecoration,
                     padding: const EdgeInsets.all(12),
@@ -254,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 12),
                         TransactionList(
-                          transactions: accountState.transactions,
+                          transactions: accountProvider.transactions,
                           showAll: false,
                           showDeleteButton: false,
                         ),
@@ -361,10 +358,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showDepositDialog(BuildContext context) {
-    final currentState = context.read<AccountBloc>().state;
+    final accountProvider = context.read<AccountProvider>();
     double? currentBalance;
-    if (currentState is AccountLoaded) {
-      currentBalance = currentState.balance.balance;
+    if (accountProvider.status == AccountStatus.loaded && accountProvider.balance != null) {
+      currentBalance = accountProvider.balance!.balance;
     }
     
     showModalBottomSheet(
@@ -375,20 +372,17 @@ class _HomePageState extends State<HomePage> {
         type: TransactionType.deposit,
         currentBalance: currentBalance,
         onConfirm: (amount, note) {
-          context.read<AccountBloc>().add(AddToBalance(
-            amount: amount,
-            note: note,
-          ));
+          accountProvider.addToBalance(amount, note);
         },
       ),
     );
   }
 
   void _showWithdrawalDialog(BuildContext context) {
-    final currentState = context.read<AccountBloc>().state;
+    final accountProvider = context.read<AccountProvider>();
     double? currentBalance;
-    if (currentState is AccountLoaded) {
-      currentBalance = currentState.balance.balance;
+    if (accountProvider.status == AccountStatus.loaded && accountProvider.balance != null) {
+      currentBalance = accountProvider.balance!.balance;
     }
     
     showModalBottomSheet(
@@ -399,17 +393,14 @@ class _HomePageState extends State<HomePage> {
         type: TransactionType.withdrawal,
         currentBalance: currentBalance,
         onConfirm: (amount, note) {
-          context.read<AccountBloc>().add(AddToBalance(
-            amount: -amount, // Negative for withdrawal
-            note: note,
-          ));
+          accountProvider.addToBalance(-amount, note); // Negative for withdrawal
         },
       ),
     );
   }
 
   void _showTransactionHistory(BuildContext context) {
-    final bloc = context.read<AccountBloc>();
+    final accountProvider = context.read<AccountProvider>();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -417,7 +408,7 @@ class _HomePageState extends State<HomePage> {
       ),
     ).then((_) {
       // Reload account data when returning from transaction history
-      bloc.add(const LoadAccountBalance());
+      accountProvider.loadAccountData();
     });
   }
 }

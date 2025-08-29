@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
-import '../bloc/account_bloc.dart';
-import '../bloc/account_event.dart';
-import '../bloc/account_state.dart';
+import '../provider/account_provider.dart';
 import '../widgets/transaction_list.dart';
 import '../../domain/entities/transaction.dart';
 
@@ -26,11 +24,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   }
 
   void _loadTransactions() {
-    context.read<AccountBloc>().add(LoadTransactionHistory(
-      fromDate: _fromDate,
-      toDate: _toDate,
-      type: _selectedType,
-    ));
+    // For now, we'll load all transactions and filter them in the UI
+    // In the future, we can add filtering methods to AccountProvider
+    context.read<AccountProvider>().loadAccountData();
   }
 
   @override
@@ -92,9 +88,30 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
           
           // Transaction List
           Expanded(
-            child: BlocBuilder<AccountBloc, AccountState>(
-              builder: (context, state) {
-                if (state is TransactionHistoryLoaded) {
+            child: Consumer<AccountProvider>(
+              builder: (context, accountProvider, child) {
+                if (accountProvider.status == AccountStatus.loaded) {
+                  // Filter transactions based on selected filters
+                  List<Transaction> filteredTransactions = accountProvider.transactions;
+                  
+                  if (_selectedType != null) {
+                    filteredTransactions = filteredTransactions
+                        .where((t) => t.type == _selectedType)
+                        .toList();
+                  }
+                  
+                  if (_fromDate != null) {
+                    filteredTransactions = filteredTransactions
+                        .where((t) => t.datetime.isAfter(_fromDate!))
+                        .toList();
+                  }
+                  
+                  if (_toDate != null) {
+                    filteredTransactions = filteredTransactions
+                        .where((t) => t.datetime.isBefore(_toDate!.add(const Duration(days: 1))))
+                        .toList();
+                  }
+                  
                   return RefreshIndicator(
                     onRefresh: () async {
                       _loadTransactions();
@@ -104,7 +121,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       padding: const EdgeInsets.all(12),
                       children: [
                         TransactionList(
-                          transactions: state.transactions,
+                          transactions: filteredTransactions,
                           showAll: true,
                           showDeleteButton: true,
                         ),
@@ -113,7 +130,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   );
                 }
 
-                if (state is TransactionHistoryError) {
+                if (accountProvider.status == AccountStatus.error) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -130,7 +147,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          state.message,
+                          accountProvider.errorMessage ?? 'Unknown error',
                           style: AppTheme.captionStyle,
                           textAlign: TextAlign.center,
                         ),
@@ -201,7 +218,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       _fromDate = null;
       _toDate = null;
     });
-    _loadTransactions();
+    // No need to reload transactions, just rebuild the UI
   }
 
   void _showFilterDialog(BuildContext context) {
@@ -219,7 +236,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
             _fromDate = fromDate;
             _toDate = toDate;
           });
-          _loadTransactions();
+          // No need to reload transactions, just rebuild the UI
         },
       ),
     );
