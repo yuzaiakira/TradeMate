@@ -195,12 +195,19 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _showDepositDialog(BuildContext context) {
+    final currentState = context.read<AccountBloc>().state;
+    double? currentBalance;
+    if (currentState is AccountLoaded) {
+      currentBalance = currentState.balance.balance;
+    }
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => _TransactionDialog(
         type: TransactionType.deposit,
+        currentBalance: currentBalance,
         onConfirm: (amount, note) {
           context.read<AccountBloc>().add(AddToBalance(
             amount: amount,
@@ -212,12 +219,19 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _showWithdrawalDialog(BuildContext context) {
+    final currentState = context.read<AccountBloc>().state;
+    double? currentBalance;
+    if (currentState is AccountLoaded) {
+      currentBalance = currentState.balance.balance;
+    }
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => _TransactionDialog(
         type: TransactionType.withdrawal,
+        currentBalance: currentBalance,
         onConfirm: (amount, note) {
           context.read<AccountBloc>().add(AddToBalance(
             amount: -amount, // Negative for withdrawal
@@ -245,10 +259,12 @@ class _AccountPageState extends State<AccountPage> {
 class _TransactionDialog extends StatefulWidget {
   final TransactionType type;
   final Function(double amount, String? note) onConfirm;
+  final double? currentBalance;
 
   const _TransactionDialog({
     required this.type,
     required this.onConfirm,
+    this.currentBalance,
   });
 
   @override
@@ -261,10 +277,34 @@ class _TransactionDialogState extends State<_TransactionDialog> {
   final _noteController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Add listener to update button state when amount changes
+    _amountController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     _amountController.dispose();
     _noteController.dispose();
     super.dispose();
+  }
+
+  bool _isValidAmount() {
+    if (_amountController.text.isEmpty) return false;
+    final amount = double.tryParse(_amountController.text);
+    if (amount == null || amount <= 0) return false;
+    
+    // Check if withdrawal amount exceeds available balance
+    if (widget.type == TransactionType.withdrawal && 
+        widget.currentBalance != null && 
+        amount > widget.currentBalance!) {
+      return false;
+    }
+    
+    return true;
   }
 
   @override
@@ -318,6 +358,13 @@ class _TransactionDialogState extends State<_TransactionDialog> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                helperText: widget.type == TransactionType.withdrawal && widget.currentBalance != null
+                    ? 'Available balance: \$${widget.currentBalance!.toStringAsFixed(2)}'
+                    : null,
+                helperStyle: TextStyle(
+                  color: AppTheme.textSecondaryColor,
+                  fontSize: 12,
+                ),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -327,6 +374,14 @@ class _TransactionDialogState extends State<_TransactionDialog> {
                 if (amount == null || amount <= 0) {
                   return 'Please enter a valid amount';
                 }
+                
+                // Check if withdrawal amount exceeds available balance
+                if (widget.type == TransactionType.withdrawal && 
+                    widget.currentBalance != null && 
+                    amount > widget.currentBalance!) {
+                  return 'Amount exceeds available balance (\$${widget.currentBalance!.toStringAsFixed(2)})';
+                }
+                
                 return null;
               },
             ),
@@ -342,30 +397,34 @@ class _TransactionDialogState extends State<_TransactionDialog> {
               maxLines: 2,
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    final amount = double.parse(_amountController.text);
-                    final note = _noteController.text.isEmpty 
-                        ? null 
-                        : _noteController.text;
-                    
-                    widget.onConfirm(amount, note);
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: color,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            StatefulBuilder(
+              builder: (context, setState) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isValidAmount() ? () {
+                      if (_formKey.currentState!.validate()) {
+                        final amount = double.parse(_amountController.text);
+                        final note = _noteController.text.isEmpty 
+                            ? null 
+                            : _noteController.text;
+                        
+                        widget.onConfirm(amount, note);
+                        Navigator.pop(context);
+                      }
+                    } : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isValidAmount() ? color : AppTheme.textSecondaryColor.withValues(alpha: 0.3),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text('Confirm $title'),
                   ),
-                ),
-                child: Text('Confirm $title'),
-              ),
+                );
+              },
             ),
             const SizedBox(height: 16),
           ],

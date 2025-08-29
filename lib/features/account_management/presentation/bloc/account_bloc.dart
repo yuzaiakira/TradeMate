@@ -92,6 +92,14 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         final currentBalance = currentState.balance.balance;
         final newBalance = currentBalance + event.amount;
         
+        // Check if withdrawal would result in negative balance
+        if (event.amount < 0 && newBalance < 0) {
+          emit(AccountError(
+            message: 'Insufficient funds. Available balance: \$${currentBalance.toStringAsFixed(2)}'
+          ));
+          return;
+        }
+        
         // Determine transaction type based on amount
         final transactionType = event.amount > 0 
             ? domain_entity.TransactionType.deposit 
