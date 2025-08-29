@@ -42,14 +42,19 @@ void main() async {
   // Initialize database with error handling
   TradeMateDatabase database;
   try {
-    // First, try to recreate the database file to ensure a clean start
-    await TradeMateDatabase.recreateDatabaseFile();
     database = TradeMateDatabase();
     // Test database connection
     await database.getTradesCount();
   } catch (e) {
-    // If recreation fails, try normal initialization
-    database = TradeMateDatabase();
+    // If normal initialization fails, try to recreate the database file
+    try {
+      await TradeMateDatabase.recreateDatabaseFile();
+      database = TradeMateDatabase();
+      await database.getTradesCount();
+    } catch (recreateError) {
+      // If everything fails, create a fresh database
+      database = TradeMateDatabase();
+    }
   }
   
   runApp(TradeMateApp(database: database));

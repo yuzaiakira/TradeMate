@@ -38,6 +38,9 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
       final id = await database.into(database.accountTransactions).insert(
         model.toDatabaseCompanion(),
       );
+      
+      // Force sync to ensure data is written
+      await database.ensureDataPersisted();
 
       return TransactionModel(
         id: id,

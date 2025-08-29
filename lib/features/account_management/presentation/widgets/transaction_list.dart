@@ -17,8 +17,11 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (transactions.isEmpty) {
       return Container(
+        width: double.infinity, // Take full width
         padding: const EdgeInsets.all(24),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               Icons.receipt_long_outlined,
@@ -31,6 +34,7 @@ class TransactionList extends StatelessWidget {
               style: AppTheme.captionStyle.copyWith(
                 color: AppTheme.textSecondaryColor,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

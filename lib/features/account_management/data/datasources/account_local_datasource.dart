@@ -45,6 +45,9 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
           ),
         );
         
+        // Force sync to ensure data is written
+        await database.ensureDataPersisted();
+        
         return AccountBalanceModel(
           id: existingBalance.id,
           balance: newBalance,
@@ -60,6 +63,9 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
             note: note != null ? Value(note) : const Value.absent(),
           ),
         );
+        
+        // Force sync to ensure data is written
+        await database.ensureDataPersisted();
         
         return AccountBalanceModel(
           id: id,

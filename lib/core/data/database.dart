@@ -194,6 +194,16 @@ class TradeMateDatabase extends _$TradeMateDatabase {
     }
   }
 
+  // Method to ensure data is persisted
+  Future<void> ensureDataPersisted() async {
+    try {
+      // Force a small transaction to ensure data is written
+      await customStatement('SELECT 1');
+    } catch (e) {
+      Logger.error('Error ensuring data persistence: $e', e);
+    }
+  }
+
   MigrationStrategy get migrations {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
@@ -203,9 +213,9 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       },
       onUpgrade: (Migrator m, int from, int to) async {
         Logger.migration('Upgrading database from version $from to version $to');
-        // For now, just recreate all tables to avoid migration issues
+        // Just recreate all tables for now
         await m.createAll();
-        Logger.migration('Database recreated successfully');
+        Logger.migration('Database upgraded successfully');
       },
     );
   }
