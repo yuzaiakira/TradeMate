@@ -289,3 +289,4 @@ if (from < 3) {
 ## Conclusion
 
 The Account Management feature provides a robust foundation for tracking trading account balances and transactions. It follows Clean Architecture principles, implements modern UI/UX patterns, and integrates seamlessly with the existing trade system. The feature is designed to be scalable and extensible for future enhancements.
+

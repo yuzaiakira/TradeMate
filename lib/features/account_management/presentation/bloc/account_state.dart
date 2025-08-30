@@ -78,3 +78,4 @@ class TransactionHistoryError extends AccountState {
   @override
   List<Object?> get props => [message];
 }
+

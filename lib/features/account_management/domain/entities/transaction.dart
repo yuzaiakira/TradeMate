@@ -71,3 +71,4 @@ class Transaction extends Equatable {
                            type == TransactionType.tradeLoss || 
                            type == TransactionType.tradeFee;
 }
+

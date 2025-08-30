@@ -30,3 +30,4 @@ class AccountBalance extends Equatable {
     );
   }
 }
+
