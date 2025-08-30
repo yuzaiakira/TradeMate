@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../domain/entities/trade.dart';
+import '../../domain/entities/trade.dart' as domain;
 import '../provider/add_trade_provider.dart';
 import '../provider/edit_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
@@ -10,7 +10,7 @@ import '../../../../core/widgets/checklist_widget.dart';
 import '../../../../core/providers/user_defined_values_provider.dart';
 
 class EditTradePage extends StatefulWidget {
-  final Trade trade;
+  final domain.Trade trade;
 
   const EditTradePage({
     super.key,
@@ -178,7 +178,9 @@ class _EditTradePageState extends State<EditTradePage> {
     addTradeProvider.updateQuantity(trade.quantity);
     addTradeProvider.updateType(trade.type);
     addTradeProvider.updateNotes(trade.notes ?? '');
-    addTradeProvider.updateAccountBalance(trade.accountBalance);
+    
+    // Load current account balance from database instead of using trade's stored balance
+    addTradeProvider.loadCurrentAccountBalance();
   }
 
   @override
@@ -485,14 +487,14 @@ class _EditTradePageState extends State<EditTradePage> {
             const SizedBox(height: 16),
             
             // Entry Type
-            DropdownButtonFormField<EntryType>(
+            DropdownButtonFormField<domain.EntryType>(
               decoration: AppTheme.inputDecoration(
                 labelText: 'Entry Type',
                 prefixIcon: Icons.input,
               ),
               value: provider.entryType,
-              items: EntryType.values
-                  .where((type) => type != EntryType.deposit && type != EntryType.withdrawal)
+              items: domain.EntryType.values
+                  .where((type) => type != domain.EntryType.deposit && type != domain.EntryType.withdrawal)
                   .map((type) => DropdownMenuItem(
                         value: type,
                         child: Text(_getEntryTypeDisplayName(type)),
@@ -567,13 +569,13 @@ class _EditTradePageState extends State<EditTradePage> {
             const SizedBox(height: 16),
             
             // Order Type
-            DropdownButtonFormField<OrderType>(
+            DropdownButtonFormField<domain.OrderType>(
               decoration: AppTheme.inputDecoration(
                 labelText: 'Order Type',
                 prefixIcon: Icons.shopping_cart,
               ),
               value: provider.orderType,
-              items: OrderType.values
+              items: domain.OrderType.values
                   .map((type) => DropdownMenuItem(
                         value: type,
                         child: Text(type.name.toUpperCase()),
@@ -861,13 +863,13 @@ class _EditTradePageState extends State<EditTradePage> {
             
             const SizedBox(height: 16),
             
-            DropdownButtonFormField<ExitType>(
+            DropdownButtonFormField<domain.ExitType>(
               decoration: AppTheme.inputDecoration(
                 labelText: 'Exit Type',
                 prefixIcon: Icons.exit_to_app,
               ),
               value: provider.exitType,
-              items: ExitType.values
+              items: domain.ExitType.values
                   .map((type) => DropdownMenuItem(
                         value: type,
                         child: Text(type.name.toUpperCase()),
@@ -1074,15 +1076,22 @@ class _EditTradePageState extends State<EditTradePage> {
     // If successful, navigate back
     if (editTradeProvider.status == EditTradeStatus.success) {
       if (mounted) {
+        // Refresh account balance after trade is updated
+        await editTradeProvider.refreshAccountBalance();
+        
         // Reset the AddTradeProvider before navigating back
         addTradeProvider.reset();
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Trade updated successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        
+        // Use mounted check before async operations
+        if (mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Trade updated successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       }
     }
   }
@@ -1161,13 +1170,13 @@ class _EditTradePageState extends State<EditTradePage> {
     });
   }
 
-  String _getEntryTypeDisplayName(EntryType type) {
+  String _getEntryTypeDisplayName(domain.EntryType type) {
     switch (type) {
-      case EntryType.trade:
+      case domain.EntryType.trade:
         return 'Trade';
-      case EntryType.marginInOut:
+      case domain.EntryType.marginInOut:
         return 'Margin In/Out';
-      case EntryType.ignore:
+      case domain.EntryType.ignore:
         return 'Ignore';
       default:
         return 'Unknown';
@@ -1414,15 +1423,15 @@ class _EditTradePageState extends State<EditTradePage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            left: (provider.side ?? Side.long) == Side.long ? 0 : null,
-            right: (provider.side ?? Side.long) == Side.short ? 0 : null,
+                    left: (provider.side ?? domain.Side.long) == domain.Side.long ? 0 : null,
+        right: (provider.side ?? domain.Side.long) == domain.Side.short ? 0 : null,
             top: 0,
             bottom: 0,
             child: Container(
               width: MediaQuery.of(context).size.width * 0.4, // Half width minus padding
-              decoration: BoxDecoration(
-                color: (provider.side ?? Side.long) == Side.long 
-                    ? AppTheme.bullishColor 
+                            decoration: BoxDecoration(
+                color: (provider.side ?? domain.Side.long) == domain.Side.long
+                    ? AppTheme.bullishColor
                     : AppTheme.bearishColor,
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -1433,7 +1442,7 @@ class _EditTradePageState extends State<EditTradePage> {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () => provider.updateSide(Side.long),
+                  onTap: () => provider.updateSide(domain.Side.long),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -1441,7 +1450,7 @@ class _EditTradePageState extends State<EditTradePage> {
                         topLeft: Radius.circular(5),
                         bottomLeft: Radius.circular(5),
                       ),
-                      onTap: () => provider.updateSide(Side.long),
+                      onTap: () => provider.updateSide(domain.Side.long),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                         child: Row(
@@ -1451,8 +1460,8 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Icon(
                                 Icons.trending_up,
-                                key: ValueKey((provider.side ?? Side.long) == Side.long),
-                                color: (provider.side ?? Side.long) == Side.long 
+                                key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.long),
+                                color: (provider.side ?? domain.Side.long) == domain.Side.long 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
                                 size: 22,
@@ -1463,11 +1472,11 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Text(
                                 'LONG',
-                                key: ValueKey((provider.side ?? Side.long) == Side.long),
+                                key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.long),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15,
-                                  color: (provider.side ?? Side.long) == Side.long 
+                                  color: (provider.side ?? domain.Side.long) == domain.Side.long 
                                       ? Colors.white 
                                       : AppTheme.textSecondaryColor,
                                 ),
@@ -1482,7 +1491,7 @@ class _EditTradePageState extends State<EditTradePage> {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => provider.updateSide(Side.short),
+                  onTap: () => provider.updateSide(domain.Side.short),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -1490,7 +1499,7 @@ class _EditTradePageState extends State<EditTradePage> {
                         topRight: Radius.circular(5),
                         bottomRight: Radius.circular(5),
                       ),
-                      onTap: () => provider.updateSide(Side.short),
+                      onTap: () => provider.updateSide(domain.Side.short),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                         child: Row(
@@ -1500,8 +1509,8 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Icon(
                                 Icons.trending_down,
-                                key: ValueKey((provider.side ?? Side.long) == Side.short),
-                                color: (provider.side ?? Side.long) == Side.short 
+                                key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.short),
+                                color: (provider.side ?? domain.Side.long) == domain.Side.short 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
                                 size: 22,
@@ -1512,11 +1521,11 @@ class _EditTradePageState extends State<EditTradePage> {
                               duration: const Duration(milliseconds: 200),
                               child: Text(
                                 'SHORT',
-                                key: ValueKey((provider.side ?? Side.long) == Side.short),
+                                key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.short),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15,
-                                  color: (provider.side ?? Side.long) == Side.short 
+                                  color: (provider.side ?? domain.Side.long) == domain.Side.short 
                                       ? Colors.white 
                                       : AppTheme.textSecondaryColor,
                                 ),

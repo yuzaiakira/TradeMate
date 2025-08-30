@@ -607,7 +607,7 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   Future<double> getTotalDeposits() async {
     try {
       final result = await (select(accountTransactions)
-        ..where((t) => t.type.equals('DEPOSIT')))
+        ..where((t) => t.type.equals('deposit')))
         .get();
       double total = 0.0;
       for (final transaction in result) {
@@ -622,7 +622,7 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   Future<double> getTotalWithdrawals() async {
     try {
       final result = await (select(accountTransactions)
-        ..where((t) => t.type.equals('WITHDRAWAL')))
+        ..where((t) => t.type.equals('withdrawal')))
         .get();
       double total = 0.0;
       for (final transaction in result) {
@@ -652,7 +652,8 @@ class TradeMateDatabase extends _$TradeMateDatabase {
         .get();
       double total = 0.0;
       for (final trade in result) {
-        total += trade.pnl ?? 0.0;
+        // Use netProfitLoss if available (includes fees), otherwise fall back to pnl
+        total += trade.netProfitLoss ?? trade.pnl ?? 0.0;
       }
       return total;
     } catch (e) {

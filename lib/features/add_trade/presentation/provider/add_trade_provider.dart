@@ -1,40 +1,48 @@
 import 'package:flutter/foundation.dart';
-import '../../domain/entities/trade.dart';
+import '../../domain/entities/trade.dart' as domain;
 import '../../domain/usecases/add_trade_usecase.dart';
+import '../../../../core/data/database.dart';
 
 enum AddTradeStatus { initial, loading, success, error }
 
 class AddTradeProvider with ChangeNotifier {
   final AddTradeUseCase addTradeUseCase;
+  final TradeMateDatabase database;
   VoidCallback? _onTradeAdded;
+  VoidCallback? _onBalanceUpdated;
 
-  AddTradeProvider(this.addTradeUseCase);
+  AddTradeProvider(this.addTradeUseCase, this.database);
 
   // Set callback to be called when a trade is successfully added
   void setOnTradeAddedCallback(VoidCallback callback) {
     _onTradeAdded = callback;
   }
 
+  // Set callback to be called when balance is updated
+  void setOnBalanceUpdatedCallback(VoidCallback callback) {
+    _onBalanceUpdated = callback;
+  }
+
   AddTradeStatus _status = AddTradeStatus.initial;
   String _errorMessage = '';
-  Trade? _currentTrade;
+  domain.Trade? _currentTrade;
 
   AddTradeStatus get status => _status;
   String get errorMessage => _errorMessage;
-  Trade? get currentTrade => _currentTrade;
+  domain.Trade? get currentTrade => _currentTrade;
 
   // Trade Transfers
   String _tag = '';
   DateTime? _datetime;
   String? _exchanges;
-  EntryType? _entryType;
+  domain.EntryType? _entryType;
   String _symbol = '';
   String? _strategies;
-  Side? _side;
+  domain.Side? _side;
   double _entryPrice = 0.0;
   double? _positionMargin;
   double? _leverage;
-  OrderType? _orderType;
+  domain.OrderType? _orderType;
   String? _timeFrame;
   double? _entryFeeRate;
   String? _entryMentalStates;
@@ -50,7 +58,7 @@ class AddTradeProvider with ChangeNotifier {
   // Trade Exit
   double? _actualExitPrice;
   double? _marginClosedPercent;
-  ExitType? _exitType;
+  domain.ExitType? _exitType;
   double? _exitFeeRate;
   DateTime? _exitDatetime;
   String? _exitMentalStates;
@@ -69,8 +77,8 @@ class AddTradeProvider with ChangeNotifier {
   String? _transferScreenshot;
   
   // Legacy fields (keeping for backward compatibility)
-  TradeType _type = TradeType.buy;
-  TradeStatus _tradeStatus = TradeStatus.open;
+  domain.TradeType _type = domain.TradeType.buy;
+  domain.TradeStatus _tradeStatus = domain.TradeStatus.open;
   double? _exitPrice;
   double _quantity = 0.0;
   double? _stopLoss;
@@ -91,14 +99,14 @@ class AddTradeProvider with ChangeNotifier {
   String get tag => _tag;
   DateTime? get datetime => _datetime;
   String? get exchanges => _exchanges;
-  EntryType? get entryType => _entryType;
+  domain.EntryType? get entryType => _entryType;
   String get symbol => _symbol;
   String? get strategies => _strategies;
-  Side? get side => _side;
+  domain.Side? get side => _side;
   double get entryPrice => _entryPrice;
   double? get positionMargin => _positionMargin;
   double? get leverage => _leverage;
-  OrderType? get orderType => _orderType;
+  domain.OrderType? get orderType => _orderType;
   String? get timeFrame => _timeFrame;
   double? get entryFeeRate => _entryFeeRate;
   String? get entryMentalStates => _entryMentalStates;
@@ -108,7 +116,7 @@ class AddTradeProvider with ChangeNotifier {
   double? get takeProfitPrice => _takeProfitPrice;
   double? get actualExitPrice => _actualExitPrice;
   double? get marginClosedPercent => _marginClosedPercent;
-  ExitType? get exitType => _exitType;
+  domain.ExitType? get exitType => _exitType;
   double? get exitFeeRate => _exitFeeRate;
   DateTime? get exitDatetime => _exitDatetime;
   String? get exitMentalStates => _exitMentalStates;
@@ -119,8 +127,8 @@ class AddTradeProvider with ChangeNotifier {
   String? get mistakes => _mistakes;
   double? get transferAmount => _transferAmount;
   String? get transferScreenshot => _transferScreenshot;
-  TradeType get type => _type;
-  TradeStatus get tradeStatus => _tradeStatus;
+  domain.TradeType get type => _type;
+  domain.TradeStatus get tradeStatus => _tradeStatus;
   double? get exitPrice => _exitPrice;
   double get quantity => _quantity;
   double? get stopLoss => _stopLoss;
@@ -153,7 +161,7 @@ class AddTradeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateEntryType(EntryType? value) {
+  void updateEntryType(domain.EntryType? value) {
     _entryType = value;
     notifyListeners();
   }
@@ -168,7 +176,7 @@ class AddTradeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSide(Side? value) {
+  void updateSide(domain.Side? value) {
     _side = value;
     notifyListeners();
   }
@@ -188,7 +196,7 @@ class AddTradeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateOrderType(OrderType? value) {
+  void updateOrderType(domain.OrderType? value) {
     _orderType = value;
     notifyListeners();
   }
@@ -238,7 +246,7 @@ class AddTradeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateExitType(ExitType? value) {
+  void updateExitType(domain.ExitType? value) {
     _exitType = value;
     notifyListeners();
   }
@@ -294,7 +302,7 @@ class AddTradeProvider with ChangeNotifier {
   }
 
   // Legacy update methods
-  void updateType(TradeType value) {
+  void updateType(domain.TradeType value) {
     _type = value;
     notifyListeners();
   }
@@ -322,6 +330,17 @@ class AddTradeProvider with ChangeNotifier {
   void updateAccountBalance(double value) {
     _accountBalance = value;
     notifyListeners();
+  }
+
+  Future<void> loadCurrentAccountBalance() async {
+    try {
+      final currentBalance = await database.getCurrentAccountBalance();
+      _accountBalance = currentBalance;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading current account balance: $e');
+      // Keep the current balance if loading fails
+    }
   }
 
   // Calculate risk amount
@@ -356,7 +375,7 @@ class AddTradeProvider with ChangeNotifier {
   }
 
   // Build trade from current form data
-  Trade buildTrade() {
+  domain.Trade buildTrade() {
     // Calculate quantity from positionMargin if available
     double calculatedQuantity = _quantity;
     if (_quantity <= 0 && _positionMargin != null && _positionMargin! > 0 && _entryPrice > 0) {
@@ -364,12 +383,12 @@ class AddTradeProvider with ChangeNotifier {
     }
 
     // Determine trade status based on exit information
-    TradeStatus determinedStatus = _tradeStatus;
+    domain.TradeStatus determinedStatus = _tradeStatus;
     if (_actualExitPrice != null || _exitDatetime != null) {
-      determinedStatus = TradeStatus.closed;
+      determinedStatus = domain.TradeStatus.closed;
     }
 
-    return Trade(
+    return domain.Trade(
       // Trade Transfers
       tag: _tag.isEmpty ? null : _tag,
       datetime: _datetime ?? DateTime.now(),
@@ -457,11 +476,17 @@ class AddTradeProvider with ChangeNotifier {
         },
       );
       
-              debugPrint('Trade saved successfully with ID: $tradeId');
+      debugPrint('Trade saved successfully with ID: $tradeId');
       
       _currentTrade = trade.copyWith(id: tradeId);
       _status = AddTradeStatus.success;
       _errorMessage = '';
+      
+      // Refresh account balance after trade is added
+      await loadCurrentAccountBalance();
+      
+      // Notify balance updated callback
+      _onBalanceUpdated?.call();
       
       // Don't reset form immediately - let the UI show success state first
       // _resetForm();
@@ -469,7 +494,7 @@ class AddTradeProvider with ChangeNotifier {
       notifyListeners();
       _onTradeAdded?.call(); // Notify the callback
     } catch (e) {
-              debugPrint('Error adding trade: $e');
+      debugPrint('Error adding trade: $e');
       _status = AddTradeStatus.error;
       _errorMessage = e.toString();
       notifyListeners();
@@ -484,7 +509,7 @@ class AddTradeProvider with ChangeNotifier {
     _entryType = null;
     _symbol = '';
     _strategies = null;
-    _side = Side.long; // Reset to default side instead of null
+    _side = domain.Side.long; // Reset to default side instead of null
     _entryPrice = 0.0; // Keep as 0.0 for numeric field
     _positionMargin = null;
     _leverage = null;
@@ -523,8 +548,8 @@ class AddTradeProvider with ChangeNotifier {
     _transferScreenshot = null;
     
     // Legacy fields
-    _type = TradeType.buy; // Keep default for legacy compatibility
-    _tradeStatus = TradeStatus.open; // Keep default for legacy compatibility
+    _type = domain.TradeType.buy; // Keep default for legacy compatibility
+    _tradeStatus = domain.TradeStatus.open; // Keep default for legacy compatibility
     _exitPrice = null;
     _quantity = 0.0; // Keep as 0.0 for numeric field
     _stopLoss = null;

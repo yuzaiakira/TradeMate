@@ -210,12 +210,14 @@ class TradeCalculator {
     return (netPnL / currentBalance) * 100;
   }
 
-  /// Calculate new balance = account_balance + net profit/loss
-  static double? calculateNewBalance(domain.Trade trade) {
+  /// Calculate new balance = current_balance + net profit/loss
+  static Future<double?> calculateNewBalance(domain.Trade trade) async {
     final netPnL = calculateNetProfitLoss(trade);
     if (netPnL == null) return null;
     
-    return trade.accountBalance + netPnL;
+    // Use current actual balance instead of trade.accountBalance
+    final currentBalance = await getCurrentBalance();
+    return currentBalance + netPnL;
   }
 
   /// Calculate trade duration = datetime(exit) - datetime(entry)
@@ -273,7 +275,7 @@ class TradeCalculator {
       netProfitLoss: calculateNetProfitLoss(trade),
       tradeGainPercent: calculateTradeGainPercent(trade),
       accountChangePercent: await calculateAccountChangePercent(trade),
-      newBalance: calculateNewBalance(trade),
+      newBalance: await calculateNewBalance(trade),
       calculatedTradeDuration: calculateTradeDuration(trade),
     );
   }

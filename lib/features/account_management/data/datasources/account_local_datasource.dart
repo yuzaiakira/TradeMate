@@ -16,11 +16,47 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   @override
   Future<AccountBalanceModel?> getCurrentBalance() async {
     try {
-      final result = await database.select(database.accountBalance).getSingleOrNull();
-      if (result != null) {
-        return AccountBalanceModel.fromDatabase(result);
+      // Use the calculated balance from database instead of stored balance
+      // This ensures consistency with trade calculations
+      final calculatedBalance = await database.getCurrentAccountBalance();
+      
+      // Get the existing balance record to preserve the ID and other fields
+      final existingRecord = await database.select(database.accountBalance).getSingleOrNull();
+      
+      if (existingRecord != null) {
+        // Update the existing record with the calculated balance
+        await database.update(database.accountBalance).replace(
+          AccountBalanceCompanion(
+            id: Value(existingRecord.id),
+            balance: Value(calculatedBalance),
+            lastUpdated: Value(DateTime.now()),
+            note: Value('Balance synchronized with calculated balance'),
+          ),
+        );
+        
+        return AccountBalanceModel(
+          id: existingRecord.id,
+          balance: calculatedBalance,
+          lastUpdated: DateTime.now(),
+          note: 'Balance synchronized with calculated balance',
+        );
+      } else {
+        // Create new record with calculated balance
+        final id = await database.into(database.accountBalance).insert(
+          AccountBalanceCompanion.insert(
+            balance: calculatedBalance,
+            lastUpdated: DateTime.now(),
+            note: Value('Initial balance from calculated balance'),
+          ),
+        );
+        
+        return AccountBalanceModel(
+          id: id,
+          balance: calculatedBalance,
+          lastUpdated: DateTime.now(),
+          note: 'Initial balance from calculated balance',
+        );
       }
-      return null;
     } catch (e) {
       throw Exception('Failed to get current balance: $e');
     }
@@ -82,9 +118,9 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   @override
   Future<AccountBalanceModel> addToBalance(double amount, String? note) async {
     try {
-      final currentBalance = await getCurrentBalance();
-      final currentAmount = currentBalance?.balance ?? 0.0;
-      final newBalance = currentAmount + amount;
+      // Get the current calculated balance
+      final currentCalculatedBalance = await database.getCurrentAccountBalance();
+      final newBalance = currentCalculatedBalance + amount;
       
       return await updateBalance(newBalance, note);
     } catch (e) {

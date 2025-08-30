@@ -151,6 +151,7 @@ class TradeMateApp extends StatelessWidget {
           create: (context) {
             final provider = AddTradeProvider(
               context.read<AddTradeUseCase>(),
+              context.read<TradeMateDatabase>(),
             );
             // Set up callback to refresh trade list when a trade is added
             provider.setOnTradeAddedCallback(() {
@@ -158,6 +159,16 @@ class TradeMateApp extends StatelessWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
                   context.read<TradeListProvider>().refreshSilently();
+                }
+              });
+            });
+            // Set up callback to refresh account balance when balance is updated
+            provider.setOnBalanceUpdatedCallback(() {
+              // Use a post-frame callback to ensure the provider is available
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  context.read<AccountProvider>().loadAccountData();
+                  context.read<HomeProvider>().loadStatistics();
                 }
               });
             });
@@ -169,6 +180,7 @@ class TradeMateApp extends StatelessWidget {
             final provider = EditTradeProvider(
               updateTradeUseCase: context.read<UpdateTradeUseCase>(),
               getTradesUseCase: context.read<GetTradesUseCase>(),
+              database: context.read<TradeMateDatabase>(),
             );
             // Set up callback to refresh trade list when a trade is updated
             provider.setOnTradeUpdatedCallback(() {
@@ -176,6 +188,16 @@ class TradeMateApp extends StatelessWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
                   context.read<TradeListProvider>().refreshSilently();
+                }
+              });
+            });
+            // Set up callback to refresh account balance when balance is updated
+            provider.setOnBalanceUpdatedCallback(() {
+              // Use a post-frame callback to ensure the provider is available
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  context.read<AccountProvider>().loadAccountData();
+                  context.read<HomeProvider>().loadStatistics();
                 }
               });
             });

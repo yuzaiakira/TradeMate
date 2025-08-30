@@ -74,50 +74,13 @@ class AddTradeUseCase {
       }
     }
 
-    // Calculate PnL if exit price is provided
-    double? pnl;
-    double? pnlPercent;
-    if (trade.actualExitPrice != null) {
-      final priceDifference = trade.actualExitPrice! - trade.entryPrice;
-      
-      // Use the new Side enum for proper PnL calculation
-      double multiplier;
-      if (trade.side == Side.long) {
-        // For long positions: profit when exit price > entry price
-        multiplier = 1;
-      } else if (trade.side == Side.short) {
-        // For short positions: profit when exit price < entry price
-        multiplier = -1;
-      } else {
-        // Fallback to legacy TradeType for backward compatibility
-        multiplier = trade.type == TradeType.buy ? 1 : -1;
-      }
-      
-      pnl = priceDifference * trade.quantity * multiplier;
-      
-      final positionValue = trade.entryPrice * trade.quantity;
-      pnlPercent = (pnl / positionValue) * 100;
-    }
-
-    // Calculate achieved R
-    double? achievedR;
-    if (riskAmount != null && pnl != null && riskAmount > 0) {
-      achievedR = pnl / riskAmount;
-    }
-
-    // Calculate trade duration
-    int? tradeDuration;
-    if (trade.exitDatetime != null) {
-      tradeDuration = trade.exitDatetime!.difference(trade.datetime).inMinutes;
-    }
+    // Note: PnL calculation is now handled by TradeCalculator.calculateAllFields()
+    // which calculates netProfitLoss, grossProfitLoss, positionFees, etc.
+    // This prevents conflicts and ensures consistent calculation
 
     return trade.copyWith(
       riskAmount: riskAmount,
       riskRewardRatio: riskRewardRatio,
-      pnl: pnl,
-      pnlPercent: pnlPercent,
-      achievedR: achievedR,
-      tradeDuration: tradeDuration,
       // Update legacy fields for consistency
       exitPrice: trade.actualExitPrice,
       exitDate: trade.exitDatetime,

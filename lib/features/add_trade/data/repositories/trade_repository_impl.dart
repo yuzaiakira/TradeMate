@@ -11,26 +11,20 @@ class TradeRepositoryImpl implements TradeRepository {
   TradeRepositoryImpl(this.database);
 
   /// Update account balance when a trade is saved or updated
-  Future<void> _updateAccountBalanceForTrade(int tradeId, double pnl, double fees) async {
+  /// Note: The account balance is automatically calculated from deposits, withdrawals, and closed trades PnL
+  /// So we don't need to manually add PnL to the balance here
+  Future<void> _updateAccountBalanceForTrade(int tradeId) async {
     try {
-      // Get current account balance
-      final currentBalance = await database.getCurrentAccountBalance();
+      // The account balance is automatically calculated from:
+      // totalDeposits - totalWithdrawals + closedTradesPnl
+      // Since the trade is already saved with its PnL, the balance will be recalculated correctly
+      // We just need to trigger a balance refresh by updating the balance record
       
-      // Calculate new balance
-      double newBalance = currentBalance;
+      // Get the recalculated balance
+      final newBalance = await database.getCurrentAccountBalance();
       
-      // Add PnL to balance
-      if (pnl != 0) {
-        newBalance += pnl;
-      }
-      
-      // Subtract fees from balance
-      if (fees > 0) {
-        newBalance -= fees;
-      }
-      
-      // Update the account balance in the database
-      await database.updateAccountBalance(newBalance, 'Trade result processed');
+      // Update the account balance record to reflect the new calculation
+      await database.updateAccountBalance(newBalance, 'Trade result processed - Balance recalculated');
       
     } catch (e) {
       Logger.error('Error updating account balance: $e', e);
@@ -146,9 +140,10 @@ class TradeRepositoryImpl implements TradeRepository {
     final tradeId = await database.insertTrade(tradeModel.toDatabaseCompanion());
     
     // Update account balance if this is a closed trade with PnL
-    if (calculatedTrade.status == domain.TradeStatus.closed && calculatedTrade.pnl != null) {
+    if (calculatedTrade.status == domain.TradeStatus.closed && calculatedTrade.netProfitLoss != null) {
       try {
-        await _updateAccountBalanceForTrade(tradeId, calculatedTrade.pnl!, calculatedTrade.positionFees ?? 0.0);
+        // Update account balance after trade is saved
+        await _updateAccountBalanceForTrade(tradeId);
       } catch (e) {
         // Log error but don't fail the trade insertion
         Logger.error('Failed to update account balance: $e', e);
@@ -249,9 +244,10 @@ class TradeRepositoryImpl implements TradeRepository {
     final result = await database.updateTrade(tradeModel.toDatabaseCompanion());
     
     // Update account balance if this is a closed trade with PnL
-    if (calculatedTrade.status == domain.TradeStatus.closed && calculatedTrade.pnl != null) {
+    if (calculatedTrade.status == domain.TradeStatus.closed && calculatedTrade.netProfitLoss != null) {
       try {
-        await _updateAccountBalanceForTrade(calculatedTrade.id!, calculatedTrade.pnl!, calculatedTrade.positionFees ?? 0.0);
+        // Update account balance after trade is updated
+        await _updateAccountBalanceForTrade(calculatedTrade.id!);
       } catch (e) {
         // Log error but don't fail the trade update
         Logger.error('Failed to update account balance: $e', e);

@@ -785,7 +785,12 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                         _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
                         _buildDetailRowWithColor('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A', TradeCalculator.calculateTradeGainPercent(trade) ?? 0),
                         _buildDetailRow('Account Change %', snapshot.data != null ? '${snapshot.data!.toStringAsFixed(2)}%' : 'N/A'),
-                        _buildDetailRow('New Balance', TradeCalculator.calculateNewBalance(trade) != null ? '\$${TradeCalculator.calculateNewBalance(trade)!.toStringAsFixed(2)}' : 'N/A'),
+                        FutureBuilder<double?>(
+                          future: TradeCalculator.calculateNewBalance(trade),
+                          builder: (context, snapshot) {
+                            return _buildDetailRow('New Balance', snapshot.data != null ? '\$${snapshot.data!.toStringAsFixed(2)}' : 'N/A');
+                          },
+                        ),
                         _buildDetailRow('Trade Duration', TradeCalculator.formatTradeDuration(TradeCalculator.calculateTradeDuration(trade)) ?? 'N/A'),
                       ]);
                     },

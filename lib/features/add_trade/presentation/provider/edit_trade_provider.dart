@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/trade.dart';
+import '../../domain/entities/trade.dart' as domain;
 import '../../domain/usecases/update_trade_usecase.dart';
 import '../../domain/usecases/get_trades_usecase.dart';
+import '../../../../core/data/database.dart';
 
 enum EditTradeStatus { initial, loading, success, error }
 
 class EditTradeProvider extends ChangeNotifier {
   final UpdateTradeUseCase updateTradeUseCase;
   final GetTradesUseCase getTradesUseCase;
+  final TradeMateDatabase database;
   VoidCallback? _onTradeUpdated;
+  VoidCallback? _onBalanceUpdated;
   
   EditTradeProvider({
     required this.updateTradeUseCase,
     required this.getTradesUseCase,
+    required this.database,
   });
 
   // Set callback to be called when a trade is successfully updated
@@ -20,16 +24,21 @@ class EditTradeProvider extends ChangeNotifier {
     _onTradeUpdated = callback;
   }
 
+  // Set callback to be called when balance is updated
+  void setOnBalanceUpdatedCallback(VoidCallback callback) {
+    _onBalanceUpdated = callback;
+  }
+
   EditTradeStatus _status = EditTradeStatus.initial;
   String _errorMessage = '';
-  Trade? _tradeToEdit;
+  domain.Trade? _tradeToEdit;
 
   EditTradeStatus get status => _status;
   String get errorMessage => _errorMessage;
-  Trade? get tradeToEdit => _tradeToEdit;
+  domain.Trade? get tradeToEdit => _tradeToEdit;
 
   // Initialize the provider with a trade to edit
-  void initializeWithTrade(Trade trade) {
+  void initializeWithTrade(domain.Trade trade) {
     _tradeToEdit = trade;
     _status = EditTradeStatus.initial;
     _errorMessage = '';
@@ -37,7 +46,7 @@ class EditTradeProvider extends ChangeNotifier {
   }
 
   // Update trade
-  Future<void> updateTrade(Trade updatedTrade) async {
+  Future<void> updateTrade(domain.Trade updatedTrade) async {
     if (_tradeToEdit == null) {
       _setError('No trade selected for editing');
       return;
@@ -56,6 +65,19 @@ class EditTradeProvider extends ChangeNotifier {
       }
     } catch (e) {
       _setError(e.toString());
+    }
+  }
+
+  // Refresh account balance from database
+  Future<void> refreshAccountBalance() async {
+    try {
+      await database.getCurrentAccountBalance();
+      // Notify balance updated callback
+      _onBalanceUpdated?.call();
+      // Notify listeners that balance has been refreshed
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error refreshing account balance: $e');
     }
   }
 

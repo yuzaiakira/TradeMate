@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../domain/entities/trade.dart';
+import '../../domain/entities/trade.dart' as domain;
 import '../provider/add_trade_provider.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../../../core/widgets/multi_select_dropdown.dart';
@@ -42,13 +42,16 @@ class _AddTradePageState extends State<AddTradePage> {
   void initState() {
     super.initState();
     // Initialize default values when the page loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<UserDefinedValuesProvider>().initializeDefaultValues();
       // Set default side to long if not already set
       final addTradeProvider = context.read<AddTradeProvider>();
       if (addTradeProvider.side == null) {
-        addTradeProvider.updateSide(Side.long);
+        addTradeProvider.updateSide(domain.Side.long);
       }
+      
+      // Load current account balance
+      await addTradeProvider.loadCurrentAccountBalance();
       
       // Add a safety timeout to prevent UI from getting stuck in loading state
       Future.delayed(const Duration(seconds: 20), () {
@@ -898,14 +901,14 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Entry Type',
           hint: 'What type of entry is this?',
           icon: Icons.input,
-          child: DropdownButtonFormField<EntryType>(
+          child: DropdownButtonFormField<domain.EntryType>(
             decoration: AppTheme.inputDecoration(
               labelText: 'Entry Type',
               prefixIcon: Icons.input,
             ),
             value: addTradeProvider.entryType,
-            items: EntryType.values
-                .where((type) => type != EntryType.deposit && type != EntryType.withdrawal)
+            items: domain.EntryType.values
+                .where((type) => type != domain.EntryType.deposit && type != domain.EntryType.withdrawal)
                 .map(
                   (type) => DropdownMenuItem(
                     value: type,
@@ -1087,13 +1090,13 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Order Type',
           hint: 'What type of order did you place?',
           icon: Icons.shopping_cart,
-          child: DropdownButtonFormField<OrderType>(
+          child: DropdownButtonFormField<domain.OrderType>(
             decoration: AppTheme.inputDecoration(
               labelText: 'Order Type',
               prefixIcon: Icons.shopping_cart,
             ),
             value: addTradeProvider.orderType,
-            items: OrderType.values
+                          items: domain.OrderType.values
                 .map(
                   (type) => DropdownMenuItem(
                     value: type,
@@ -1440,13 +1443,13 @@ class _AddTradePageState extends State<AddTradePage> {
           label: 'Exit Type',
           hint: 'Did you hit take profit or stop loss?',
           icon: Icons.exit_to_app,
-          child: DropdownButtonFormField<ExitType>(
+          child: DropdownButtonFormField<domain.ExitType>(
             decoration: AppTheme.inputDecoration(
               labelText: 'Exit Type',
               prefixIcon: Icons.exit_to_app,
             ),
             value: addTradeProvider.exitType,
-            items: ExitType.values
+                          items: domain.ExitType.values
                 .map(
                   (type) => DropdownMenuItem(
                     value: type,
@@ -1810,8 +1813,8 @@ class _AddTradePageState extends State<AddTradePage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            left: (provider.side ?? Side.long) == Side.long ? 0 : null,
-            right: (provider.side ?? Side.long) == Side.short ? 0 : null,
+                    left: (provider.side ?? domain.Side.long) == domain.Side.long ? 0 : null,
+        right: (provider.side ?? domain.Side.long) == domain.Side.short ? 0 : null,
             top: 0,
             bottom: 0,
             child: Container(
@@ -1819,7 +1822,7 @@ class _AddTradePageState extends State<AddTradePage> {
                   MediaQuery.of(context).size.width *
                   0.4, // Half width minus padding
               decoration: BoxDecoration(
-                color: (provider.side ?? Side.long) == Side.long
+                color: (provider.side ?? domain.Side.long) == domain.Side.long
                     ? AppTheme.bullishColor
                     : AppTheme.bearishColor,
                 borderRadius: BorderRadius.circular(5),
@@ -1831,7 +1834,7 @@ class _AddTradePageState extends State<AddTradePage> {
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () => provider.updateSide(Side.long),
+                  onTap: () => provider.updateSide(domain.Side.long),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(5),
                     bottomLeft: Radius.circular(5),
@@ -1848,8 +1851,8 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Icon(
                               Icons.trending_up,
-                              key: ValueKey((provider.side ?? Side.long) == Side.long),
-                              color: (provider.side ?? Side.long) == Side.long
+                              key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.long),
+                              color: (provider.side ?? domain.Side.long) == domain.Side.long
                                   ? Colors.white
                                   : AppTheme.textSecondaryColor,
                               size: 20,
@@ -1860,11 +1863,11 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Text(
                               'LONG',
-                              key: ValueKey((provider.side ?? Side.long) == Side.long),
+                              key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.long),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: (provider.side ?? Side.long) == Side.long
+                                color: (provider.side ?? domain.Side.long) == domain.Side.long
                                     ? Colors.white
                                     : AppTheme.textSecondaryColor,
                               ),
@@ -1878,7 +1881,7 @@ class _AddTradePageState extends State<AddTradePage> {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: () => provider.updateSide(Side.short),
+                  onTap: () => provider.updateSide(domain.Side.short),
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(5),
                     bottomRight: Radius.circular(5),
@@ -1895,10 +1898,10 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Icon(
                               Icons.trending_down,
-                              key: ValueKey((provider.side ?? Side.long) == Side.short),
-                              color: (provider.side ?? Side.long) == Side.short
-                                  ? Colors.white
-                                  : AppTheme.textSecondaryColor,
+                              key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.short),
+                                                              color: (provider.side ?? domain.Side.long) == domain.Side.short
+                                    ? Colors.white
+                                    : AppTheme.textSecondaryColor,
                               size: 20,
                             ),
                           ),
@@ -1907,11 +1910,11 @@ class _AddTradePageState extends State<AddTradePage> {
                             duration: const Duration(milliseconds: 200),
                             child: Text(
                               'SHORT',
-                              key: ValueKey((provider.side ?? Side.long) == Side.short),
+                              key: ValueKey((provider.side ?? domain.Side.long) == domain.Side.short),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: (provider.side ?? Side.long) == Side.short
+                                color: (provider.side ?? domain.Side.long) == domain.Side.short
                                     ? Colors.white
                                     : AppTheme.textSecondaryColor,
                               ),
@@ -2273,13 +2276,13 @@ class _AddTradePageState extends State<AddTradePage> {
 
 
 
-  String _getEntryTypeDisplayName(EntryType type) {
+  String _getEntryTypeDisplayName(domain.EntryType type) {
     switch (type) {
-      case EntryType.trade:
+      case domain.EntryType.trade:
         return 'Trade';
-      case EntryType.marginInOut:
+      case domain.EntryType.marginInOut:
         return 'Margin In/Out';
-      case EntryType.ignore:
+      case domain.EntryType.ignore:
         return 'Ignore';
       default:
         return 'Unknown';
