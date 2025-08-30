@@ -41,15 +41,39 @@ class UpdateTradeUseCase {
     // Calculate risk amount if stop loss is provided
     double? riskAmount;
     if (trade.stopLossPrice != null) {
-      final riskPerUnit = (trade.entryPrice - trade.stopLossPrice!).abs();
+      double riskPerUnit;
+      if (trade.side == Side.long) {
+        // For long positions: risk is entry - stop loss
+        riskPerUnit = trade.entryPrice - trade.stopLossPrice!;
+      } else if (trade.side == Side.short) {
+        // For short positions: risk is stop loss - entry
+        riskPerUnit = trade.stopLossPrice! - trade.entryPrice;
+      } else {
+        // Fallback to legacy calculation for backward compatibility
+        riskPerUnit = (trade.entryPrice - trade.stopLossPrice!).abs();
+      }
       riskAmount = riskPerUnit * trade.quantity;
     }
 
     // Calculate risk/reward ratio
     double? riskRewardRatio;
     if (trade.stopLossPrice != null && trade.takeProfitPrice != null) {
-      final risk = (trade.entryPrice - trade.stopLossPrice!).abs();
-      final reward = (trade.takeProfitPrice! - trade.entryPrice).abs();
+      double risk, reward;
+      
+      if (trade.side == Side.long) {
+        // For long positions: risk is entry - stop loss, reward is take profit - entry
+        risk = trade.entryPrice - trade.stopLossPrice!;
+        reward = trade.takeProfitPrice! - trade.entryPrice;
+      } else if (trade.side == Side.short) {
+        // For short positions: risk is stop loss - entry, reward is entry - take profit
+        risk = trade.stopLossPrice! - trade.entryPrice;
+        reward = trade.entryPrice - trade.takeProfitPrice!;
+      } else {
+        // Fallback to legacy calculation for backward compatibility
+        risk = (trade.entryPrice - trade.stopLossPrice!).abs();
+        reward = (trade.takeProfitPrice! - trade.entryPrice).abs();
+      }
+      
       if (risk > 0) {
         riskRewardRatio = reward / risk;
       }
@@ -60,7 +84,20 @@ class UpdateTradeUseCase {
     double? pnlPercent;
     if (trade.actualExitPrice != null) {
       final priceDifference = trade.actualExitPrice! - trade.entryPrice;
-      final multiplier = trade.type == TradeType.buy ? 1 : -1;
+      
+      // Use the new Side enum for proper PnL calculation
+      double multiplier;
+      if (trade.side == Side.long) {
+        // For long positions: profit when exit price > entry price
+        multiplier = 1;
+      } else if (trade.side == Side.short) {
+        // For short positions: profit when exit price < entry price
+        multiplier = -1;
+      } else {
+        // Fallback to legacy TradeType for backward compatibility
+        multiplier = trade.type == TradeType.buy ? 1 : -1;
+      }
+      
       pnl = priceDifference * trade.quantity * multiplier;
       
       final positionValue = trade.entryPrice * trade.quantity;

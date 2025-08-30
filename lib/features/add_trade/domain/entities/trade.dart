@@ -189,7 +189,20 @@ class Trade extends Equatable {
     if (exitPrice == null || status != TradeStatus.closed) return null;
     
     final priceDifference = exitPrice! - entryPrice;
-    final multiplier = type == TradeType.buy ? 1 : -1;
+    
+    // Use the new Side enum for proper PnL calculation
+    double multiplier;
+    if (side == Side.long) {
+      // For long positions: profit when exit price > entry price
+      multiplier = 1;
+    } else if (side == Side.short) {
+      // For short positions: profit when exit price < entry price
+      multiplier = -1;
+    } else {
+      // Fallback to legacy TradeType for backward compatibility
+      multiplier = type == TradeType.buy ? 1 : -1;
+    }
+    
     return priceDifference * quantity * multiplier;
   }
 
@@ -206,8 +219,21 @@ class Trade extends Equatable {
   double? calculateRiskRewardRatio() {
     if (stopLoss == null || takeProfit == null) return null;
     
-    final risk = (entryPrice - stopLoss!).abs();
-    final reward = (takeProfit! - entryPrice).abs();
+    double risk, reward;
+    
+    if (side == Side.long) {
+      // For long positions: risk is entry - stop loss, reward is take profit - entry
+      risk = entryPrice - stopLoss!;
+      reward = takeProfit! - entryPrice;
+    } else if (side == Side.short) {
+      // For short positions: risk is stop loss - entry, reward is entry - take profit
+      risk = stopLoss! - entryPrice;
+      reward = entryPrice - takeProfit!;
+    } else {
+      // Fallback to legacy calculation for backward compatibility
+      risk = (entryPrice - stopLoss!).abs();
+      reward = (takeProfit! - entryPrice).abs();
+    }
     
     if (risk == 0) return null;
     return reward / risk;
