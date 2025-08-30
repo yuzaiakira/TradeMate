@@ -30,6 +30,7 @@ import 'features/account_management/data/datasources/transaction_local_datasourc
 import 'features/account_management/data/repositories/account_repository_impl.dart';
 import 'features/account_management/domain/repositories/account_repository.dart';
 import 'features/account_management/presentation/provider/account_provider.dart';
+import 'core/utils/trade_calculator.dart';
 
 
 
@@ -53,6 +54,9 @@ void main() async {
       database = TradeMateDatabase();
     }
   }
+  
+  // Initialize TradeCalculator with database
+  TradeCalculator.setDatabase(database);
   
   runApp(TradeMateApp(database: database));
 }

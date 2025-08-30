@@ -1,16 +1,16 @@
-import '../entities/trade.dart';
+import '../entities/trade.dart' as domain;
 
 abstract class TradeRepository {
-  Future<List<Trade>> getAllTrades();
-  Future<Trade?> getTradeById(int id);
-  Future<List<Trade>> getTradesByStatus(String status);
-  Future<int> insertTrade(Trade trade);
-  Future<bool> updateTrade(Trade trade);
+  Future<List<domain.Trade>> getAllTrades();
+  Future<domain.Trade?> getTradeById(int id);
+  Future<List<domain.Trade>> getTradesByStatus(String status);
+  Future<int> insertTrade(domain.Trade trade);
+  Future<bool> updateTrade(domain.Trade trade);
   Future<bool> deleteTrade(int id);
-  Future<List<Trade>> getTradesInDateRange(DateTime start, DateTime end);
+  Future<List<domain.Trade>> getTradesInDateRange(DateTime start, DateTime end);
   
   // New optimized methods for pagination and filtering
-  Future<List<Trade>> getTradesPaginated({
+  Future<List<domain.Trade>> getTradesPaginated({
     int limit = 20,
     int offset = 0,
     String? searchQuery,

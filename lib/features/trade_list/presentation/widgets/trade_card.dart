@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/app_theme.dart';
-import '../../../add_trade/domain/entities/trade.dart';
+import '../../../add_trade/domain/entities/trade.dart' as domain;
 
 class TradeCard extends StatelessWidget {
-  final Trade trade;
+  final domain.Trade trade;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -178,18 +178,18 @@ class TradeCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusChip(TradeStatus status) {
+  Widget _buildStatusChip(domain.TradeStatus status) {
     Color backgroundColor;
     Color textColor;
     String text;
 
     switch (status) {
-      case TradeStatus.open:
+      case domain.TradeStatus.open:
         backgroundColor = AppTheme.warningColor;
         textColor = Colors.white;
         text = 'OPEN';
         break;
-      case TradeStatus.closed:
+      case domain.TradeStatus.closed:
         // Determine color based on PnL for closed trades
         if (trade.pnl != null) {
           if (trade.pnl! > 0) {

@@ -659,6 +659,42 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       return 0.0;
     }
   }
+
+  /// Update account balance in the AccountBalance table
+  Future<void> updateAccountBalance(double newBalance, String? note) async {
+    try {
+      final now = DateTime.now();
+      
+      // Check if balance record exists
+      final existingBalance = await select(accountBalance).getSingleOrNull();
+      
+      if (existingBalance != null) {
+        // Update existing record
+        await update(accountBalance).replace(
+          AccountBalanceCompanion(
+            id: Value(existingBalance.id),
+            balance: Value(newBalance),
+            lastUpdated: Value(now),
+            note: note != null ? Value(note) : const Value.absent(),
+          ),
+        );
+      } else {
+        // Create new record
+        await into(accountBalance).insert(
+          AccountBalanceCompanion.insert(
+            balance: newBalance,
+            lastUpdated: now,
+            note: note != null ? Value(note) : const Value.absent(),
+          ),
+        );
+      }
+      
+      // Force sync to ensure data is written
+      await ensureDataPersisted();
+    } catch (e) {
+      throw Exception('Failed to update account balance: $e');
+    }
+  }
 }
 
 LazyDatabase _openConnection() {

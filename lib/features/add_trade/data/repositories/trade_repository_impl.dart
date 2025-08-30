@@ -3,11 +3,40 @@ import '../../domain/repositories/trade_repository.dart';
 import '../models/trade_model.dart';
 import '../../../../core/data/database.dart';
 import '../../../../core/utils/trade_calculator.dart';
+import '../../../../core/utils/logger.dart';
 
 class TradeRepositoryImpl implements TradeRepository {
   final TradeMateDatabase database;
 
   TradeRepositoryImpl(this.database);
+
+  /// Update account balance when a trade is saved or updated
+  Future<void> _updateAccountBalanceForTrade(int tradeId, double pnl, double fees) async {
+    try {
+      // Get current account balance
+      final currentBalance = await database.getCurrentAccountBalance();
+      
+      // Calculate new balance
+      double newBalance = currentBalance;
+      
+      // Add PnL to balance
+      if (pnl != 0) {
+        newBalance += pnl;
+      }
+      
+      // Subtract fees from balance
+      if (fees > 0) {
+        newBalance -= fees;
+      }
+      
+      // Update the account balance in the database
+      await database.updateAccountBalance(newBalance, 'Trade result processed');
+      
+    } catch (e) {
+      Logger.error('Error updating account balance: $e', e);
+      rethrow;
+    }
+  }
 
   @override
   Future<List<domain.Trade>> getAllTrades() async {
@@ -30,7 +59,7 @@ class TradeRepositoryImpl implements TradeRepository {
   @override
   Future<int> insertTrade(domain.Trade trade) async {
     // Calculate all system-calculated fields
-    final calculatedTrade = TradeCalculator.calculateAllFields(trade);
+    final calculatedTrade = await TradeCalculator.calculateAllFields(trade);
     
     final tradeModel = TradeModel(
       // Trade Transfers
@@ -114,13 +143,25 @@ class TradeRepositoryImpl implements TradeRepository {
       calculatedTradeDuration: calculatedTrade.calculatedTradeDuration,
     );
     
-    return await database.insertTrade(tradeModel.toDatabaseCompanion());
+    final tradeId = await database.insertTrade(tradeModel.toDatabaseCompanion());
+    
+    // Update account balance if this is a closed trade with PnL
+    if (calculatedTrade.status == domain.TradeStatus.closed && calculatedTrade.pnl != null) {
+      try {
+        await _updateAccountBalanceForTrade(tradeId, calculatedTrade.pnl!, calculatedTrade.positionFees ?? 0.0);
+      } catch (e) {
+        // Log error but don't fail the trade insertion
+        Logger.error('Failed to update account balance: $e', e);
+      }
+    }
+    
+    return tradeId;
   }
 
   @override
   Future<bool> updateTrade(domain.Trade trade) async {
     // Calculate all system-calculated fields
-    final calculatedTrade = TradeCalculator.calculateAllFields(trade);
+    final calculatedTrade = await TradeCalculator.calculateAllFields(trade);
     
     final tradeModel = TradeModel(
       id: calculatedTrade.id,
@@ -206,6 +247,16 @@ class TradeRepositoryImpl implements TradeRepository {
     );
     
     final result = await database.updateTrade(tradeModel.toDatabaseCompanion());
+    
+    // Update account balance if this is a closed trade with PnL
+    if (calculatedTrade.status == domain.TradeStatus.closed && calculatedTrade.pnl != null) {
+      try {
+        await _updateAccountBalanceForTrade(calculatedTrade.id!, calculatedTrade.pnl!, calculatedTrade.positionFees ?? 0.0);
+      } catch (e) {
+        // Log error but don't fail the trade update
+        Logger.error('Failed to update account balance: $e', e);
+      }
+    }
     
     return result;
   }

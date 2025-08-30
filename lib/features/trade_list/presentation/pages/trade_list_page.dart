@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/app_theme.dart';
 import '../../../../core/utils/trade_calculator.dart';
-import '../../../add_trade/domain/entities/trade.dart';
+import '../../../add_trade/domain/entities/trade.dart' as domain;
 import '../../../add_trade/presentation/pages/edit_trade_page.dart';
 import '../provider/trade_list_provider.dart';
 import '../widgets/trade_card.dart';
@@ -319,7 +319,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               if (provider.filters.side != null)
                 _buildFilterChip(
                   'Side: ${provider.filters.side!.name.toUpperCase()}',
-                  provider.filters.side == Side.long 
+                  provider.filters.side == domain.Side.long 
                       ? Icons.trending_up_rounded 
                       : Icons.trending_down_rounded,
                   () => provider.clearSideFilter(),
@@ -565,7 +565,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
     );
   }
 
-  void _showTradeDetails(BuildContext context, Trade trade) {
+  void _showTradeDetails(BuildContext context, domain.Trade trade) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -574,7 +574,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
     );
   }
 
-  Widget _buildTradeDetailsSheet(Trade trade) {
+  Widget _buildTradeDetailsSheet(domain.Trade trade) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
       decoration: BoxDecoration(
@@ -684,17 +684,39 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                   
                   // Trade Management Section
                   const SizedBox(height: 20),
-                  _buildDetailSection('Trade Management', [
-                    if (trade.stopLossPrice != null)
-                      _buildDetailRow('Stop Loss Price', '\$${trade.stopLossPrice!.toStringAsFixed(2)}'),
-                    if (trade.takeProfitPrice != null)
-                      _buildDetailRow('Take Profit Price', '\$${trade.takeProfitPrice!.toStringAsFixed(2)}'),
-                    // Calculated Trade Management Fields
-                    _buildDetailRow('Position to ACC %', TradeCalculator.calculatePositionToAccPercent(trade) != null ? '${TradeCalculator.calculatePositionToAccPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
-                    _buildDetailRow('Planned SL % (Trade)', TradeCalculator.calculatePlannedSlPercent(trade) != null ? '${TradeCalculator.calculatePlannedSlPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
-                    _buildDetailRow('% of ACC Risked', TradeCalculator.calculateAccRiskedPercent(trade) != null ? '${TradeCalculator.calculateAccRiskedPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
-                    _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2) : 'N/A'),
-                  ]),
+                  FutureBuilder<Map<String, double?>>(
+                    future: _calculateTradeManagementFields(trade),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return _buildDetailSection('Trade Management', [
+                          if (trade.stopLossPrice != null)
+                            _buildDetailRow('Stop Loss Price', '\$${trade.stopLossPrice!.toStringAsFixed(2)}'),
+                          if (trade.takeProfitPrice != null)
+                            _buildDetailRow('Take Profit Price', '\$${trade.takeProfitPrice!.toStringAsFixed(2)}'),
+                          // Calculated Trade Management Fields
+                          _buildDetailRow('Position to ACC %', 'Loading...'),
+                          _buildDetailRow('Planned SL % (Trade)', TradeCalculator.calculatePlannedSlPercent(trade) != null ? '${TradeCalculator.calculatePlannedSlPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                          _buildDetailRow('% of ACC Risked', 'Loading...'),
+                          _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                        ]);
+                      }
+                      
+                      final positionToAccPercent = snapshot.data?['positionToAccPercent'];
+                      final accRiskedPercent = snapshot.data?['accRiskedPercent'];
+                      
+                      return _buildDetailSection('Trade Management', [
+                        if (trade.stopLossPrice != null)
+                          _buildDetailRow('Stop Loss Price', '\$${trade.stopLossPrice!.toStringAsFixed(2)}'),
+                        if (trade.takeProfitPrice != null)
+                          _buildDetailRow('Take Profit Price', '\$${trade.takeProfitPrice!.toStringAsFixed(2)}'),
+                        // Calculated Trade Management Fields
+                        _buildDetailRow('Position to ACC %', positionToAccPercent != null ? '${positionToAccPercent.toStringAsFixed(2)}%' : 'N/A'),
+                        _buildDetailRow('Planned SL % (Trade)', TradeCalculator.calculatePlannedSlPercent(trade) != null ? '${TradeCalculator.calculatePlannedSlPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                        _buildDetailRow('% of ACC Risked', accRiskedPercent != null ? '${accRiskedPercent.toStringAsFixed(2)}%' : 'N/A'),
+                        _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                      ]);
+                    },
+                  ),
                   
                   // Trade Exit Section
                   const SizedBox(height: 20),
@@ -753,16 +775,21 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                   
                   // Trade Results Section
                   const SizedBox(height: 20),
-                  _buildDetailSection('Trade Results', [
-                    _buildDetailRowWithColor('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A', TradeCalculator.calculateActualReturn(trade) ?? 0),
-                    _buildDetailRowWithColor('Gross Profit/Loss', TradeCalculator.calculateGrossProfitLoss(trade) != null ? '\$${TradeCalculator.calculateGrossProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateGrossProfitLoss(trade) ?? 0),
-                    _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(3)}' : 'N/A'),
-                    _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
-                    _buildDetailRowWithColor('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A', TradeCalculator.calculateTradeGainPercent(trade) ?? 0),
-                    _buildDetailRow('Account Change %', TradeCalculator.calculateAccountChangePercent(trade) != null ? '${TradeCalculator.calculateAccountChangePercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
-                    _buildDetailRow('New Balance', TradeCalculator.calculateNewBalance(trade) != null ? '\$${TradeCalculator.calculateNewBalance(trade)!.toStringAsFixed(2)}' : 'N/A'),
-                    _buildDetailRow('Trade Duration', TradeCalculator.formatTradeDuration(TradeCalculator.calculateTradeDuration(trade)) ?? 'N/A'),
-                  ]),
+                  FutureBuilder<double?>(
+                    future: TradeCalculator.calculateAccountChangePercent(trade),
+                    builder: (context, snapshot) {
+                      return _buildDetailSection('Trade Results', [
+                        _buildDetailRowWithColor('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A', TradeCalculator.calculateActualReturn(trade) ?? 0),
+                        _buildDetailRowWithColor('Gross Profit/Loss', TradeCalculator.calculateGrossProfitLoss(trade) != null ? '\$${TradeCalculator.calculateGrossProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateGrossProfitLoss(trade) ?? 0),
+                        _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(3)}' : 'N/A'),
+                        _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
+                        _buildDetailRowWithColor('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A', TradeCalculator.calculateTradeGainPercent(trade) ?? 0),
+                        _buildDetailRow('Account Change %', snapshot.data != null ? '${snapshot.data!.toStringAsFixed(2)}%' : 'N/A'),
+                        _buildDetailRow('New Balance', TradeCalculator.calculateNewBalance(trade) != null ? '\$${TradeCalculator.calculateNewBalance(trade)!.toStringAsFixed(2)}' : 'N/A'),
+                        _buildDetailRow('Trade Duration', TradeCalculator.formatTradeDuration(TradeCalculator.calculateTradeDuration(trade)) ?? 'N/A'),
+                      ]);
+                    },
+                  ),
                   
                   // Legacy PnL Information (if available)
                   if (trade.pnl != null || trade.pnlPercent != null) ...[
@@ -946,17 +973,17 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
-  String _getEntryTypeDisplayName(EntryType type) {
+  String _getEntryTypeDisplayName(domain.EntryType type) {
     switch (type) {
-      case EntryType.trade:
+      case domain.EntryType.trade:
         return 'Trade';
-      case EntryType.marginInOut:
+      case domain.EntryType.marginInOut:
         return 'Margin In/Out';
-      case EntryType.deposit:
+      case domain.EntryType.deposit:
         return 'Deposit';
-      case EntryType.withdrawal:
+      case domain.EntryType.withdrawal:
         return 'Withdrawal';
-      case EntryType.ignore:
+      case domain.EntryType.ignore:
         return 'Ignore';
     }
   }
@@ -974,6 +1001,16 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
     }
   }
 
+  Future<Map<String, double?>> _calculateTradeManagementFields(domain.Trade trade) async {
+    final positionToAccPercent = await TradeCalculator.calculatePositionToAccPercent(trade);
+    final accRiskedPercent = await TradeCalculator.calculateAccRiskedPercent(trade);
+    
+    return {
+      'positionToAccPercent': positionToAccPercent,
+      'accRiskedPercent': accRiskedPercent,
+    };
+  }
+
   IconData _getProfitLossFilterIcon(ProfitLossFilter filter) {
     switch (filter) {
       case ProfitLossFilter.all:
@@ -987,7 +1024,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
     }
   }
 
-  void _editTrade(BuildContext context, Trade trade) async {
+  void _editTrade(BuildContext context, domain.Trade trade) async {
     final navigator = Navigator.of(context);
     final provider = context.read<TradeListProvider>();
     await navigator.push(
@@ -1001,7 +1038,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
     }
   }
 
-  void _deleteTrade(BuildContext context, Trade trade) {
+  void _deleteTrade(BuildContext context, domain.Trade trade) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
