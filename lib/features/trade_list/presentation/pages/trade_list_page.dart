@@ -667,7 +667,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                     if (trade.entryScreenshot?.isNotEmpty == true)
                       _buildDetailRow('Entry Screenshot', trade.entryScreenshot!),
                     // Calculated Trade Transfers Fields
-                    _buildDetailRow('W/L', TradeCalculator.calculateWL(trade)),
+                    _buildDetailRowWithWLColor('W/L', TradeCalculator.calculateWL(trade)),
                     _buildDetailRow('Day of Week', TradeCalculator.calculateEntryDayOfWeek(trade)),
                     _buildDetailRow('Session', TradeCalculator.calculateEntrySession(trade)),
                     _buildDetailRow('Order Value', TradeCalculator.calculateOrderValue(trade) != null ? '\$${TradeCalculator.calculateOrderValue(trade)!.toStringAsFixed(2)}' : 'N/A'),
@@ -754,11 +754,11 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                   // Trade Results Section
                   const SizedBox(height: 20),
                   _buildDetailSection('Trade Results', [
-                    _buildDetailRow('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                    _buildDetailRowWithColor('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A', TradeCalculator.calculateActualReturn(trade) ?? 0),
                     _buildDetailRowWithColor('Gross Profit/Loss', TradeCalculator.calculateGrossProfitLoss(trade) != null ? '\$${TradeCalculator.calculateGrossProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateGrossProfitLoss(trade) ?? 0),
                     _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(3)}' : 'N/A'),
                     _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
-                    _buildDetailRow('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
+                    _buildDetailRowWithColor('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A', TradeCalculator.calculateTradeGainPercent(trade) ?? 0),
                     _buildDetailRow('Account Change %', TradeCalculator.calculateAccountChangePercent(trade) != null ? '${TradeCalculator.calculateAccountChangePercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
                     _buildDetailRow('New Balance', TradeCalculator.calculateNewBalance(trade) != null ? '\$${TradeCalculator.calculateNewBalance(trade)!.toStringAsFixed(2)}' : 'N/A'),
                     _buildDetailRow('Trade Duration', TradeCalculator.formatTradeDuration(TradeCalculator.calculateTradeDuration(trade)) ?? 'N/A'),
@@ -873,6 +873,61 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               padding: const EdgeInsets.only(left: 8),
               child: Text(
                 value,
+                style: AppTheme.bodyStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: color,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRowWithWLColor(String label, String value) {
+    Color color;
+    String displayValue;
+    switch (value) {
+      case 'W':
+        color = AppTheme.bullishColor; // Green for win
+        displayValue = 'Win';
+        break;
+      case 'L':
+        color = AppTheme.bearishColor; // Red for loss
+        displayValue = 'Loss';
+        break;
+      case 'BE':
+        color = AppTheme.textPrimaryColor; // Default color for breakeven
+        displayValue = 'Breakeven';
+        break;
+      default:
+        color = AppTheme.textSecondaryColor; // Gray for N/A or other values
+        displayValue = value;
+    }
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 140,
+            child: Text(
+              label,
+              style: AppTheme.captionStyle.copyWith(
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textSecondaryColor,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                displayValue,
                 style: AppTheme.bodyStyle.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
