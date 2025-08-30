@@ -905,6 +905,7 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             value: addTradeProvider.entryType,
             items: EntryType.values
+                .where((type) => type != EntryType.deposit && type != EntryType.withdrawal)
                 .map(
                   (type) => DropdownMenuItem(
                     value: type,
@@ -2278,12 +2279,10 @@ class _AddTradePageState extends State<AddTradePage> {
         return 'Trade';
       case EntryType.marginInOut:
         return 'Margin In/Out';
-      case EntryType.deposit:
-        return 'Deposit';
-      case EntryType.withdrawal:
-        return 'Withdrawal';
       case EntryType.ignore:
         return 'Ignore';
+      default:
+        return 'Unknown';
     }
   }
 
