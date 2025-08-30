@@ -81,7 +81,7 @@ class TradeStatistics extends Equatable {
 
   // Format numbers
   String get formattedAvgAchievedR => avgAchievedR.toStringAsFixed(2);
-  String get formattedAvgTradeDuration => '${avgTradeDurationHours.toStringAsFixed(1)}h';
+  String get formattedAvgTradeDuration => _formatDuration(avgTradeDuration);
   String get formattedProfitFactor => profitFactor.toStringAsFixed(2);
 
   String _formatCurrency(double amount) {
@@ -89,6 +89,29 @@ class TradeStatistics extends Equatable {
     final absAmount = amount.abs();
     final prefix = isNegative ? '-\$' : '\$';
     return '$prefix${absAmount.toStringAsFixed(2)}';
+  }
+
+  String _formatDuration(double durationInMinutes) {
+    if (durationInMinutes <= 0) return '0 min';
+    
+    final days = durationInMinutes ~/ (24 * 60);
+    final remainingMinutes = durationInMinutes % (24 * 60);
+    final hours = remainingMinutes ~/ 60;
+    final minutes = remainingMinutes % 60;
+    
+    final parts = <String>[];
+    
+    if (days > 0) {
+      parts.add('${days.toStringAsFixed(0)} ${days == 1 ? 'day' : 'days'}');
+    }
+    if (hours > 0) {
+      parts.add('${hours.toStringAsFixed(0)} ${hours == 1 ? 'hour' : 'hours'}');
+    }
+    if (minutes > 0 || parts.isEmpty) {
+      parts.add('${minutes.toStringAsFixed(0)} min');
+    }
+    
+    return parts.join(' ');
   }
 
   // Copy with method

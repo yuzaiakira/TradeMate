@@ -202,6 +202,30 @@ class TradeCalculator {
     return trade.exitDatetime!.difference(trade.datetime).inMinutes;
   }
 
+  /// Format trade duration from minutes to "X days Y hours Z min" format
+  static String? formatTradeDuration(int? durationInMinutes) {
+    if (durationInMinutes == null || durationInMinutes <= 0) return null;
+    
+    final days = durationInMinutes ~/ (24 * 60);
+    final remainingMinutes = durationInMinutes % (24 * 60);
+    final hours = remainingMinutes ~/ 60;
+    final minutes = remainingMinutes % 60;
+    
+    final parts = <String>[];
+    
+    if (days > 0) {
+      parts.add('$days ${days == 1 ? 'day' : 'days'}');
+    }
+    if (hours > 0) {
+      parts.add('$hours ${hours == 1 ? 'hour' : 'hours'}');
+    }
+    if (minutes > 0 || parts.isEmpty) {
+      parts.add('$minutes min');
+    }
+    
+    return parts.join(' ');
+  }
+
   /// Calculate all fields for a trade
   static Trade calculateAllFields(Trade trade) {
     return trade.copyWith(

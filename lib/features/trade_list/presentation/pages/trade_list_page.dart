@@ -761,7 +761,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                     _buildDetailRow('Trade Gain %', TradeCalculator.calculateTradeGainPercent(trade) != null ? '${TradeCalculator.calculateTradeGainPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
                     _buildDetailRow('Account Change %', TradeCalculator.calculateAccountChangePercent(trade) != null ? '${TradeCalculator.calculateAccountChangePercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
                     _buildDetailRow('New Balance', TradeCalculator.calculateNewBalance(trade) != null ? '\$${TradeCalculator.calculateNewBalance(trade)!.toStringAsFixed(2)}' : 'N/A'),
-                    _buildDetailRow('Trade Duration', TradeCalculator.calculateTradeDuration(trade) != null ? '${TradeCalculator.calculateTradeDuration(trade)!} min' : 'N/A'),
+                    _buildDetailRow('Trade Duration', TradeCalculator.formatTradeDuration(TradeCalculator.calculateTradeDuration(trade)) ?? 'N/A'),
                   ]),
                   
                   // Legacy PnL Information (if available)
