@@ -1403,7 +1403,7 @@ class _EditTradePageState extends State<EditTradePage> {
 
   Widget _buildPositionSideSwitch(AddTradeProvider provider) {
     return Container(
-      height: 40,
+      height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: AppTheme.borderColor),
@@ -1444,7 +1444,7 @@ class _EditTradePageState extends State<EditTradePage> {
                       ),
                       onTap: () => provider.updateSide(Side.long),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -1456,7 +1456,7 @@ class _EditTradePageState extends State<EditTradePage> {
                                 color: (provider.side ?? Side.long) == Side.long 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
-                                size: 20,
+                                size: 22,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -1467,7 +1467,7 @@ class _EditTradePageState extends State<EditTradePage> {
                                 key: ValueKey((provider.side ?? Side.long) == Side.long),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   color: (provider.side ?? Side.long) == Side.long 
                                       ? Colors.white 
                                       : AppTheme.textSecondaryColor,
@@ -1493,7 +1493,7 @@ class _EditTradePageState extends State<EditTradePage> {
                       ),
                       onTap: () => provider.updateSide(Side.short),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -1505,7 +1505,7 @@ class _EditTradePageState extends State<EditTradePage> {
                                 color: (provider.side ?? Side.long) == Side.short 
                                     ? Colors.white 
                                     : AppTheme.textSecondaryColor,
-                                size: 20,
+                                size: 22,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -1516,7 +1516,7 @@ class _EditTradePageState extends State<EditTradePage> {
                                 key: ValueKey((provider.side ?? Side.long) == Side.short),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   color: (provider.side ?? Side.long) == Side.short 
                                       ? Colors.white 
                                       : AppTheme.textSecondaryColor,
