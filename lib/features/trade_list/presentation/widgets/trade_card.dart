@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/app_theme.dart';
+import '../../../../core/utils/trade_calculator.dart';
 import '../../../add_trade/domain/entities/trade.dart' as domain;
 
 class TradeCard extends StatelessWidget {
@@ -119,14 +120,14 @@ class TradeCard extends StatelessWidget {
                   ],
                 ),
                 
-                // PnL and rating row
-                if (trade.pnl != null || trade.rating != null) ...[
+                // Net Profit/Loss and rating row
+                if (trade.status == domain.TradeStatus.closed || trade.rating != null) ...[
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      if (trade.pnl != null) ...[
+                      if (trade.status == domain.TradeStatus.closed) ...[
                         Expanded(
-                          child: _buildPnLIndicator(trade.pnl!),
+                          child: _buildNetProfitLossIndicator(),
                         ),
                       ],
                       if (trade.rating != null) ...[
@@ -190,14 +191,15 @@ class TradeCard extends StatelessWidget {
         text = 'OPEN';
         break;
       case domain.TradeStatus.closed:
-        // Determine color based on PnL for closed trades
-        if (trade.pnl != null) {
-          if (trade.pnl! > 0) {
+        // Determine color based on net profit/loss for closed trades
+        final netProfitLoss = TradeCalculator.calculateNetProfitLoss(trade);
+        if (netProfitLoss != null) {
+          if (netProfitLoss > 0) {
             // Profitable trade
             backgroundColor = AppTheme.bullishColor;
             textColor = Colors.white;
-            text = 'PROFIT';
-          } else if (trade.pnl! < 0) {
+            text = 'WIN';
+          } else if (netProfitLoss < 0) {
             // Losing trade
             backgroundColor = AppTheme.bearishColor;
             textColor = Colors.white;
@@ -253,6 +255,72 @@ class TradeCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildNetProfitLossIndicator() {
+    final netProfitLoss = TradeCalculator.calculateNetProfitLoss(trade);
+    
+    if (netProfitLoss == null) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppTheme.textSecondaryColor.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: AppTheme.textSecondaryColor.withValues(alpha: 0.4)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.help_outline,
+              size: 16,
+              color: AppTheme.textSecondaryColor,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'N/A',
+              style: AppTheme.captionStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textSecondaryColor,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    final isPositive = netProfitLoss > 0;
+    final color = isPositive ? AppTheme.bullishColor : AppTheme.bearishColor;
+    final icon = isPositive ? Icons.trending_up_rounded : Icons.trending_down_rounded;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: color,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '\$${netProfitLoss.toStringAsFixed(2)}',
+            style: AppTheme.captionStyle.copyWith(
+              fontWeight: FontWeight.w600,
+              color: color,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

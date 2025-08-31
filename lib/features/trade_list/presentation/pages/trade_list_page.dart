@@ -814,6 +814,90 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               ),
             ),
           ),
+          
+          // Profit Bar
+          if (trade.status == domain.TradeStatus.closed) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.backgroundColor,
+                border: Border(
+                  top: BorderSide(color: AppTheme.borderColor),
+                ),
+              ),
+              child: FutureBuilder<double?>(
+                future: Future.value(TradeCalculator.calculateNetProfitLoss(trade)),
+                builder: (context, snapshot) {
+                  final netProfitLoss = snapshot.data;
+                  if (netProfitLoss == null) {
+                    return const SizedBox.shrink();
+                  }
+                  
+                  final isPositive = netProfitLoss > 0;
+                  final color = isPositive ? AppTheme.bullishColor : AppTheme.bearishColor;
+                  final icon = isPositive ? Icons.trending_up_rounded : Icons.trending_down_rounded;
+                  
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: color.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          icon,
+                          color: color,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Net Profit/Loss',
+                                style: AppTheme.captionStyle.copyWith(
+                                  color: AppTheme.textSecondaryColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '\$${netProfitLoss.toStringAsFixed(2)}',
+                                style: AppTheme.headingStyle.copyWith(
+                                  color: color,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            isPositive ? 'WIN' : 'LOSS',
+                            style: AppTheme.labelStyle.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );
