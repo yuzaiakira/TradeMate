@@ -7,6 +7,8 @@ import '../../../add_trade/domain/usecases/get_trade_statistics_optimized_usecas
 import '../../../add_trade/domain/usecases/delete_trade_usecase.dart';
 import '../models/trade_filters.dart';
 import '../models/trade_statistics.dart';
+import '../models/trade_sort_option.dart';
+import '../models/profit_loss_filter.dart';
 
 enum TradeListStatus { initial, loading, success, error }
 
@@ -46,6 +48,7 @@ class TradeListProvider with ChangeNotifier {
   TradeSortOption _sortOption = TradeSortOption.dateDesc;
   TradeStatistics _statistics = TradeStatistics();
   int _totalTrades = 0;
+  bool _isCalculatingStats = false;
 
   // Getters
   TradeListStatus get status => _status;
@@ -60,6 +63,12 @@ class TradeListProvider with ChangeNotifier {
   bool get hasMoreTrades => _hasMoreTrades;
   bool get hasActiveFilters => _filters.hasActiveFilters || _searchQuery.isNotEmpty;
   int get totalTrades => _totalTrades;
+  bool get isCalculatingStats => _isCalculatingStats;
+  
+  void setCalculatingStats(bool value) {
+    _isCalculatingStats = value;
+    notifyListeners();
+  }
 
   Future<void> loadTrades() async {
     try {
@@ -386,36 +395,4 @@ class TradeListProvider with ChangeNotifier {
   }
 }
 
-enum TradeSortOption {
-  dateDesc,
-  dateAsc,
-  symbolAsc,
-  symbolDesc,
-  pnlDesc,
-  pnlAsc,
-  ratingDesc,
-  ratingAsc,
-}
 
-extension TradeSortOptionExtension on TradeSortOption {
-  String get displayName {
-    switch (this) {
-      case TradeSortOption.dateDesc:
-        return 'Date (Newest)';
-      case TradeSortOption.dateAsc:
-        return 'Date (Oldest)';
-      case TradeSortOption.symbolAsc:
-        return 'Symbol (A-Z)';
-      case TradeSortOption.symbolDesc:
-        return 'Symbol (Z-A)';
-      case TradeSortOption.pnlDesc:
-        return 'PnL (Highest)';
-      case TradeSortOption.pnlAsc:
-        return 'PnL (Lowest)';
-      case TradeSortOption.ratingDesc:
-        return 'Rating (Highest)';
-      case TradeSortOption.ratingAsc:
-        return 'Rating (Lowest)';
-    }
-  }
-}

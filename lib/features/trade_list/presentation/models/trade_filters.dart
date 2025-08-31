@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../add_trade/domain/entities/trade.dart';
-
-enum ProfitLossFilter { all, profitable, losing, breakeven }
+import 'profit_loss_filter.dart';
 
 class TradeFilters {
   final String symbol;

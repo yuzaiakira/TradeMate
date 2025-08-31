@@ -7,7 +7,7 @@ import '../../../add_trade/presentation/pages/edit_trade_page.dart';
 import '../provider/trade_list_provider.dart';
 import '../widgets/trade_card.dart';
 import '../widgets/trade_filter_sheet.dart';
-import '../models/trade_filters.dart';
+import '../models/profit_loss_filter.dart';
 
 class TradeListPage extends StatefulWidget {
   final Function(int)? onNavigateToTab;
@@ -454,7 +454,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
             },
           ),
           // Show a small indicator when silently refreshing
-          if (provider.status == TradeListStatus.loading)
+          if (provider.isCalculatingStats)
             Positioned(
               top: 8,
               right: 8,

@@ -4,6 +4,8 @@ import '../../../../core/utils/app_theme.dart';
 import '../../../add_trade/domain/entities/trade.dart';
 import '../provider/trade_list_provider.dart';
 import '../models/trade_filters.dart';
+import '../models/trade_sort_option.dart';
+import '../models/profit_loss_filter.dart';
 
 class TradeFilterSheet extends StatefulWidget {
   const TradeFilterSheet({super.key});

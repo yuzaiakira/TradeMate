@@ -226,31 +226,13 @@ class TradeMateApp extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<TradeListProvider>(
-          create: (context) {
-            final provider = TradeListProvider(
-              getTradesUseCase: context.read<GetTradesUseCase>(),
-              getTradesPaginatedUseCase: context.read<GetTradesPaginatedUseCase>(),
-              getTradesCountUseCase: context.read<GetTradesCountUseCase>(),
-              getTradeStatisticsOptimizedUseCase: context.read<GetTradeStatisticsOptimizedUseCase>(),
-              deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
-            );
-            // Set up callback to show feedback when trades are refreshed
-            provider.setOnTradesRefreshedCallback(() {
-              // Use a post-frame callback to ensure the context is available
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Trade list updated'),
-                      duration: Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              });
-            });
-            return provider;
-          },
+          create: (context) => TradeListProvider(
+            getTradesUseCase: context.read<GetTradesUseCase>(),
+            getTradesPaginatedUseCase: context.read<GetTradesPaginatedUseCase>(),
+            getTradesCountUseCase: context.read<GetTradesCountUseCase>(),
+            getTradeStatisticsOptimizedUseCase: context.read<GetTradeStatisticsOptimizedUseCase>(),
+            deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
+          ),
         ),
         ChangeNotifierProvider<AccountProvider>(
           create: (context) => AccountProvider(
