@@ -697,7 +697,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                           _buildDetailRow('Position to ACC %', 'Loading...'),
                           _buildDetailRow('Planned SL % (Trade)', TradeCalculator.calculatePlannedSlPercent(trade) != null ? '${TradeCalculator.calculatePlannedSlPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
                           _buildDetailRow('% of ACC Risked', 'Loading...'),
-                          _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                          _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? '${TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2)} R' : 'N/A'),
                         ]);
                       }
                       
@@ -713,7 +713,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                         _buildDetailRow('Position to ACC %', positionToAccPercent != null ? '${positionToAccPercent.toStringAsFixed(2)}%' : 'N/A'),
                         _buildDetailRow('Planned SL % (Trade)', TradeCalculator.calculatePlannedSlPercent(trade) != null ? '${TradeCalculator.calculatePlannedSlPercent(trade)!.toStringAsFixed(2)}%' : 'N/A'),
                         _buildDetailRow('% of ACC Risked', accRiskedPercent != null ? '${accRiskedPercent.toStringAsFixed(2)}%' : 'N/A'),
-                        _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2) : 'N/A'),
+                        _buildDetailRow('Planned Return (R)', TradeCalculator.calculatePlannedReturn(trade) != null ? '${TradeCalculator.calculatePlannedReturn(trade)!.toStringAsFixed(2)} R' : 'N/A'),
                       ]);
                     },
                   ),
@@ -779,7 +779,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                     future: TradeCalculator.calculateAccountChangePercent(trade),
                     builder: (context, snapshot) {
                       return _buildDetailSection('Trade Results', [
-                        _buildDetailRowWithColor('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2) : 'N/A', TradeCalculator.calculateActualReturn(trade) ?? 0),
+                        _buildDetailRowWithColor('Actual Return', TradeCalculator.calculateActualReturn(trade) != null ? '${TradeCalculator.calculateActualReturn(trade)!.toStringAsFixed(2)} R' : 'N/A', TradeCalculator.calculateActualReturn(trade) ?? 0),
                         _buildDetailRowWithColor('Gross Profit/Loss', TradeCalculator.calculateGrossProfitLoss(trade) != null ? '\$${TradeCalculator.calculateGrossProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateGrossProfitLoss(trade) ?? 0),
                         _buildDetailRow('Position Fees', TradeCalculator.calculatePositionFees(trade) != null ? '\$${TradeCalculator.calculatePositionFees(trade)!.toStringAsFixed(3)}' : 'N/A'),
                         _buildDetailRowWithColor('Net Profit/Loss', TradeCalculator.calculateNetProfitLoss(trade) != null ? '\$${TradeCalculator.calculateNetProfitLoss(trade)!.toStringAsFixed(2)}' : 'N/A', TradeCalculator.calculateNetProfitLoss(trade) ?? 0),
