@@ -7,7 +7,6 @@ class TradeStatistics {
   final double winRate;
   final double averageR;
   final double totalRiskAmount;
-  final int profitableTrades;
   final double averagePnL;
   final int totalRating;
   final double averageRating;
@@ -23,7 +22,6 @@ class TradeStatistics {
     this.winRate = 0.0,
     this.averageR = 0.0,
     this.totalRiskAmount = 0.0,
-    this.profitableTrades = 0,
     this.averagePnL = 0.0,
     this.totalRating = 0,
     this.averageRating = 0.0,
@@ -51,7 +49,6 @@ class TradeStatistics {
         other.winRate == winRate &&
         other.averageR == averageR &&
         other.totalRiskAmount == totalRiskAmount &&
-        other.profitableTrades == profitableTrades &&
         other.averagePnL == averagePnL &&
         other.totalRating == totalRating &&
         other.averageRating == averageRating &&
@@ -69,7 +66,6 @@ class TradeStatistics {
         winRate.hashCode ^
         averageR.hashCode ^
         totalRiskAmount.hashCode ^
-        profitableTrades.hashCode ^
         averagePnL.hashCode ^
         totalRating.hashCode ^
         averageRating.hashCode ^
@@ -79,6 +75,6 @@ class TradeStatistics {
 
   @override
   String toString() {
-    return 'TradeStatistics(totalTrades: $totalTrades, winningTrades: $winningTrades, losingTrades: $losingTrades, breakevenTrades: $breakevenTrades, totalPnL: $totalPnL, winRate: $winRate, averageR: $averageR, totalRiskAmount: $totalRiskAmount, profitableTrades: $profitableTrades, averagePnL: $averagePnL, totalRating: $totalRating, averageRating: $averageRating, uniqueSymbols: $uniqueSymbols, uniqueExchanges: $uniqueExchanges)';
+    return 'TradeStatistics(totalTrades: $totalTrades, winningTrades: $winningTrades, losingTrades: $losingTrades, breakevenTrades: $breakevenTrades, totalPnL: $totalPnL, winRate: $winRate, averageR: $averageR, totalRiskAmount: $totalRiskAmount, averagePnL: $averagePnL, totalRating: $totalRating, averageRating: $averageRating, uniqueSymbols: $uniqueSymbols, uniqueExchanges: $uniqueExchanges)';
   }
 }

@@ -159,12 +159,14 @@ class TradeListProvider with ChangeNotifier {
     
     _statistics = TradeStatistics(
       totalTrades: statsData['totalTrades'] ?? 0,
-      profitableTrades: statsData['profitableTrades'] ?? 0,
+      winningTrades: statsData['winningTrades'] ?? 0,
       losingTrades: statsData['losingTrades'] ?? 0,
       breakevenTrades: statsData['breakevenTrades'] ?? 0,
       totalPnL: statsData['totalPnL'] ?? 0.0,
       averagePnL: statsData['averagePnL'] ?? 0.0,
       winRate: statsData['winRate'] ?? 0.0,
+      averageR: statsData['averageR'] ?? 0.0,
+      totalRiskAmount: statsData['totalRiskAmount'] ?? 0.0,
       totalRating: statsData['totalRating'] ?? 0,
       averageRating: statsData['averageRating'] ?? 0.0,
       uniqueSymbols: statsData['uniqueSymbols'] ?? 0,

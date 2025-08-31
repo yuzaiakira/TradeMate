@@ -576,12 +576,14 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       if (trades.isEmpty) {
         return {
           'totalTrades': 0,
-          'profitableTrades': 0,
+          'winningTrades': 0,
           'losingTrades': 0,
           'breakevenTrades': 0,
           'totalPnL': 0.0,
           'averagePnL': 0.0,
           'winRate': 0.0,
+          'averageR': 0.0,
+          'totalRiskAmount': 0.0,
           'totalRating': 0,
           'averageRating': 0.0,
           'uniqueSymbols': 0,
@@ -589,12 +591,22 @@ class TradeMateDatabase extends _$TradeMateDatabase {
         };
       }
       
-      final profitableTrades = trades.where((t) => (t.pnl ?? 0) > 0).length;
-      final losingTrades = trades.where((t) => (t.pnl ?? 0) < 0).length;
-      final breakevenTrades = trades.where((t) => (t.pnl ?? 0) == 0).length;
-      final totalPnL = trades.fold(0.0, (sum, t) => sum + (t.pnl ?? 0));
+      // Use netProfitLoss for more accurate P&L calculation (includes fees)
+      final winningTrades = trades.where((t) => (t.netProfitLoss ?? 0) > 0).length;
+      final losingTrades = trades.where((t) => (t.netProfitLoss ?? 0) < 0).length;
+      final breakevenTrades = trades.where((t) => (t.netProfitLoss ?? 0) == 0).length;
+      final totalPnL = trades.fold(0.0, (sum, t) => sum + (t.netProfitLoss ?? 0));
       final averagePnL = totalPnL / trades.length;
-      final winRate = trades.isNotEmpty ? (profitableTrades / trades.length) * 100 : 0.0;
+      final winRate = trades.isNotEmpty ? (winningTrades / trades.length) * 100 : 0.0;
+      
+      // Calculate average achieved R
+      final tradesWithR = trades.where((t) => t.achievedR != null).toList();
+      final averageR = tradesWithR.isNotEmpty 
+          ? tradesWithR.fold(0.0, (sum, t) => sum + (t.achievedR ?? 0)) / tradesWithR.length 
+          : 0.0;
+      
+      // Calculate total risk amount
+      final totalRiskAmount = trades.fold(0.0, (sum, t) => sum + (t.riskAmount ?? 0));
       
       final ratedTrades = trades.where((t) => t.rating != null).toList();
       final totalRating = ratedTrades.fold(0, (sum, t) => sum + (t.rating ?? 0));
@@ -609,12 +621,14 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       
       return {
         'totalTrades': trades.length,
-        'profitableTrades': profitableTrades,
+        'winningTrades': winningTrades,
         'losingTrades': losingTrades,
         'breakevenTrades': breakevenTrades,
         'totalPnL': totalPnL,
         'averagePnL': averagePnL,
         'winRate': winRate,
+        'averageR': averageR,
+        'totalRiskAmount': totalRiskAmount,
         'totalRating': totalRating,
         'averageRating': averageRating,
         'uniqueSymbols': uniqueSymbols,
@@ -623,12 +637,14 @@ class TradeMateDatabase extends _$TradeMateDatabase {
     } catch (e) {
       return {
         'totalTrades': 0,
-        'profitableTrades': 0,
+        'winningTrades': 0,
         'losingTrades': 0,
         'breakevenTrades': 0,
         'totalPnL': 0.0,
         'averagePnL': 0.0,
         'winRate': 0.0,
+        'averageR': 0.0,
+        'totalRiskAmount': 0.0,
         'totalRating': 0,
         'averageRating': 0.0,
         'uniqueSymbols': 0,

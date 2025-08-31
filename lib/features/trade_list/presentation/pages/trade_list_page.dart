@@ -163,7 +163,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               ),
               const Spacer(),
               Text(
-                '${provider.trades.length} trades',
+                '${stats.totalTrades} trades',
                 style: AppTheme.captionStyle,
               ),
             ],
@@ -174,7 +174,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               Expanded(
                 child: _buildStatCard(
                   'P&L',
-                  '\$${stats.totalPnL.toStringAsFixed(2)}',
+                  '${stats.totalPnL >= 0 ? '+' : ''}\$${stats.totalPnL.toStringAsFixed(2)}',
                   stats.totalPnL > 0 
                       ? AppTheme.bullishColor 
                       : AppTheme.bearishColor,
@@ -192,7 +192,7 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
               Expanded(
                 child: _buildStatCard(
                   'Avg R',
-                  '${stats.averageR.toStringAsFixed(2)}x',
+                  stats.averageR > 0 ? '${stats.averageR.toStringAsFixed(2)}x' : 'N/A',
                   AppTheme.primaryColor,
                 ),
               ),
