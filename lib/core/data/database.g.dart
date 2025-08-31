@@ -499,6 +499,17 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _balanceAtEntryMeta = const VerificationMeta(
+    'balanceAtEntry',
+  );
+  @override
+  late final GeneratedColumn<double> balanceAtEntry = GeneratedColumn<double>(
+    'balance_at_entry',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _riskAmountMeta = const VerificationMeta(
     'riskAmount',
   );
@@ -783,6 +794,7 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     notes,
     screenshotPath,
     accountBalance,
+    balanceAtEntry,
     riskAmount,
     achievedR,
     tradeDuration,
@@ -1158,6 +1170,15 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
     } else if (isInserting) {
       context.missing(_accountBalanceMeta);
     }
+    if (data.containsKey('balance_at_entry')) {
+      context.handle(
+        _balanceAtEntryMeta,
+        balanceAtEntry.isAcceptableOrUnknown(
+          data['balance_at_entry']!,
+          _balanceAtEntryMeta,
+        ),
+      );
+    }
     if (data.containsKey('risk_amount')) {
       context.handle(
         _riskAmountMeta,
@@ -1525,6 +1546,10 @@ class $TradesTable extends Trades with TableInfo<$TradesTable, Trade> {
         DriftSqlType.double,
         data['${effectivePrefix}account_balance'],
       )!,
+      balanceAtEntry: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}balance_at_entry'],
+      ),
       riskAmount: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}risk_amount'],
@@ -1669,6 +1694,7 @@ class Trade extends DataClass implements Insertable<Trade> {
   final String? notes;
   final String? screenshotPath;
   final double accountBalance;
+  final double? balanceAtEntry;
   final double? riskAmount;
   final double? achievedR;
   final int? tradeDuration;
@@ -1738,6 +1764,7 @@ class Trade extends DataClass implements Insertable<Trade> {
     this.notes,
     this.screenshotPath,
     required this.accountBalance,
+    this.balanceAtEntry,
     this.riskAmount,
     this.achievedR,
     this.tradeDuration,
@@ -1884,6 +1911,9 @@ class Trade extends DataClass implements Insertable<Trade> {
       map['screenshot_path'] = Variable<String>(screenshotPath);
     }
     map['account_balance'] = Variable<double>(accountBalance);
+    if (!nullToAbsent || balanceAtEntry != null) {
+      map['balance_at_entry'] = Variable<double>(balanceAtEntry);
+    }
     if (!nullToAbsent || riskAmount != null) {
       map['risk_amount'] = Variable<double>(riskAmount);
     }
@@ -2067,6 +2097,9 @@ class Trade extends DataClass implements Insertable<Trade> {
           ? const Value.absent()
           : Value(screenshotPath),
       accountBalance: Value(accountBalance),
+      balanceAtEntry: balanceAtEntry == null && nullToAbsent
+          ? const Value.absent()
+          : Value(balanceAtEntry),
       riskAmount: riskAmount == null && nullToAbsent
           ? const Value.absent()
           : Value(riskAmount),
@@ -2190,6 +2223,7 @@ class Trade extends DataClass implements Insertable<Trade> {
       notes: serializer.fromJson<String?>(json['notes']),
       screenshotPath: serializer.fromJson<String?>(json['screenshotPath']),
       accountBalance: serializer.fromJson<double>(json['accountBalance']),
+      balanceAtEntry: serializer.fromJson<double?>(json['balanceAtEntry']),
       riskAmount: serializer.fromJson<double?>(json['riskAmount']),
       achievedR: serializer.fromJson<double?>(json['achievedR']),
       tradeDuration: serializer.fromJson<int?>(json['tradeDuration']),
@@ -2270,6 +2304,7 @@ class Trade extends DataClass implements Insertable<Trade> {
       'notes': serializer.toJson<String?>(notes),
       'screenshotPath': serializer.toJson<String?>(screenshotPath),
       'accountBalance': serializer.toJson<double>(accountBalance),
+      'balanceAtEntry': serializer.toJson<double?>(balanceAtEntry),
       'riskAmount': serializer.toJson<double?>(riskAmount),
       'achievedR': serializer.toJson<double?>(achievedR),
       'tradeDuration': serializer.toJson<int?>(tradeDuration),
@@ -2344,6 +2379,7 @@ class Trade extends DataClass implements Insertable<Trade> {
     Value<String?> notes = const Value.absent(),
     Value<String?> screenshotPath = const Value.absent(),
     double? accountBalance,
+    Value<double?> balanceAtEntry = const Value.absent(),
     Value<double?> riskAmount = const Value.absent(),
     Value<double?> achievedR = const Value.absent(),
     Value<int?> tradeDuration = const Value.absent(),
@@ -2439,6 +2475,9 @@ class Trade extends DataClass implements Insertable<Trade> {
         ? screenshotPath.value
         : this.screenshotPath,
     accountBalance: accountBalance ?? this.accountBalance,
+    balanceAtEntry: balanceAtEntry.present
+        ? balanceAtEntry.value
+        : this.balanceAtEntry,
     riskAmount: riskAmount.present ? riskAmount.value : this.riskAmount,
     achievedR: achievedR.present ? achievedR.value : this.achievedR,
     tradeDuration: tradeDuration.present
@@ -2576,6 +2615,9 @@ class Trade extends DataClass implements Insertable<Trade> {
       accountBalance: data.accountBalance.present
           ? data.accountBalance.value
           : this.accountBalance,
+      balanceAtEntry: data.balanceAtEntry.present
+          ? data.balanceAtEntry.value
+          : this.balanceAtEntry,
       riskAmount: data.riskAmount.present
           ? data.riskAmount.value
           : this.riskAmount,
@@ -2686,6 +2728,7 @@ class Trade extends DataClass implements Insertable<Trade> {
           ..write('notes: $notes, ')
           ..write('screenshotPath: $screenshotPath, ')
           ..write('accountBalance: $accountBalance, ')
+          ..write('balanceAtEntry: $balanceAtEntry, ')
           ..write('riskAmount: $riskAmount, ')
           ..write('achievedR: $achievedR, ')
           ..write('tradeDuration: $tradeDuration, ')
@@ -2760,6 +2803,7 @@ class Trade extends DataClass implements Insertable<Trade> {
     notes,
     screenshotPath,
     accountBalance,
+    balanceAtEntry,
     riskAmount,
     achievedR,
     tradeDuration,
@@ -2833,6 +2877,7 @@ class Trade extends DataClass implements Insertable<Trade> {
           other.notes == this.notes &&
           other.screenshotPath == this.screenshotPath &&
           other.accountBalance == this.accountBalance &&
+          other.balanceAtEntry == this.balanceAtEntry &&
           other.riskAmount == this.riskAmount &&
           other.achievedR == this.achievedR &&
           other.tradeDuration == this.tradeDuration &&
@@ -2904,6 +2949,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
   final Value<String?> notes;
   final Value<String?> screenshotPath;
   final Value<double> accountBalance;
+  final Value<double?> balanceAtEntry;
   final Value<double?> riskAmount;
   final Value<double?> achievedR;
   final Value<int?> tradeDuration;
@@ -2973,6 +3019,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     this.notes = const Value.absent(),
     this.screenshotPath = const Value.absent(),
     this.accountBalance = const Value.absent(),
+    this.balanceAtEntry = const Value.absent(),
     this.riskAmount = const Value.absent(),
     this.achievedR = const Value.absent(),
     this.tradeDuration = const Value.absent(),
@@ -3043,6 +3090,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     this.notes = const Value.absent(),
     this.screenshotPath = const Value.absent(),
     required double accountBalance,
+    this.balanceAtEntry = const Value.absent(),
     this.riskAmount = const Value.absent(),
     this.achievedR = const Value.absent(),
     this.tradeDuration = const Value.absent(),
@@ -3120,6 +3168,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     Expression<String>? notes,
     Expression<String>? screenshotPath,
     Expression<double>? accountBalance,
+    Expression<double>? balanceAtEntry,
     Expression<double>? riskAmount,
     Expression<double>? achievedR,
     Expression<int>? tradeDuration,
@@ -3191,6 +3240,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
       if (notes != null) 'notes': notes,
       if (screenshotPath != null) 'screenshot_path': screenshotPath,
       if (accountBalance != null) 'account_balance': accountBalance,
+      if (balanceAtEntry != null) 'balance_at_entry': balanceAtEntry,
       if (riskAmount != null) 'risk_amount': riskAmount,
       if (achievedR != null) 'achieved_r': achievedR,
       if (tradeDuration != null) 'trade_duration': tradeDuration,
@@ -3266,6 +3316,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     Value<String?>? notes,
     Value<String?>? screenshotPath,
     Value<double>? accountBalance,
+    Value<double?>? balanceAtEntry,
     Value<double?>? riskAmount,
     Value<double?>? achievedR,
     Value<int?>? tradeDuration,
@@ -3336,6 +3387,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
       notes: notes ?? this.notes,
       screenshotPath: screenshotPath ?? this.screenshotPath,
       accountBalance: accountBalance ?? this.accountBalance,
+      balanceAtEntry: balanceAtEntry ?? this.balanceAtEntry,
       riskAmount: riskAmount ?? this.riskAmount,
       achievedR: achievedR ?? this.achievedR,
       tradeDuration: tradeDuration ?? this.tradeDuration,
@@ -3505,6 +3557,9 @@ class TradesCompanion extends UpdateCompanion<Trade> {
     if (accountBalance.present) {
       map['account_balance'] = Variable<double>(accountBalance.value);
     }
+    if (balanceAtEntry.present) {
+      map['balance_at_entry'] = Variable<double>(balanceAtEntry.value);
+    }
     if (riskAmount.present) {
       map['risk_amount'] = Variable<double>(riskAmount.value);
     }
@@ -3629,6 +3684,7 @@ class TradesCompanion extends UpdateCompanion<Trade> {
           ..write('notes: $notes, ')
           ..write('screenshotPath: $screenshotPath, ')
           ..write('accountBalance: $accountBalance, ')
+          ..write('balanceAtEntry: $balanceAtEntry, ')
           ..write('riskAmount: $riskAmount, ')
           ..write('achievedR: $achievedR, ')
           ..write('tradeDuration: $tradeDuration, ')
@@ -5852,6 +5908,7 @@ typedef $$TradesTableCreateCompanionBuilder =
       Value<String?> notes,
       Value<String?> screenshotPath,
       required double accountBalance,
+      Value<double?> balanceAtEntry,
       Value<double?> riskAmount,
       Value<double?> achievedR,
       Value<int?> tradeDuration,
@@ -5923,6 +5980,7 @@ typedef $$TradesTableUpdateCompanionBuilder =
       Value<String?> notes,
       Value<String?> screenshotPath,
       Value<double> accountBalance,
+      Value<double?> balanceAtEntry,
       Value<double?> riskAmount,
       Value<double?> achievedR,
       Value<int?> tradeDuration,
@@ -6183,6 +6241,11 @@ class $$TradesTableFilterComposer
 
   ColumnFilters<double> get accountBalance => $composableBuilder(
     column: $table.accountBalance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get balanceAtEntry => $composableBuilder(
+    column: $table.balanceAtEntry,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6536,6 +6599,11 @@ class $$TradesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get balanceAtEntry => $composableBuilder(
+    column: $table.balanceAtEntry,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get riskAmount => $composableBuilder(
     column: $table.riskAmount,
     builder: (column) => ColumnOrderings(column),
@@ -6836,6 +6904,11 @@ class $$TradesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<double> get balanceAtEntry => $composableBuilder(
+    column: $table.balanceAtEntry,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<double> get riskAmount => $composableBuilder(
     column: $table.riskAmount,
     builder: (column) => column,
@@ -7013,6 +7086,7 @@ class $$TradesTableTableManager
                 Value<String?> notes = const Value.absent(),
                 Value<String?> screenshotPath = const Value.absent(),
                 Value<double> accountBalance = const Value.absent(),
+                Value<double?> balanceAtEntry = const Value.absent(),
                 Value<double?> riskAmount = const Value.absent(),
                 Value<double?> achievedR = const Value.absent(),
                 Value<int?> tradeDuration = const Value.absent(),
@@ -7082,6 +7156,7 @@ class $$TradesTableTableManager
                 notes: notes,
                 screenshotPath: screenshotPath,
                 accountBalance: accountBalance,
+                balanceAtEntry: balanceAtEntry,
                 riskAmount: riskAmount,
                 achievedR: achievedR,
                 tradeDuration: tradeDuration,
@@ -7153,6 +7228,7 @@ class $$TradesTableTableManager
                 Value<String?> notes = const Value.absent(),
                 Value<String?> screenshotPath = const Value.absent(),
                 required double accountBalance,
+                Value<double?> balanceAtEntry = const Value.absent(),
                 Value<double?> riskAmount = const Value.absent(),
                 Value<double?> achievedR = const Value.absent(),
                 Value<int?> tradeDuration = const Value.absent(),
@@ -7222,6 +7298,7 @@ class $$TradesTableTableManager
                 notes: notes,
                 screenshotPath: screenshotPath,
                 accountBalance: accountBalance,
+                balanceAtEntry: balanceAtEntry,
                 riskAmount: riskAmount,
                 achievedR: achievedR,
                 tradeDuration: tradeDuration,

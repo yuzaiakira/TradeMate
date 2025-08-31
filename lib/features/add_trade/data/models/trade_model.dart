@@ -66,6 +66,7 @@ class TradeModel {
   final String? notes;
   final String? screenshotPath;
   final double accountBalance;
+  final double? balanceAtEntry; // Balance at the time of trade creation
   final double? riskAmount;
   final double? achievedR;
   final int? tradeDuration;
@@ -152,6 +153,7 @@ class TradeModel {
     this.notes,
     this.screenshotPath,
     required this.accountBalance,
+    this.balanceAtEntry,
     this.riskAmount,
     this.achievedR,
     this.tradeDuration,
@@ -237,6 +239,7 @@ class TradeModel {
       notes: trade.notes,
       screenshotPath: trade.screenshotPath,
       accountBalance: trade.accountBalance,
+      balanceAtEntry: trade.balanceAtEntry,
       riskAmount: trade.riskAmount,
       achievedR: trade.achievedR,
       tradeDuration: trade.tradeDuration,
@@ -323,6 +326,7 @@ class TradeModel {
       notes: notes,
       screenshotPath: screenshotPath,
       accountBalance: accountBalance,
+      balanceAtEntry: balanceAtEntry,
       riskAmount: riskAmount,
       achievedR: achievedR,
       tradeDuration: tradeDuration,
@@ -409,6 +413,7 @@ class TradeModel {
       notes: notes != null ? Value(notes!) : const Value.absent(),
       screenshotPath: screenshotPath != null ? Value(screenshotPath!) : const Value.absent(),
       accountBalance: Value(accountBalance),
+      balanceAtEntry: balanceAtEntry != null ? Value(balanceAtEntry!) : const Value.absent(),
       riskAmount: riskAmount != null ? Value(riskAmount!) : const Value.absent(),
       achievedR: achievedR != null ? Value(achievedR!) : const Value.absent(),
       tradeDuration: tradeDuration != null ? Value(tradeDuration!) : const Value.absent(),

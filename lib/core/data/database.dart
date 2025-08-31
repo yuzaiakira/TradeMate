@@ -71,6 +71,7 @@ class Trades extends Table {
   TextColumn get notes => text().nullable()();
   TextColumn get screenshotPath => text().nullable()();
   RealColumn get accountBalance => real()();
+  RealColumn get balanceAtEntry => real().nullable()(); // Balance at the time of trade creation
   RealColumn get riskAmount => real().nullable()();
   RealColumn get achievedR => real().nullable()();
   IntColumn get tradeDuration => integer().nullable()(); // in minutes

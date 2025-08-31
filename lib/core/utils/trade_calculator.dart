@@ -220,6 +220,18 @@ class TradeCalculator {
     return currentBalance + netPnL;
   }
 
+  /// Calculate balance at entry = current balance at the time of trade creation
+  /// This should only be set when the trade is created and not updated later
+  static Future<double?> calculateBalanceAtEntry(domain.Trade trade) async {
+    // If balanceAtEntry is already set, return it (don't recalculate)
+    if (trade.balanceAtEntry != null) {
+      return trade.balanceAtEntry;
+    }
+    
+    // For new trades, get the current balance
+    return await getCurrentBalance();
+  }
+
   /// Calculate trade duration = datetime(exit) - datetime(entry)
   static int? calculateTradeDuration(domain.Trade trade) {
     if (trade.exitDatetime == null) return null;
@@ -277,6 +289,8 @@ class TradeCalculator {
       accountChangePercent: await calculateAccountChangePercent(trade),
       newBalance: await calculateNewBalance(trade),
       calculatedTradeDuration: calculateTradeDuration(trade),
+      // Balance at entry (only set for new trades)
+      balanceAtEntry: await calculateBalanceAtEntry(trade),
     );
   }
 }

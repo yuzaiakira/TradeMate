@@ -70,6 +70,7 @@ class Trade extends Equatable {
   final String? notes;
   final String? screenshotPath;
   final double accountBalance;
+  final double? balanceAtEntry; // Balance at the time of trade creation
   final double? riskAmount;
   final double? achievedR;
   final int? tradeDuration; // in minutes
@@ -156,6 +157,7 @@ class Trade extends Equatable {
     this.notes,
     this.screenshotPath,
     required this.accountBalance,
+    this.balanceAtEntry,
     this.riskAmount,
     this.achievedR,
     this.tradeDuration,
@@ -310,6 +312,7 @@ class Trade extends Equatable {
     String? notes,
     String? screenshotPath,
     double? accountBalance,
+    double? balanceAtEntry,
     double? riskAmount,
     double? achievedR,
     int? tradeDuration,
@@ -384,6 +387,7 @@ class Trade extends Equatable {
       notes: notes ?? this.notes,
       screenshotPath: screenshotPath ?? this.screenshotPath,
       accountBalance: accountBalance ?? this.accountBalance,
+      balanceAtEntry: balanceAtEntry ?? this.balanceAtEntry,
       riskAmount: riskAmount ?? this.riskAmount,
       achievedR: achievedR ?? this.achievedR,
       tradeDuration: tradeDuration ?? this.tradeDuration,
@@ -461,6 +465,7 @@ class Trade extends Equatable {
     notes,
     screenshotPath,
     accountBalance,
+    balanceAtEntry,
     riskAmount,
     achievedR,
     tradeDuration,

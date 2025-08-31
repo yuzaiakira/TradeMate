@@ -666,6 +666,8 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                       _buildDetailRow('Entry Mental States', trade.entryMentalStates!),
                     if (trade.entryScreenshot?.isNotEmpty == true)
                       _buildDetailRow('Entry Screenshot', trade.entryScreenshot!),
+                    if (trade.balanceAtEntry != null)
+                      _buildDetailRow('Balance at Entry', '\$${trade.balanceAtEntry!.toStringAsFixed(2)}'),
                     // Calculated Trade Transfers Fields
                     _buildDetailRowWithWLColor('W/L', TradeCalculator.calculateWL(trade)),
                     _buildDetailRow('Day of Week', TradeCalculator.calculateEntryDayOfWeek(trade)),
@@ -791,6 +793,8 @@ class _TradeListPageState extends State<TradeListPage> with WidgetsBindingObserv
                             return _buildDetailRow('New Balance', snapshot.data != null ? '\$${snapshot.data!.toStringAsFixed(2)}' : 'N/A');
                           },
                         ),
+                        if (trade.balanceAtEntry != null)
+                          _buildDetailRow('Balance at Entry', '\$${trade.balanceAtEntry!.toStringAsFixed(2)}'),
                         _buildDetailRow('Trade Duration', TradeCalculator.formatTradeDuration(TradeCalculator.calculateTradeDuration(trade)) ?? 'N/A'),
                       ]);
                     },
