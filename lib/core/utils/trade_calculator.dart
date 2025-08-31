@@ -53,12 +53,12 @@ class TradeCalculator {
     return (trade.positionMargin! * trade.leverage!) / trade.entryPrice;
   }
 
-  /// Calculate position to account percentage = (position margin ÷ current_balance) × 100
+  /// Calculate position to account percentage = (position margin ÷ balance_at_entry) × 100
   static Future<double?> calculatePositionToAccPercent(domain.Trade trade) async {
     if (trade.positionMargin == null) return null;
-    final currentBalance = await getCurrentBalance();
-    if (currentBalance <= 0) return null;
-    return (trade.positionMargin! / currentBalance) * 100;
+    final balanceAtEntry = await calculateBalanceAtEntry(trade);
+    if (balanceAtEntry == null || balanceAtEntry <= 0) return null;
+    return (trade.positionMargin! / balanceAtEntry) * 100;
   }
 
   /// Calculate planned stop loss percentage
@@ -74,15 +74,15 @@ class TradeCalculator {
     return null;
   }
 
-  /// Calculate percentage of account risked = ((position margin × |planned SL %|) ÷ 100) ÷ current_balance × 100
+  /// Calculate percentage of account risked = ((position margin × |planned SL %|) ÷ 100) ÷ balance_at_entry × 100
   static Future<double?> calculateAccRiskedPercent(domain.Trade trade) async {
     final plannedSlPercent = calculatePlannedSlPercent(trade);
     if (trade.positionMargin == null || plannedSlPercent == null) return null;
     
-    final currentBalance = await getCurrentBalance();
-    if (currentBalance <= 0) return null;
+    final balanceAtEntry = await calculateBalanceAtEntry(trade);
+    if (balanceAtEntry == null || balanceAtEntry <= 0) return null;
     
-    return ((trade.positionMargin! * plannedSlPercent.abs()) / 100) / currentBalance * 100;
+    return ((trade.positionMargin! * plannedSlPercent.abs()) / 100) / balanceAtEntry * 100;
   }
 
   /// Calculate planned return (R)
@@ -199,25 +199,26 @@ class TradeCalculator {
     return (netPnL / trade.positionMargin!) * 100;
   }
 
-  /// Calculate account change % = (net profit/loss ÷ current_balance) × 100
+  /// Calculate account change % = (net profit/loss ÷ balance_at_entry) × 100
   static Future<double?> calculateAccountChangePercent(domain.Trade trade) async {
     final netPnL = calculateNetProfitLoss(trade);
     if (netPnL == null) return null;
     
-    final currentBalance = await getCurrentBalance();
-    if (currentBalance <= 0) return null;
+    final balanceAtEntry = await calculateBalanceAtEntry(trade);
+    if (balanceAtEntry == null || balanceAtEntry <= 0) return null;
     
-    return (netPnL / currentBalance) * 100;
+    return (netPnL / balanceAtEntry) * 100;
   }
 
-  /// Calculate new balance = current_balance + net profit/loss
+  /// Calculate new balance = balance_at_entry + net profit/loss
   static Future<double?> calculateNewBalance(domain.Trade trade) async {
     final netPnL = calculateNetProfitLoss(trade);
     if (netPnL == null) return null;
     
-    // Use current actual balance instead of trade.accountBalance
-    final currentBalance = await getCurrentBalance();
-    return currentBalance + netPnL;
+    final balanceAtEntry = await calculateBalanceAtEntry(trade);
+    if (balanceAtEntry == null) return null;
+    
+    return balanceAtEntry + netPnL;
   }
 
   /// Calculate balance at entry = current balance at the time of trade creation
