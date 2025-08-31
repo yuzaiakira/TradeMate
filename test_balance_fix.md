@@ -40,3 +40,4 @@ The `TradeCalculator.calculateNewBalance()` method was using `trade.accountBalan
 ## Files Modified
 - `lib/core/utils/trade_calculator.dart` - Fixed calculateNewBalance method
 - `lib/features/trade_list/presentation/pages/trade_list_page.dart` - Updated to handle async call
+

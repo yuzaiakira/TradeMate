@@ -26,6 +26,9 @@ class _AddTradePageState extends State<AddTradePage> {
   final TextEditingController _stopLossController = TextEditingController();
   final TextEditingController _takeProfitController = TextEditingController();
   final TextEditingController _exitPriceController = TextEditingController();
+  final TextEditingController _marginClosedPercentController = TextEditingController();
+  final TextEditingController _datetimeController = TextEditingController();
+  final TextEditingController _exitDatetimeController = TextEditingController();
   final TextEditingController _memoController = TextEditingController();
   
   final Map<String, bool> _expandedSections = {
@@ -78,6 +81,9 @@ class _AddTradePageState extends State<AddTradePage> {
     _stopLossController.dispose();
     _takeProfitController.dispose();
     _exitPriceController.dispose();
+    _marginClosedPercentController.dispose();
+    _datetimeController.dispose();
+    _exitDatetimeController.dispose();
     _memoController.dispose();
     super.dispose();
   }
@@ -95,7 +101,24 @@ class _AddTradePageState extends State<AddTradePage> {
     _stopLossController.clear();
     _takeProfitController.clear();
     _exitPriceController.clear();
+    _marginClosedPercentController.clear();
+    _datetimeController.clear();
+    _exitDatetimeController.clear();
     _memoController.clear();
+  }
+
+  void _syncControllersWithProvider(AddTradeProvider provider) {
+    // Sync text controllers with provider state
+    _stopLossController.text = provider.stopLossPrice?.toString() ?? '';
+    _takeProfitController.text = provider.takeProfitPrice?.toString() ?? '';
+    _exitPriceController.text = provider.actualExitPrice?.toString() ?? '';
+    _marginClosedPercentController.text = provider.marginClosedPercent?.toString() ?? '';
+    _entryPriceController.text = provider.entryPrice > 0 ? provider.entryPrice.toString() : '';
+    _positionMarginController.text = provider.positionMargin?.toString() ?? '';
+    _leverageController.text = provider.leverage?.toString() ?? '';
+    _datetimeController.text = provider.datetime?.toString().substring(0, 16) ?? 'Select datetime';
+    _exitDatetimeController.text = provider.exitDatetime?.toString().substring(0, 16) ?? 'Select exit datetime';
+    _memoController.text = provider.memo;
   }
 
   @override
@@ -663,6 +686,10 @@ class _AddTradePageState extends State<AddTradePage> {
                       onPressed: () {
                         provider.resetAfterSuccess();
                         _clearTextControllers();
+                        // Sync controllers with provider state after reset
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _syncControllersWithProvider(provider);
+                        });
                         // Scroll to top
                         _scrollController.animateTo(
                           0,
@@ -837,6 +864,7 @@ class _AddTradePageState extends State<AddTradePage> {
           icon: Icons.schedule,
           isRequired: true,
           child: TextFormField(
+            controller: _datetimeController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Datetime',
               hintText: 'Select date and time',
@@ -844,11 +872,6 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             readOnly: true,
             onTap: () => _selectDateTime(context, addTradeProvider),
-            controller: TextEditingController(
-              text:
-                  addTradeProvider.datetime?.toString().substring(0, 16) ??
-                  'Select datetime',
-            ),
           ),
         ),
 
@@ -1347,6 +1370,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'At what price will you exit if the trade goes against you?',
           icon: Icons.stop_circle,
           child: TextFormField(
+            controller: _stopLossController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Stop Loss Price',
               hintText: '0.00',
@@ -1367,6 +1391,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'At what price will you take your profits?',
           icon: Icons.trending_up,
           child: TextFormField(
+            controller: _takeProfitController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Take Profit Price',
               hintText: '0.00',
@@ -1404,6 +1429,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'At what price did you exit the trade?',
           icon: Icons.exit_to_app,
           child: TextFormField(
+            controller: _exitPriceController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Actual Exit Price',
               hintText: '0.00',
@@ -1424,6 +1450,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'What percentage of your position did you close?',
           icon: Icons.percent,
           child: TextFormField(
+            controller: _marginClosedPercentController,
             decoration: AppTheme.inputDecoration(
               labelText: '% of Margin Closed',
               hintText: '100',
@@ -1513,6 +1540,7 @@ class _AddTradePageState extends State<AddTradePage> {
           hint: 'When did you exit this trade?',
           icon: Icons.schedule,
           child: TextFormField(
+            controller: _exitDatetimeController,
             decoration: AppTheme.inputDecoration(
               labelText: 'Exit Datetime',
               hintText: 'Select exit date and time',
@@ -1520,11 +1548,6 @@ class _AddTradePageState extends State<AddTradePage> {
             ),
             readOnly: true,
             onTap: () => _selectExitDateTime(context, addTradeProvider),
-            controller: TextEditingController(
-              text:
-                  addTradeProvider.exitDatetime?.toString().substring(0, 16) ??
-                  'Select exit datetime',
-            ),
           ),
         ),
 
@@ -1971,6 +1994,7 @@ class _AddTradePageState extends State<AddTradePage> {
       
       if (mounted) {
         provider.updateDatetime(selectedDateTime);
+        _datetimeController.text = selectedDateTime.toString().substring(0, 16);
       }
     } catch (e) {
       if (mounted && context.mounted) {
@@ -2022,6 +2046,7 @@ class _AddTradePageState extends State<AddTradePage> {
       
       if (mounted) {
         provider.updateExitDatetime(selectedDateTime);
+        _exitDatetimeController.text = selectedDateTime.toString().substring(0, 16);
       }
     } catch (e) {
       if (mounted && context.mounted) {
