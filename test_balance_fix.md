@@ -1,43 +1,41 @@
-# Balance Fix Test Plan
+# Test Plan for balanceAtEntry Fix
 
 ## Problem Description
-When adding a trade with PnL, the Current Balance was being replaced with the PnL value instead of being updated by adding/subtracting the PnL.
+When editing a trade, the `balanceAtEntry` field was being updated with the current account balance instead of preserving the original value from when the trade was created.
 
 ## Root Cause
-The `TradeCalculator.calculateNewBalance()` method was using `trade.accountBalance` (balance at trade creation time) instead of the current actual balance.
+The `TradeCalculator.calculateBalanceAtEntry()` method was being called during both trade creation and trade updates, causing the field to be recalculated even for existing trades.
 
 ## Fix Applied
-1. Modified `TradeCalculator.calculateNewBalance()` to use `getCurrentBalance()` instead of `trade.accountBalance`
-2. Made the method async to fetch current balance
-3. Updated `calculateAllFields()` to await the new balance calculation
-4. Updated trade list page to handle async `calculateNewBalance` call
+Modified `TradeCalculator.calculateBalanceAtEntry()` to check if the trade has an ID (existing trade) and preserve the original `balanceAtEntry` value instead of recalculating it.
 
 ## Test Steps
 
-### Test Case 1: Deposit + Profitable Trade
-1. Deposit $1000 via Quick Actions
-2. Verify Current Balance shows $1000
-3. Add a trade with $1 PnL (profit)
-4. Verify Current Balance becomes $1001 (not $1.77)
+### 1. Create a New Trade
+1. Add a new trade with any symbol and entry price
+2. Verify that `balanceAtEntry` is set to the current account balance
+3. Save the trade
 
-### Test Case 2: Deposit + Loss Trade
-1. Deposit $1000 via Quick Actions
-2. Verify Current Balance shows $1000
-3. Add a trade with -$50 PnL (loss)
-4. Verify Current Balance becomes $950
+### 2. Edit the Trade
+1. Edit the same trade
+2. Change any field (e.g., entry price, symbol, etc.)
+3. Save the trade
+4. Verify that `balanceAtEntry` remains unchanged (should be the original value from creation)
 
-### Test Case 3: Multiple Trades
-1. Deposit $1000
-2. Add trade with $10 PnL → Balance should be $1010
-3. Add trade with -$5 PnL → Balance should be $1005
-4. Add trade with $20 PnL → Balance should be $1025
+### 3. Verify in Database
+1. Check the trade details
+2. Confirm that `balanceAtEntry` shows the original balance from when the trade was created
+3. Confirm that it's not the current account balance
 
 ## Expected Behavior
-- PnL should always be added to (profits) or subtracted from (losses) the current balance
-- Balance should never be replaced, only updated
-- Balance calculation should use current actual balance, not historical balance
+- **New trades**: `balanceAtEntry` = current account balance at creation time
+- **Edited trades**: `balanceAtEntry` = original balance from creation time (unchanged)
 
-## Files Modified
-- `lib/core/utils/trade_calculator.dart` - Fixed calculateNewBalance method
-- `lib/features/trade_list/presentation/pages/trade_list_page.dart` - Updated to handle async call
+## Code Changes Made
+File: `lib/core/utils/trade_calculator.dart`
+- Modified `calculateBalanceAtEntry()` method to preserve original value for existing trades
+- Added check for `trade.id == null` to distinguish between new and existing trades
+
+## Verification
+The fix ensures that `balanceAtEntry` is only set once during trade creation and never updated during subsequent edits, preserving the historical balance information for accurate trade analysis.
 

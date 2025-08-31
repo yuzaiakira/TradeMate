@@ -31,6 +31,7 @@ import 'features/account_management/data/repositories/account_repository_impl.da
 import 'features/account_management/domain/repositories/account_repository.dart';
 import 'features/account_management/presentation/provider/account_provider.dart';
 import 'core/utils/trade_calculator.dart';
+import 'core/utils/database_fix.dart';
 
 
 
@@ -41,13 +42,23 @@ void main() async {
   TradeMateDatabase database;
   try {
     database = TradeMateDatabase();
+    // Trigger migration to ensure database schema is up to date
+    await database.triggerMigration();
     // Test database connection
     await database.getTradesCount();
+    
+    // Verify database schema
+    final isSchemaValid = await DatabaseFix.verifyDatabaseSchema();
+    if (!isSchemaValid) {
+      // Try manual migration
+      await DatabaseFix.manualMigration();
+    }
   } catch (e) {
     // If normal initialization fails, try to recreate the database file
     try {
       await TradeMateDatabase.recreateDatabaseFile();
       database = TradeMateDatabase();
+      await database.triggerMigration();
       await database.getTradesCount();
     } catch (recreateError) {
       // If everything fails, create a fresh database

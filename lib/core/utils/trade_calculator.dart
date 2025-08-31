@@ -228,8 +228,14 @@ class TradeCalculator {
       return trade.balanceAtEntry;
     }
     
-    // For new trades, get the current balance
-    return await getCurrentBalance();
+    // For new trades (when id is null), get the current balance
+    if (trade.id == null) {
+      return await getCurrentBalance();
+    }
+    
+    // For existing trades (when id is not null), preserve the original balanceAtEntry
+    // This prevents updating balanceAtEntry when editing existing trades
+    return trade.balanceAtEntry;
   }
 
   /// Calculate trade duration = datetime(exit) - datetime(entry)

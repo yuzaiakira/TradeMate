@@ -158,7 +158,7 @@ class TradeMateDatabase extends _$TradeMateDatabase {
   TradeMateDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   // Method to reset database if needed
   Future<void> resetDatabase() async {
@@ -205,6 +205,31 @@ class TradeMateDatabase extends _$TradeMateDatabase {
     }
   }
 
+  // Method to manually trigger database migration
+  Future<void> triggerMigration() async {
+    try {
+      Logger.migration('Manually triggering database migration...');
+      // This will trigger the migration by accessing the database
+      await customStatement('SELECT 1');
+      Logger.migration('Database migration completed');
+    } catch (e) {
+      Logger.error('Error during manual migration: $e', e);
+      rethrow;
+    }
+  }
+
+  // Method to check if balance_at_entry column exists
+  Future<bool> hasBalanceAtEntryColumn() async {
+    try {
+      // Try to query the balance_at_entry column
+      await customStatement('SELECT balance_at_entry FROM trades LIMIT 1');
+      return true;
+    } catch (e) {
+      Logger.warning('balance_at_entry column does not exist: $e');
+      return false;
+    }
+  }
+
   MigrationStrategy get migrations {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
@@ -214,8 +239,21 @@ class TradeMateDatabase extends _$TradeMateDatabase {
       },
       onUpgrade: (Migrator m, int from, int to) async {
         Logger.migration('Upgrading database from version $from to version $to');
-        // Just recreate all tables for now
-        await m.createAll();
+        
+        if (from < 2) {
+          Logger.migration('Adding balance_at_entry column to trades table...');
+          try {
+            // Add the balance_at_entry column to existing trades table
+            await m.addColumn(trades, trades.balanceAtEntry);
+            Logger.migration('balance_at_entry column added successfully');
+          } catch (e) {
+            Logger.error('Error adding balance_at_entry column: $e', e);
+            // If adding column fails, recreate the table
+            Logger.migration('Falling back to table recreation...');
+            await m.createAll();
+          }
+        }
+        
         Logger.migration('Database upgraded successfully');
       },
     );

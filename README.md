@@ -81,6 +81,29 @@ dart run build_runner build
 flutter run
 ```
 
+## 🚨 Important: Database Migration Fix
+
+If you encounter the error `SqliteException: table trades has no column named balance_at_entry`, follow these steps:
+
+1. **Clean and rebuild**:
+```bash
+flutter clean
+flutter pub get
+flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
+2. **Restart the app** - The database will be automatically migrated.
+
+3. **For detailed instructions**, see `QUICK_FIX_INSTRUCTIONS.md`
+
+## Recent Updates
+
+### Database Migration (v2.0)
+- ✅ Fixed `balance_at_entry` column missing error
+- ✅ Added automatic database migration
+- ✅ Preserved all existing data
+- ✅ Added manual migration utilities
+
 ## Design System
 
 The app follows a modern, minimal design with:
