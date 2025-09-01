@@ -123,36 +123,9 @@ class _HomePageState extends State<HomePage> {
                 return const SizedBox.shrink();
               },
             ),
-            
+
             const SizedBox(height: 12),
-            
-            // Quick Actions
-            Consumer<AccountProvider>(
-              builder: (context, accountProvider, child) {
-                if (accountProvider.status == AccountStatus.loaded) {
-                  return QuickActions(
-                    onDeposit: () => _showDepositDialog(context),
-                    onWithdraw: () => _showWithdrawalDialog(context),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-            
-            const SizedBox(height: 12),
-            
-            // Account Growth Chart
-            Container(
-              decoration: AppTheme.cardDecoration,
-              padding: const EdgeInsets.all(12),
-              child: SizedBox(
-                height: 240,
-                child: AccountGrowthChart(statistics: statistics),
-              ),
-            ),
-            
-            const SizedBox(height: 12),
-            
+
             // Statistics Overview
             Container(
               decoration: AppTheme.cardDecoration,
@@ -181,6 +154,33 @@ class _HomePageState extends State<HomePage> {
                   _buildQuickStats(statistics),
                 ],
               ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Account Growth Chart
+            Container(
+              decoration: AppTheme.cardDecoration,
+              padding: const EdgeInsets.all(12),
+              child: SizedBox(
+                height: 300,
+                child: AccountGrowthChart(statistics: statistics),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+            
+            // Quick Actions
+            Consumer<AccountProvider>(
+              builder: (context, accountProvider, child) {
+                if (accountProvider.status == AccountStatus.loaded) {
+                  return QuickActions(
+                    onDeposit: () => _showDepositDialog(context),
+                    onWithdraw: () => _showWithdrawalDialog(context),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
             
             const SizedBox(height: 12),
