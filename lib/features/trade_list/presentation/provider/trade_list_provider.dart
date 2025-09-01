@@ -5,6 +5,7 @@ import '../../../add_trade/domain/usecases/get_trades_paginated_usecase.dart';
 import '../../../add_trade/domain/usecases/get_trades_count_usecase.dart';
 import '../../../add_trade/domain/usecases/get_trade_statistics_optimized_usecase.dart';
 import '../../../add_trade/domain/usecases/delete_trade_usecase.dart';
+import '../../../../core/usecases/get_shared_statistics_usecase.dart';
 import '../models/trade_filters.dart';
 import '../models/trade_statistics.dart';
 import '../models/trade_sort_option.dart';
@@ -18,6 +19,7 @@ class TradeListProvider with ChangeNotifier {
   final GetTradesCountUseCase getTradesCountUseCase;
   final GetTradeStatisticsOptimizedUseCase getTradeStatisticsOptimizedUseCase;
   final DeleteTradeUseCase deleteTradeUseCase;
+  final GetSharedStatisticsUseCase getSharedStatisticsUseCase;
   VoidCallback? _onTradesRefreshed;
 
   TradeListProvider({
@@ -26,6 +28,7 @@ class TradeListProvider with ChangeNotifier {
     required this.getTradesCountUseCase,
     required this.getTradeStatisticsOptimizedUseCase,
     required this.deleteTradeUseCase,
+    required this.getSharedStatisticsUseCase,
   });
 
   // Set callback to be called when trades are refreshed
@@ -152,7 +155,7 @@ class TradeListProvider with ChangeNotifier {
 
   // Load statistics
   Future<void> _loadStatistics() async {
-    final statsData = await getTradeStatisticsOptimizedUseCase(
+    _statistics = await getSharedStatisticsUseCase.getTradeListStatistics(
       searchQuery: _searchQuery,
       symbolFilter: _filters.symbol,
       statusFilter: _filters.status?.name,
@@ -164,22 +167,6 @@ class TradeListProvider with ChangeNotifier {
       maxPnL: _filters.maxPnL,
       minRating: _filters.minRating,
       profitLossFilter: _filters.profitLossFilter.name,
-    );
-    
-    _statistics = TradeStatistics(
-      totalTrades: statsData['totalTrades'] ?? 0,
-      winningTrades: statsData['winningTrades'] ?? 0,
-      losingTrades: statsData['losingTrades'] ?? 0,
-      breakevenTrades: statsData['breakevenTrades'] ?? 0,
-      totalPnL: statsData['totalPnL'] ?? 0.0,
-      averagePnL: statsData['averagePnL'] ?? 0.0,
-      winRate: statsData['winRate'] ?? 0.0,
-      averageR: statsData['averageR'] ?? 0.0,
-      totalRiskAmount: statsData['totalRiskAmount'] ?? 0.0,
-      totalRating: statsData['totalRating'] ?? 0,
-      averageRating: statsData['averageRating'] ?? 0.0,
-      uniqueSymbols: statsData['uniqueSymbols'] ?? 0,
-      uniqueExchanges: statsData['uniqueExchanges'] ?? 0,
     );
   }
 

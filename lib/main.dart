@@ -5,6 +5,7 @@ import 'core/utils/navigation_service.dart';
 import 'core/data/database.dart';
 import 'core/data/repositories/user_defined_values_repository.dart';
 import 'core/providers/user_defined_values_provider.dart';
+import 'core/usecases/get_shared_statistics_usecase.dart';
 import 'features/add_trade/data/repositories/trade_repository_impl.dart';
 import 'features/add_trade/domain/repositories/trade_repository.dart';
 import 'features/add_trade/domain/usecases/add_trade_usecase.dart';
@@ -19,7 +20,7 @@ import 'features/add_trade/presentation/provider/edit_trade_provider.dart';
 import 'features/trade_list/presentation/provider/trade_list_provider.dart';
 import 'features/home/data/repositories/statistics_repository_impl.dart';
 import 'features/home/domain/repositories/statistics_repository.dart';
-import 'features/home/domain/usecases/get_statistics_usecase.dart';
+
 import 'features/home/presentation/provider/home_provider.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/add_trade/presentation/pages/add_trade_page.dart';
@@ -131,11 +132,6 @@ class TradeMateApp extends StatelessWidget {
             context.read<TradeRepository>(),
           ),
         ),
-        Provider<GetStatisticsUseCase>(
-          create: (context) => GetStatisticsUseCase(
-            context.read<StatisticsRepository>(),
-          ),
-        ),
         
         // Account Management - Data Sources
         Provider<AccountLocalDataSource>(
@@ -157,6 +153,14 @@ class TradeMateApp extends StatelessWidget {
           ),
         ),
         
+        // Shared Statistics Use Case (depends on AccountRepository)
+        Provider<GetSharedStatisticsUseCase>(
+          create: (context) => GetSharedStatisticsUseCase(
+            context.read<GetTradeStatisticsOptimizedUseCase>(),
+            accountRepository: context.read<AccountRepository>(),
+          ),
+        ),
+        
         // Providers
         ChangeNotifierProvider<AddTradeProvider>(
           create: (context) {
@@ -170,6 +174,7 @@ class TradeMateApp extends StatelessWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
                   context.read<TradeListProvider>().refreshSilently();
+                  context.read<HomeProvider>().loadStatistics();
                 }
               });
             });
@@ -199,6 +204,7 @@ class TradeMateApp extends StatelessWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
                   context.read<TradeListProvider>().refreshSilently();
+                  context.read<HomeProvider>().loadStatistics();
                 }
               });
             });
@@ -217,7 +223,7 @@ class TradeMateApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<HomeProvider>(
           create: (context) => HomeProvider(
-            context.read<GetStatisticsUseCase>(),
+            context.read<GetSharedStatisticsUseCase>(),
           ),
         ),
         ChangeNotifierProvider<UserDefinedValuesProvider>(
@@ -232,6 +238,7 @@ class TradeMateApp extends StatelessWidget {
             getTradesCountUseCase: context.read<GetTradesCountUseCase>(),
             getTradeStatisticsOptimizedUseCase: context.read<GetTradeStatisticsOptimizedUseCase>(),
             deleteTradeUseCase: context.read<DeleteTradeUseCase>(),
+            getSharedStatisticsUseCase: context.read<GetSharedStatisticsUseCase>(),
           ),
         ),
         ChangeNotifierProvider<AccountProvider>(

@@ -270,6 +270,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildQuickStats(TradeStatistics statistics) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
           child: _buildQuickStatItem(
@@ -278,7 +279,6 @@ class _HomePageState extends State<HomePage> {
             statistics.overallPnl >= 0 ? AppTheme.bullishColor : AppTheme.bearishColor,
           ),
         ),
-        const SizedBox(width: 16),
         Expanded(
           child: _buildQuickStatItem(
             'Win Rate',
@@ -286,11 +286,10 @@ class _HomePageState extends State<HomePage> {
             statistics.winRate >= 50 ? AppTheme.bullishColor : AppTheme.bearishColor,
           ),
         ),
-        const SizedBox(width: 16),
         Expanded(
           child: _buildQuickStatItem(
-            'Balance',
-            statistics.formattedCurrentAccountBalance,
+            'Avg R',
+            statistics.avgAchievedR > 0 ? '${statistics.avgAchievedR.toStringAsFixed(2)}x' : 'N/A',
             AppTheme.primaryColor,
           ),
         ),
@@ -300,16 +299,18 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildQuickStatItem(String label, String value, Color color) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           label,
           style: AppTheme.captionStyle,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 4),
         Text(
           value,
           style: AppTheme.priceStyle.copyWith(color: color),
+          textAlign: TextAlign.center,
         ),
       ],
     );

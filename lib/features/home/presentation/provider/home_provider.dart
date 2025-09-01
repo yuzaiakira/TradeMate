@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import '../../domain/entities/trade_statistics.dart';
-import '../../domain/usecases/get_statistics_usecase.dart';
+import '../../../../core/usecases/get_shared_statistics_usecase.dart';
 
 enum HomeStatus { initial, loading, loaded, error }
 
 class HomeProvider with ChangeNotifier {
-  final GetStatisticsUseCase getStatisticsUseCase;
+  final GetSharedStatisticsUseCase getSharedStatisticsUseCase;
 
-  HomeProvider(this.getStatisticsUseCase);
+  HomeProvider(this.getSharedStatisticsUseCase);
 
   HomeStatus _status = HomeStatus.initial;
   String _errorMessage = '';
@@ -22,7 +22,7 @@ class HomeProvider with ChangeNotifier {
       _status = HomeStatus.loading;
       notifyListeners();
 
-      _statistics = await getStatisticsUseCase();
+      _statistics = await getSharedStatisticsUseCase.getHomeStatistics();
       _status = HomeStatus.loaded;
       _errorMessage = '';
       
